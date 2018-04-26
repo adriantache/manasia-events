@@ -1,7 +1,9 @@
 package com.adriantache.manasia_events;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
@@ -14,7 +16,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.list_view) ListView listView;
+    @BindView(R.id.list_view)
+    ListView listView;
+    @BindView(R.id.music_toggle)
+    Button music_toggle;
+    @BindView(R.id.shop_toggle)
+    Button shop_toggle;
+    @BindView(R.id.hub_toggle)
+    Button hub_toggle;
+    //todo replace default setting of true with method reading SharedPrefs
+    boolean music = true;
+    boolean shop = true;
+    boolean hub = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,17 +37,16 @@ public class MainActivity extends AppCompatActivity {
         //activate ButterKnife
         ButterKnife.bind(this);
 
+        //todo retrieve SharedPrefs before binding the ArrayAdapter
+
         //populate list
         //todo replace dummy data with real data, eventually
-        EventAdapter eventAdapter = new EventAdapter(this,dummyData());
-        listView.setAdapter(eventAdapter);
-
+        listView.setAdapter(new EventAdapter(this, filter(dummyData())));
     }
 
-    //todo create custom list layout
-
     //create dummy data objects to populate the list
-    private List<Event> dummyData(){
+    //todo replace dummy data with real data, eventually
+    private List<Event> dummyData() {
         ArrayList<Event> arrayList = new ArrayList<>();
 
         //todo add dummy data objects
@@ -182,11 +194,79 @@ public class MainActivity extends AppCompatActivity {
         return arrayList;
     }
 
-    //todo create event class and event info subclass
-
-    //todo create custom adapter to display custom list layout
+    //todo create event info subclass
 
     //todo add onclick and toggle logic for buttons and logo
+
+    //todo implement SharedPreferences to store toggle and notification option
+    private List<Event> filter(List<Event> list) {
+        if (list == null) return null;
+
+        ArrayList<Event> temp = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getCategory_image() == R.drawable.music && music) temp.add(list.get(i));
+            else if (list.get(i).getCategory_image() == R.drawable.shop && shop)
+                temp.add(list.get(i));
+            else if (list.get(i).getCategory_image() == R.drawable.hub && hub)
+                temp.add(list.get(i));
+        }
+
+        return temp;
+    }
+
+    public void musicToggle(View v) {
+        if (music && (shop || hub)) {
+            music = false;
+            music_toggle.setBackgroundColor(0xff9E9E9E);
+        } else if (!music) {
+            music = true;
+            music_toggle.setBackgroundColor(0xffFF4081);
+        } else {
+            music = true;
+            music_toggle.setBackgroundColor(0xffFF4081);
+            shopToggle(null);
+            hubToggle(null);
+        }
+
+        refreshList();
+    }
+    public void shopToggle(View v) {
+        if (shop && (music || hub)) {
+            shop = false;
+            shop_toggle.setBackgroundColor(0x9E9E9E);
+        } else if (!shop) {
+            shop = true;
+            shop_toggle.setBackgroundColor(0xFF4081);
+        } else {
+            shop = true;
+            shop_toggle.setBackgroundColor(0xFF4081);
+            musicToggle(null);
+            hubToggle(null);
+        }
+
+        refreshList();
+    }
+    public void hubToggle(View v) {
+        if (hub && (music || shop)) {
+            hub = false;
+            hub_toggle.setBackgroundColor(0x9E9E9E);
+        } else if (!hub) {
+            hub = true;
+            hub_toggle.setBackgroundColor(0xFF4081);
+        } else {
+            hub = true;
+            hub_toggle.setBackgroundColor(0xFF4081);
+            musicToggle(null);
+            shopToggle(null);
+        }
+
+        refreshList();
+    }
+
+    private void refreshList() {
+        listView.setAdapter(new EventAdapter(this, filter(dummyData())));
+    }
 
     //todo create second activity to display event details
 
@@ -199,8 +279,6 @@ public class MainActivity extends AppCompatActivity {
     //todo implement SwipeRefreshLayout
 
     //todo figure out data storage (firebase? facebook api?)
-
-    //todo implement SharedPreferences to store toggle and notification option
 
     //todo implement notification permission request (or activity)
 

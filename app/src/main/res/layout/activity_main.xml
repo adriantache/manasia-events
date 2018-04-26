@@ -75,13 +75,14 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/music_toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:background="@color/colorAccent"
                     android:drawablePadding="8dp"
                     android:drawableTop="@drawable/music"
+                    android:onClick="musicToggle"
                     android:padding="8dp"
                     android:text="MUSIC"
                     android:textColor="#fff" />
@@ -92,12 +93,13 @@
                     android:layout_weight="1" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/shop_toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/colorAccent"
                     android:drawablePadding="8dp"
                     android:drawableTop="@drawable/shop"
+                    android:onClick="shopToggle"
                     android:padding="8dp"
                     android:text="SHOPS"
                     android:textColor="#fff" />
@@ -108,7 +110,7 @@
                     android:layout_weight="1" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/hub_toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -116,6 +118,7 @@
                     android:background="@color/colorAccent"
                     android:drawablePadding="8dp"
                     android:drawableTop="@drawable/hub"
+                    android:onClick="hubToggle"
                     android:padding="8dp"
                     android:text="HUB"
                     android:textColor="#fff" />
