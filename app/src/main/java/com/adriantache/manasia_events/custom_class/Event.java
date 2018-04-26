@@ -6,14 +6,14 @@ public class Event {
     private String title;
     private String description;
     private String photoUrl;
-    private String category;
+    private int category_image;
 
-    public Event (String date, String title, String description, String photoUrl, String category){
+    public Event (String date, String title, String description, String photoUrl, int category_image){
         this.date = date;
         this.title = title;
         this.description = description;
         this.photoUrl = photoUrl;
-        this.category = category;
+        this.category_image = category_image;
     }
 
     public String getTitle() {
@@ -24,8 +24,8 @@ public class Event {
         return date;
     }
 
-    public String getCategory() {
-        return category;
+    public int getCategory_image() {
+        return category_image;
     }
 
     public String getDescription() {
