@@ -234,13 +234,13 @@ public class MainActivity extends AppCompatActivity {
     public void shopToggle(View v) {
         if (shop && (music || hub)) {
             shop = false;
-            shop_toggle.setBackgroundColor(0x9E9E9E);
+            shop_toggle.setBackgroundColor(0xff9E9E9E);
         } else if (!shop) {
             shop = true;
-            shop_toggle.setBackgroundColor(0xFF4081);
+            shop_toggle.setBackgroundColor(0xffFF4081);
         } else {
             shop = true;
-            shop_toggle.setBackgroundColor(0xFF4081);
+            shop_toggle.setBackgroundColor(0xffFF4081);
             musicToggle(null);
             hubToggle(null);
         }
@@ -250,13 +250,13 @@ public class MainActivity extends AppCompatActivity {
     public void hubToggle(View v) {
         if (hub && (music || shop)) {
             hub = false;
-            hub_toggle.setBackgroundColor(0x9E9E9E);
+            hub_toggle.setBackgroundColor(0xff9E9E9E);
         } else if (!hub) {
             hub = true;
-            hub_toggle.setBackgroundColor(0xFF4081);
+            hub_toggle.setBackgroundColor(0xffFF4081);
         } else {
             hub = true;
-            hub_toggle.setBackgroundColor(0xFF4081);
+            hub_toggle.setBackgroundColor(0xffFF4081);
             musicToggle(null);
             shopToggle(null);
         }
