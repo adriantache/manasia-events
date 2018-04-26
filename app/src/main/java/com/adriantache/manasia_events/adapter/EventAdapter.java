@@ -41,17 +41,17 @@ public class EventAdapter extends ArrayAdapter<Event> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        NewsItem newsItem = getItem(position);
+        Event event = getItem(position);
 
-        if (newsItem != null) {
-            if (newsItem.getThumbnailURL() != null)
-                Picasso.get().load(newsItem.getThumbnailURL()).into(holder.thumbnail);
+        if (event != null) {
+            if (event.getThumbnailURL() != null)
+                Picasso.get().load(event.getThumbnailURL()).into(holder.thumbnail);
             else
                 holder.thumbnail.setImageResource(R.drawable.powered_by_guardian);
 
-            holder.category.setText(newsItem.getCategory());
-            holder.title.setText(newsItem.getTitle());
-            holder.date.setText(newsItem.getDate());
+            holder.category.setText(event.getCategory());
+            holder.title.setText(event.getTitle());
+            holder.date.setText(event.getDate());
         }
 
         return convertView;
