@@ -56,6 +56,8 @@
         tools:text="Record Shop Day After Party w/ The Groovers Delight" />
 
     <ImageView
+        android:padding="4dp"
+        android:background="#aa607D8B"
         android:id="@+id/category_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,5 +65,5 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/shopping_basket_white_48x48" />
+        app:srcCompat="@drawable/shop" />
 </android.support.constraint.ConstraintLayout>

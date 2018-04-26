@@ -81,7 +81,7 @@
                     android:layout_marginStart="16dp"
                     android:background="@color/colorAccent"
                     android:drawablePadding="8dp"
-                    android:drawableTop="@drawable/musvideo_white_48x48"
+                    android:drawableTop="@drawable/music"
                     android:padding="8dp"
                     android:text="MUSIC"
                     android:textColor="#fff" />
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/colorAccent"
                     android:drawablePadding="8dp"
-                    android:drawableTop="@drawable/shopping_basket_white_48x48"
+                    android:drawableTop="@drawable/shop"
                     android:padding="8dp"
                     android:text="SHOPS"
                     android:textColor="#fff" />
@@ -115,7 +115,7 @@
                     android:layout_marginEnd="16dp"
                     android:background="@color/colorAccent"
                     android:drawablePadding="8dp"
-                    android:drawableTop="@drawable/device_hub_white_48x48"
+                    android:drawableTop="@drawable/hub"
                     android:padding="8dp"
                     android:text="HUB"
                     android:textColor="#fff" />
