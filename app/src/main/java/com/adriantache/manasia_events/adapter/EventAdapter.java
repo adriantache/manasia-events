@@ -1,4 +1,4 @@
-package com.adriantache.guardiannewsapp.adapter;
+package com.adriantache.manasia_events.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,8 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.adriantache.guardiannewsapp.R;
-import com.adriantache.guardiannewsapp.customClasses.NewsItem;
+import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.squareup.picasso.Picasso;
 
@@ -43,9 +42,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         Event event = getItem(position);
 
+        //todo create and set placeholder image
         if (event != null) {
-            if (event.getThumbnailURL() != null)
-                Picasso.get().load(event.getThumbnailURL()).into(holder.thumbnail);
+            if (event.getPhotoUrl() != null)
+                Picasso.get().load(event.getPhotoUrl()).into(holder.thumbnail);
             else
                 holder.thumbnail.setImageResource(R.drawable.powered_by_guardian);
 
