@@ -311,14 +311,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //todo create second activity to display event details
-
     //todo create intent to open location of the event
-
     //todo create intent to open calendar to schedule event
+    //todo create intent to open FB event page
+    //todo create intent to call manasia
 
     //todo add info about the hub somewhere (on logo click?) and indicate it visually
 
-    //todo implement SwipeRefreshLayout
+    //todo implement SwipeRefreshLayout (is it really needed?)
 
     //todo figure out data storage (firebase? facebook api?)
 
@@ -326,6 +326,8 @@ public class MainActivity extends AppCompatActivity {
 
     //todo implement real notification system (probably with a service)
     //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
+    //http://droidmentor.com/schedule-notifications-using-alarmmanager/
+    //https://developer.android.com/topic/performance/scheduling
     private void showNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel, but only on API 26+ because
