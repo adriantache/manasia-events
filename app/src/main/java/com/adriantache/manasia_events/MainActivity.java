@@ -324,6 +324,9 @@ public class MainActivity extends AppCompatActivity {
 
     //todo implement notification permission request (or activity)
 
+    //todo add ability to set reminders on what people care about (on event details page?)
+    //todo (plus setting to always notify on the day of the event)
+
     //todo implement real notification system (probably with a service)
     //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
     //http://droidmentor.com/schedule-notifications-using-alarmmanager/
