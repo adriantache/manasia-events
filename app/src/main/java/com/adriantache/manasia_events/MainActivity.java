@@ -1,6 +1,9 @@
 package com.adriantache.manasia_events;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -37,11 +40,32 @@ public class MainActivity extends AppCompatActivity {
         //activate ButterKnife
         ButterKnife.bind(this);
 
-        //todo retrieve SharedPrefs before binding the ArrayAdapter
+        //retrieve SharedPrefs before binding the ArrayAdapter
+        getPreferences();
+        //todo add visual indicators that filters are set
 
         //populate list
         //todo replace dummy data with real data, eventually
+        //todo set empty text view and progress bar
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
+    }
+
+    private void getPreferences() {
+        SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+        music = sharedPrefs.getBoolean("music", true);
+        shop = sharedPrefs.getBoolean("shop", true);
+        hub = sharedPrefs.getBoolean("hub", true);
+
+        setFilterColor();
+    }
+
+    private void setPreferences() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("music", music);
+        editor.putBoolean("shop", shop);
+        editor.putBoolean("hub", hub);
+        editor.apply();
     }
 
     //create dummy data objects to populate the list
@@ -218,54 +242,62 @@ public class MainActivity extends AppCompatActivity {
     public void musicToggle(View v) {
         if (music && (shop || hub)) {
             music = false;
-            music_toggle.setBackgroundColor(0xff9E9E9E);
         } else if (!music) {
             music = true;
-            music_toggle.setBackgroundColor(0xffFF4081);
         } else {
             music = true;
-            music_toggle.setBackgroundColor(0xffFF4081);
             shopToggle(null);
             hubToggle(null);
         }
 
+        setFilterColor();
         refreshList();
+        setPreferences();
     }
+
     public void shopToggle(View v) {
         if (shop && (music || hub)) {
             shop = false;
-            shop_toggle.setBackgroundColor(0xff9E9E9E);
         } else if (!shop) {
             shop = true;
-            shop_toggle.setBackgroundColor(0xffFF4081);
         } else {
             shop = true;
-            shop_toggle.setBackgroundColor(0xffFF4081);
             musicToggle(null);
             hubToggle(null);
         }
 
+        setFilterColor();
         refreshList();
+        setPreferences();
     }
+
     public void hubToggle(View v) {
         if (hub && (music || shop)) {
             hub = false;
-            hub_toggle.setBackgroundColor(0xff9E9E9E);
         } else if (!hub) {
             hub = true;
-            hub_toggle.setBackgroundColor(0xffFF4081);
         } else {
             hub = true;
-            hub_toggle.setBackgroundColor(0xffFF4081);
             musicToggle(null);
             shopToggle(null);
         }
 
+        setFilterColor();
         refreshList();
+        setPreferences();
     }
 
     private void refreshList() {
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
+    }
+
+    private void setFilterColor(){
+        if (music) music_toggle.setBackgroundColor(0xffFF4081);
+        else music_toggle.setBackgroundColor(0xff9E9E9E);
+        if (shop) shop_toggle.setBackgroundColor(0xffFF4081);
+        else shop_toggle.setBackgroundColor(0xff9E9E9E);
+        if (hub) hub_toggle.setBackgroundColor(0xffFF4081);
+        else hub_toggle.setBackgroundColor(0xff9E9E9E);
     }
 
     //todo create second activity to display event details
