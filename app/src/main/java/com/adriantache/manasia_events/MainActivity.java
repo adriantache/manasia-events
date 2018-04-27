@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         //populate list
         //todo replace dummy data with real data, eventually
-        //todo set empty text view and progress bar
+        //todo set empty list text view and progress bar
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
     }
 
@@ -220,9 +220,9 @@ public class MainActivity extends AppCompatActivity {
 
     //todo create event info subclass
 
-    //todo add onclick and toggle logic for buttons and logo
+    //todo add onclick for logo
 
-    //todo implement SharedPreferences to store toggle and notification option
+    //filter posts by category
     private List<Event> filter(List<Event> list) {
         if (list == null) return null;
 
