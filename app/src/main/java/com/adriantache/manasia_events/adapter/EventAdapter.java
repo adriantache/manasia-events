@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,10 +49,32 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 holder.thumbnail.setImageResource(R.drawable.manasia_logo);
 
             holder.category_image.setImageResource(event.getCategory_image());
-
             holder.day.setText(extractDate(event.getDate(), true));
             holder.month.setText(extractDate(event.getDate(), false));
             holder.title.setText(event.getTitle());
+
+            //making a copy of the ViewHolder to set the image drawable without making the main
+            // ViewHolder final (that results in a bug where each click changes every other item)
+            //todo fix bug that I thought I had fixed :(
+            //problem is assignment affects multiple list items
+            final ImageView bookmarkIV = holder.bookmark;
+            final Event tempEvent = event;
+            //todo implement actual notification code
+            //todo implement toggle mechanic, probably directly in the Event class
+            holder.bookmark_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (tempEvent.getNotify()) {
+                        Toast.makeText(getContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
+                        bookmarkIV.setImageResource(R.drawable.bookmark);
+                        tempEvent.setNotify(false);
+                    } else {
+                        Toast.makeText(getContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
+                        bookmarkIV.setImageResource(R.drawable.bookmark_green);
+                        tempEvent.setNotify(true);
+                    }
+                }
+            });
         }
 
         return convertView;
@@ -106,19 +129,11 @@ public class EventAdapter extends ArrayAdapter<Event> {
         ImageView category_image;
         @BindView(R.id.bookmark)
         ImageView bookmark;
+        @BindView(R.id.bookmark_layout)
+        LinearLayout bookmark_layout;
 
         private ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
-    }
-
-    //todo implement actual notification code
-    //todo move this into the EventAdapter? Somewhere where we have access to the post that was clicked
-    public void bookmark(View v){
-
-        Toast.makeText(getContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
-
-        //implement notification here
-        //bookmark.setImageResource(R.drawable.bookmark_green);
     }
 }

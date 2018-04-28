@@ -7,8 +7,9 @@ public class Event {
     private String description;
     private String photoUrl;
     private int category_image;
+    private boolean notify = false;
 
-    public Event (String date, String title, String description, String photoUrl, int category_image){
+    public Event(String date, String title, String description, String photoUrl, int category_image) {
         this.date = date;
         this.title = title;
         this.description = description;
@@ -34,5 +35,13 @@ public class Event {
 
     public String getPhotoUrl() {
         return photoUrl;
+    }
+
+    public boolean getNotify() {
+        return notify;
+    }
+
+    public void setNotify(boolean notify) {
+        this.notify = notify;
     }
 }

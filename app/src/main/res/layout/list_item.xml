@@ -67,31 +67,41 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/shop" />
 
-    <ImageView
-        android:id="@+id/bookmark"
+    <LinearLayout
+        android:id="@+id/bookmark_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
         android:background="#aa607D8B"
-        android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bookmark" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:background="#aa607D8B"
-        android:textAlignment="center"
-        android:gravity="center_vertical"
-        android:focusable="true"
-        android:clickable="true"
-        android:paddingEnd="4dp"
-        android:text="Notify me"
-        android:textAllCaps="true"
-        android:textColor="#fff"
-        app:layout_constraintBottom_toBottomOf="@id/bookmark"
-        app:layout_constraintStart_toEndOf="@+id/bookmark"
-        app:layout_constraintTop_toTopOf="@id/bookmark" />
+        <ImageView
+            android:id="@+id/bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/bookmark" />
+
+        <TextView
+            android:id="@+id/bookmark_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="4dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical|center"
+            android:text="Notify me"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            app:layout_constraintBottom_toBottomOf="@id/bookmark"
+            app:layout_constraintStart_toEndOf="@+id/bookmark"
+            app:layout_constraintTop_toTopOf="@id/bookmark" />
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
