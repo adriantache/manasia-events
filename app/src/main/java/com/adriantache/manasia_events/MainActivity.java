@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
 
         //todo figure out more complex notification system
-        showNotification();
+        //showNotification();
     }
 
     private void getPreferences() {
@@ -345,50 +345,5 @@ public class MainActivity extends AppCompatActivity {
 
     //todo add ability to set reminders on what people care about (on event details page?)
     //todo (plus setting to always notify on the day of the event)
-
-    //todo implement real notification system (probably with a service)
-    //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
-    //http://droidmentor.com/schedule-notifications-using-alarmmanager/
-    //https://developer.android.com/topic/performance/scheduling
-    private void showNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            CharSequence name = "manasia_notification";
-            String description = "manasia notification channel";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("MANASIA", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system
-            NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-
-        //todo rewrite this once we figure out data delivery
-        //get latest event and Build notification
-        Event event = dummyData().get(0);
-        String notificationTitle = "Manasia event: "+event.getTitle();
-        String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
-        int notificationLogo = event.getCategory_image();
-
-        //todo improve intent and the notification in general, ideally point directly to notified event
-        //maybe make activity open latest even by default, but how do you send it to it?
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "MANASIA")
-                .setSmallIcon(notificationLogo)
-                .setContentTitle(notificationTitle)
-                .setContentText(notificationText)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1, mBuilder.build());
-    }
 
 }
