@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
@@ -103,9 +104,21 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView title;
         @BindView(R.id.category_image)
         ImageView category_image;
+        @BindView(R.id.bookmark)
+        ImageView bookmark;
 
         private ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
+    }
+
+    //todo implement actual notification code
+    //todo move this into the EventAdapter? Somewhere where we have access to the post that was clicked
+    public void bookmark(View v){
+
+        Toast.makeText(getContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
+
+        //implement notification here
+        //bookmark.setImageResource(R.drawable.bookmark_green);
     }
 }

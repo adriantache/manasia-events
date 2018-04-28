@@ -14,7 +14,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;

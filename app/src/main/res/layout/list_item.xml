@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,12 +10,12 @@
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
-        android:scrollY="-30dp"/>
+        android:scrollY="-30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/day"
@@ -36,9 +35,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:paddingBottom="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/day"
-        android:paddingBottom="8dp"
         tools:text="APRIL" />
 
     <TextView
@@ -57,14 +56,42 @@
         tools:text="Record Shop Day After Party w/ The Groovers Delight" />
 
     <ImageView
-        android:padding="4dp"
-        android:background="#aa607D8B"
         android:id="@+id/category_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginTop="8dp"
+        android:background="#aa607D8B"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/shop" />
+
+    <ImageView
+        android:id="@+id/bookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="#aa607D8B"
+        android:padding="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bookmark" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="#aa607D8B"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:focusable="true"
+        android:clickable="true"
+        android:paddingEnd="4dp"
+        android:text="Notify me"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="@id/bookmark"
+        app:layout_constraintStart_toEndOf="@+id/bookmark"
+        app:layout_constraintTop_toTopOf="@id/bookmark" />
 </android.support.constraint.ConstraintLayout>
