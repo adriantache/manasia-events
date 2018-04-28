@@ -87,6 +87,23 @@ public class MainActivity extends AppCompatActivity {
 
         //todo add dummy data objects
         arrayList.add(new Event("27.04.2018",
+                "Manasia Food opening event | brunching in the garden w/ KOSTA",
+                "Manasia food Opening Event | Brunching in the garden with KOSTA \n" +
+                        "starting 13:00 – ending at the last bite | wine & food tasting 13-18\n" +
+                        "\n" +
+                        "Around here … we like it real \n" +
+                        "We’ve imagined a space where collaboration and creative energy are the starters of a beautiful friendship.\n" +
+                        "We’ve re-imagined what a police station looks like and feels like, giving the 1930 building a whole new purpose: creative office spaces. \n" +
+                        "As you can see … we’ve always gathered like minded people around as we appreciate the realness of it all. . \n" +
+                        "\n" +
+                        "And NOW, as real as it gets, we felt the need to add an EXTRA layer of emotion to our creative HUB. \n" +
+                        "Manasia HUB proudly introduces you to …\n" +
+                        "\n" +
+                        "Manasia food \n" +
+                        "real people | real stories | REAL FOOD",
+                "https://scontent.fotp3-3.fna.fbcdn.net/v/t1.0-9/31400920_2140369172863221_6966862658385477632_n.jpg?_nc_cat=0&oh=6630ba23d0f2302c0fb6abb7a9b82386&oe=5B62AE78",
+                R.drawable.hub));
+        arrayList.add(new Event("27.04.2018",
                 "Lansare videoclip Baieti Cuminti la Linia 1",
                 "Băieți Cuminți are back si lanseaza clip la \"Valuri\", Linia 1, ofc, ca au venit si banii de pe iutub. \uD83C\uDF0A\uD83C\uDF7E \n" +
                         "E un clip misto, asa, de vacanta \uD83C\uDF34\n" +
