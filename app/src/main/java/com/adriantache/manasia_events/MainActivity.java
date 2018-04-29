@@ -2,7 +2,9 @@ package com.adriantache.manasia_events;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean music;
     private boolean shop;
     private boolean hub;
+    private boolean layout_animated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +56,23 @@ public class MainActivity extends AppCompatActivity {
         //todo set empty list text view and progress bar
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
 
-        //todo figure out more complex notification system
-        //showNotification();
-
         logo.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 ConstraintSet constraintSet = new ConstraintSet();
                 constraintSet.clone(getApplicationContext(),R.layout.activity_main_animate);
+                ConstraintSet initialConstraintSet = new ConstraintSet();
+                initialConstraintSet.clone(getApplicationContext(),R.layout.activity_main);
                 ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
                 TransitionManager.beginDelayedTransition(mConstraintLayout);
-                constraintSet.applyTo(mConstraintLayout);
+                if (!layout_animated) {
+                    constraintSet.applyTo(mConstraintLayout);
+                    layout_animated=true;
+                } else {
+                    initialConstraintSet.applyTo(mConstraintLayout);
+                    layout_animated=false;
+                }
             }
         });
     }
