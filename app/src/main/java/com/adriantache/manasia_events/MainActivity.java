@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         //todo set empty list text view and progress bar
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
 
+        //code to minimize and maximize logo on click (maybe not terribly useful, but it looks neat)
         logo.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
