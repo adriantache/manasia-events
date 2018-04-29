@@ -1,22 +1,16 @@
 package com.adriantache.manasia_events;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
@@ -36,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
     Button shop_toggle;
     @BindView(R.id.hub_toggle)
     Button hub_toggle;
-    //todo replace default setting of true with method reading SharedPrefs
-    boolean music = true;
-    boolean shop = true;
-    boolean hub = true;
+    @BindView(R.id.logo)
+    ImageView logo;
+    private boolean music;
+    private boolean shop;
+    private boolean hub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +55,17 @@ public class MainActivity extends AppCompatActivity {
 
         //todo figure out more complex notification system
         //showNotification();
+
+        logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(getApplicationContext(),R.layout.activity_main_animate);
+                ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
+                TransitionManager.beginDelayedTransition(mConstraintLayout);
+                constraintSet.applyTo(mConstraintLayout);
+            }
+        });
     }
 
     private void getPreferences() {
