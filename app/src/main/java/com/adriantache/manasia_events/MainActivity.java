@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //todo extract all strings
+    //todo IDEA indication on how crowded it is
+    //todo IDEA feature hub shops to attract clients (i.e. give them space in the app or include their events)
 
     //create dummy data objects to populate the list
     //todo replace dummy data with real data, eventually
