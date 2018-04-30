@@ -90,8 +90,6 @@
             android:id="@+id/bookmark_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_marginStart="4dp"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical|center"

@@ -63,30 +63,30 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             //todo hide notify button for past events
 
-            //making a copy of the ViewHolder to set the image drawable without making the main
-            // ViewHolder final (that results in a bug where each click changes every other item)
-            //todo fix bug that I thought I had fixed :(
-            //problem is assignment affects multiple list items
-            final ImageView bookmarkIV = holder.bookmark;
-            final Event tempEvent = event;
-            //todo implement actual notification code
-            //todo implement toggle mechanic, probably directly in the Event class
-            //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
-            holder.bookmark_layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (tempEvent.getNotify()) {
-                        Toast.makeText(getContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
-                        bookmarkIV.setImageResource(R.drawable.bookmark);
-                        tempEvent.setNotify(false);
-                    } else {
-                        Toast.makeText(getContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
-                        bookmarkIV.setImageResource(R.drawable.bookmark_green);
-                        tempEvent.setNotify(true);
-                        showNotification(tempEvent);
-                    }
-                }
-            });
+//            //making a copy of the ViewHolder to set the image drawable without making the main
+//            // ViewHolder final (that results in a bug where each click changes every other item)
+//            //todo fix bug that I thought I had fixed :(
+//            //problem is assignment affects multiple list items
+//            final ImageView bookmarkIV = holder.bookmark;
+//            final Event tempEvent = event;
+//            //todo implement actual notification code
+//            //todo implement toggle mechanic, probably directly in the Event class
+//            //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
+//            holder.bookmark_layout.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (tempEvent.getNotify()) {
+//                        Toast.makeText(getContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
+//                        bookmarkIV.setImageResource(R.drawable.bookmark);
+//                        tempEvent.setNotify(false);
+//                    } else {
+//                        Toast.makeText(getContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
+//                        bookmarkIV.setImageResource(R.drawable.bookmark_green);
+//                        tempEvent.setNotify(true);
+//                        showNotification(tempEvent);
+//                    }
+//                }
+//            });
         }
 
         return convertView;

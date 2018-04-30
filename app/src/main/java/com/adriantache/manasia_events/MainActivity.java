@@ -1,6 +1,7 @@
 package com.adriantache.manasia_events;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -56,23 +59,37 @@ public class MainActivity extends AppCompatActivity {
         //todo set empty list text view and progress bar
         listView.setAdapter(new EventAdapter(this, filter(dummyData())));
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("XXXXXXXX", "onItemClick: ");
+                Event event = (Event) parent.getItemAtPosition(position);
+                ArrayList<Event> temp = new ArrayList<>();
+                temp.add(event);
+
+                Intent intent = new Intent(getApplicationContext(), EventDetail.class);
+                intent.putParcelableArrayListExtra("events", temp);
+                startActivity(intent);
+            }
+        });
+
         //code to minimize and maximize logo on click (maybe not terribly useful, but it looks neat)
         logo.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 ConstraintSet constraintSet = new ConstraintSet();
-                constraintSet.clone(getApplicationContext(),R.layout.activity_main_animate);
+                constraintSet.clone(getApplicationContext(), R.layout.activity_main_animate);
                 ConstraintSet initialConstraintSet = new ConstraintSet();
-                initialConstraintSet.clone(getApplicationContext(),R.layout.activity_main);
+                initialConstraintSet.clone(getApplicationContext(), R.layout.activity_main);
                 ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
                 TransitionManager.beginDelayedTransition(mConstraintLayout);
                 if (!layout_animated) {
                     constraintSet.applyTo(mConstraintLayout);
-                    layout_animated=true;
+                    layout_animated = true;
                 } else {
                     initialConstraintSet.applyTo(mConstraintLayout);
-                    layout_animated=false;
+                    layout_animated = false;
                 }
             }
         });
@@ -95,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("hub", hub);
         editor.apply();
     }
+
+    //todo extract all strings
 
     //create dummy data objects to populate the list
     //todo replace dummy data with real data, eventually
