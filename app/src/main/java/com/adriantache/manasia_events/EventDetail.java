@@ -1,12 +1,22 @@
 package com.adriantache.manasia_events;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.squareup.picasso.Picasso;
@@ -33,6 +43,12 @@ public class EventDetail extends AppCompatActivity {
     TextView description;
     @BindView(R.id.back)
     ImageView back;
+    @BindView(R.id.call)
+    TextView call;
+    @BindView(R.id.map)
+    TextView map;
+    @BindView(R.id.notify)
+    TextView notify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +56,7 @@ public class EventDetail extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         ButterKnife.bind(this);
 
-        Event event = (Event) getIntent().getParcelableArrayListExtra("events").get(0);
+        final Event event = (Event) getIntent().getParcelableArrayListExtra("events").get(0);
         if (!TextUtils.isEmpty(event.getPhotoUrl()))
             Picasso.get().load(event.getPhotoUrl()).into(thumbnail);
         else
@@ -58,9 +74,59 @@ public class EventDetail extends AppCompatActivity {
                 finish();
             }
         });
-    }
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:0736 760 063"));
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(geoLocation));
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
 
-    //todo set up onclicklisterens and intents for bottom buttons
+            }
+        });
+
+        notify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //todo hide notify button for past events
+                //todo implement code to show notification
+
+//            //making a copy of the ViewHolder to set the image drawable without making the main
+//            // ViewHolder final (that results in a bug where each click changes every other item)
+//            //todo fix bug that I thought I had fixed :(
+//            //problem is assignment affects multiple list items
+//            final ImageView bookmarkIV = holder.bookmark;
+//            final Event tempEvent = event;
+//            //todo implement actual notification code
+//            //todo implement toggle mechanic, probably directly in the Event class
+//            //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
+//
+                if (event.getNotify()) {
+                    Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
+                    bookmark.setImageResource(R.drawable.bookmark);
+                    event.setNotify(false);
+                } else {
+                    Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
+                    bookmark.setImageResource(R.drawable.bookmark_green);
+                    event.setNotify(true);
+                    showNotification(event);
+                }
+            }
+        });
+    }
 
     private String extractDate(String s, boolean day) {
         String[] parts = s.split("\\.");
@@ -96,5 +162,49 @@ public class EventDetail extends AppCompatActivity {
             default:
                 return "ERROR";
         }
+    }
+
+    //todo implement real notification system (probably with a service)
+    //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
+    //http://droidmentor.com/schedule-notifications-using-alarmmanager/
+    //https://developer.android.com/topic/performance/scheduling
+    private void showNotification(Event event) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel, but only on API 26+ because
+            // the NotificationChannel class is new and not in the support library
+            CharSequence name = "manasia_notification";
+            String description = "manasia notification channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("MANASIA", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        //todo rewrite this once we figure out data delivery
+        //get latest event and Build notification
+        String notificationTitle = "Manasia event: " + event.getTitle();
+        String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
+        int notificationLogo = event.getCategory_image();
+
+        //todo improve intent and the notification in general, ideally point directly to notified event
+        //maybe make activity open latest even by default, but how do you send it to it?
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "MANASIA")
+                .setSmallIcon(notificationLogo)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationText)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, mBuilder.build());
     }
 }

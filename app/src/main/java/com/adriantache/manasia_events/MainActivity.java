@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Event> arrayList = new ArrayList<>();
 
         //todo add dummy data objects
-        arrayList.add(new Event("27.04.2018",
+        arrayList.add(new Event("06.05.2018",
                 "Manasia Food opening event | brunching in the garden w/ KOSTA",
                 "Manasia food Opening Event | Brunching in the garden with KOSTA \n" +
                         "starting 13:00 – ending at the last bite | wine & food tasting 13-18\n" +
@@ -139,6 +139,21 @@ public class MainActivity extends AppCompatActivity {
                         "Manasia food \n" +
                         "real people | real stories | REAL FOOD",
                 "https://scontent.fotp3-3.fna.fbcdn.net/v/t1.0-9/31400920_2140369172863221_6966862658385477632_n.jpg?_nc_cat=0&oh=6630ba23d0f2302c0fb6abb7a9b82386&oe=5B62AE78",
+                R.drawable.hub));
+        arrayList.add(new Event("01.05.2018",
+                "1 mai de Manasia",
+                "De 1 mai nu plecam niciunde! Si pana atunci ... tot aici ne gasiti ... terasa e deschisa daily .. asa ca nu va sfiiti! ;) \n" +
+                        "\n" +
+                        "Ramenem pe baricade ... bricolam de zor si ne anturam la un mic,o bere ... mustard on top! ;)\n" +
+                        "\n" +
+                        "Sa nu uitam de DJ set ca fara el ... ne ia valu cam prost! :))\n" +
+                        "\n" +
+                        "1 mai de Manasia 12 PM - 01 AM \n" +
+                        "\n" +
+                        "Manasia HUB\n" +
+                        "real people | real stories \n" +
+                        "Stelea Spataru 13",
+                "https://scontent.fotp3-3.fna.fbcdn.net/v/t1.0-9/31392196_2140768786156593_514869821767155712_n.jpg?_nc_cat=0&oh=109c3918dd547f72fba2822f17b4b020&oe=5B962E23",
                 R.drawable.hub));
         arrayList.add(new Event("27.04.2018",
                 "Lansare videoclip Baieti Cuminti la Linia 1",

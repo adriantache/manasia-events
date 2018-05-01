@@ -168,49 +168,58 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/call"
+        android:focusable="true"
         android:padding="16dp"
         android:text="CALL"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/calendar"
+        app:layout_constraintEnd_toStartOf="@id/notify"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/calendar"
+        android:id="@+id/notify"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/alarm"
+        android:focusable="true"
         android:padding="16dp"
         android:text="NOTIFY"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/directions"
+        app:layout_constraintEnd_toStartOf="@id/map"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/call"
         app:layout_constraintTop_toTopOf="@+id/call" />
 
     <TextView
-        android:id="@+id/directions"
+        android:id="@+id/map"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/navigate"
+        android:focusable="true"
         android:padding="16dp"
         android:text="MAP"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/calendar"
-        app:layout_constraintTop_toTopOf="@id/calendar" />
+        app:layout_constraintStart_toEndOf="@id/notify"
+        app:layout_constraintTop_toTopOf="@id/notify" />
 
-    <!--todo add extra elements and bottom action buttons-->
+    <!--todo add extra elements-->
 
 </android.support.constraint.ConstraintLayout>
