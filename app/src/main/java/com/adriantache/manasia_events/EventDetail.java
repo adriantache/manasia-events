@@ -169,4 +169,5 @@ public class EventDetail extends AppCompatActivity {
 
     //todo create intent to open calendar to schedule event ?
     //todo create intent to open FB event page ?
+    //todo setting to always notify on the day of the event
 }

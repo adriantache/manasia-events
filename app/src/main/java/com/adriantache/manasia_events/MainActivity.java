@@ -90,11 +90,6 @@ public class MainActivity extends AppCompatActivity {
         updateBusyLevel();
     }
 
-    private void checkFiltersSet() {
-        if (music&&shop&&hub) filters.setText("Filters");
-        else filters.setText("Filters [set]");
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void minimizeLogo() {
         ConstraintSet constraintSet = new ConstraintSet();
@@ -154,11 +149,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //todo extract all strings into XML
+    //todo fix any warnings/errors
     //todo IDEA indication on how crowded it is
     //todo IDEA feature hub shops to attract clients (i.e. give them space in the app or include their events)
+    //todo create event info subclass
+    //todo add info about the hub somewhere (on logo click?) and indicate it visually
+    //todo figure out data storage (firebase? facebook api?)
 
     //create dummy data objects to populate the list
     //todo replace dummy data with real data, eventually
+    //todo implement SwipeRefreshLayout (is it really needed?)
     private List<Event> dummyData() {
         ArrayList<Event> arrayList = new ArrayList<>();
 
@@ -339,10 +339,6 @@ public class MainActivity extends AppCompatActivity {
         return arrayList;
     }
 
-    //todo create event info subclass
-
-    //todo add onclick for logo
-
     //filter posts by category
     private List<Event> filter(List<Event> list) {
         if (list == null) return null;
@@ -423,15 +419,8 @@ public class MainActivity extends AppCompatActivity {
         checkFiltersSet();
     }
 
-    //todo add info about the hub somewhere (on logo click?) and indicate it visually
-
-    //todo implement SwipeRefreshLayout (is it really needed?)
-
-    //todo figure out data storage (firebase? facebook api?)
-
-    //todo implement notification permission request (or activity)
-
-    //todo add ability to set reminders on what people care about (on event details page?)
-    //todo (plus setting to always notify on the day of the event)
-
-}
+    private void checkFiltersSet() {
+        if (music && shop && hub) filters.setText("Filters");
+        else filters.setText("Filters [set]");
+    }
+ }

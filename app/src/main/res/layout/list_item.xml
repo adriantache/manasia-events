@@ -100,6 +100,5 @@
             app:layout_constraintBottom_toBottomOf="@id/bookmark"
             app:layout_constraintStart_toEndOf="@+id/bookmark"
             app:layout_constraintTop_toTopOf="@id/bookmark" />
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
