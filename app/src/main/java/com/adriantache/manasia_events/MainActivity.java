@@ -10,7 +10,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -40,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView logo;
     @BindView(R.id.busy_level)
     TextView busy_level;
+    @BindView(R.id.filters)
+    TextView filters;
     private boolean music;
     private boolean shop;
     private boolean hub;
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
-        //todo add visual indicators that filters are set
+        //add visual indicators that filters are set
+        checkFiltersSet();
 
         //populate list
         //todo replace dummy data with real data, eventually
@@ -86,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
         //todo figure out how to fetch this (ideally same place we store the JSON)
         updateBusyLevel();
+    }
+
+    private void checkFiltersSet() {
+        if (music&&shop&&hub) filters.setText("Filters");
+        else filters.setText("Filters [set]");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -146,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    //todo extract all strings
+    //todo extract all strings into XML
     //todo IDEA indication on how crowded it is
     //todo IDEA feature hub shops to attract clients (i.e. give them space in the app or include their events)
 
@@ -412,6 +419,8 @@ public class MainActivity extends AppCompatActivity {
         else shop_toggle.setBackgroundColor(0xff9E9E9E);
         if (hub) hub_toggle.setBackgroundColor(0xffFF4081);
         else hub_toggle.setBackgroundColor(0xff9E9E9E);
+
+        checkFiltersSet();
     }
 
     //todo add info about the hub somewhere (on logo click?) and indicate it visually
