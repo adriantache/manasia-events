@@ -148,14 +148,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    //todo extract all strings into XML
-    //todo fix any warnings/errors
-    //todo IDEA indication on how crowded it is
-    //todo IDEA feature hub shops to attract clients (i.e. give them space in the app or include their events)
-    //todo create event info subclass
-    //todo add info about the hub somewhere (on logo click?) and indicate it visually
-    //todo figure out data storage (firebase? facebook api?)
-
     //create dummy data objects to populate the list
     //todo replace dummy data with real data, eventually
     //todo implement SwipeRefreshLayout (is it really needed?)
@@ -424,3 +416,12 @@ public class MainActivity extends AppCompatActivity {
         else filters.setText("Filters [set]");
     }
  }
+
+//todo extract all strings into XML
+//todo fix any warnings/errors
+//todo IDEA indication on how crowded it is
+//todo IDEA feature hub shops to attract clients (i.e. give them space in the app or include their events)
+//todo create event info subclass
+//todo add info about the hub somewhere (on logo click?) and indicate it visually
+//todo figure out data storage (firebase? facebook api?)
+//todo remove TextView from bookmark_layout?

@@ -115,7 +115,6 @@ public class EventDetail extends AppCompatActivity {
             notify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //todo hide notify button for past events
                     //todo implement code to show notification
 
                     //todo implement actual notification code
@@ -180,8 +179,8 @@ public class EventDetail extends AppCompatActivity {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, mBuilder.build());
     }
-
-    //todo create intent to open calendar to schedule event ?
-    //todo create intent to open FB event page ?
-    //todo setting to always notify on the day of the event
 }
+
+//todo create intent to open calendar to schedule event ?
+//todo create intent to open FB event page ?
+//todo setting to always notify on the day of the event
