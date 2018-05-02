@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     Button hub_toggle;
     @BindView(R.id.logo)
     ImageView logo;
+    @BindView(R.id.busy_level)
+    TextView busy_level;
     private boolean music;
     private boolean shop;
     private boolean hub;
@@ -62,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("XXXXXXXX", "onItemClick: ");
                 Event event = (Event) parent.getItemAtPosition(position);
                 ArrayList<Event> temp = new ArrayList<>();
                 temp.add(event);
@@ -78,21 +80,52 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                ConstraintSet constraintSet = new ConstraintSet();
-                constraintSet.clone(getApplicationContext(), R.layout.activity_main_animate);
-                ConstraintSet initialConstraintSet = new ConstraintSet();
-                initialConstraintSet.clone(getApplicationContext(), R.layout.activity_main);
-                ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
-                TransitionManager.beginDelayedTransition(mConstraintLayout);
-                if (!layout_animated) {
-                    constraintSet.applyTo(mConstraintLayout);
-                    layout_animated = true;
-                } else {
-                    initialConstraintSet.applyTo(mConstraintLayout);
-                    layout_animated = false;
-                }
+                minimizeLogo();
             }
         });
+
+        //todo figure out how to fetch this (ideally same place we store the JSON)
+        updateBusyLevel();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void minimizeLogo() {
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(getApplicationContext(), R.layout.activity_main_animate);
+        ConstraintSet initialConstraintSet = new ConstraintSet();
+        initialConstraintSet.clone(getApplicationContext(), R.layout.activity_main);
+        ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
+        TransitionManager.beginDelayedTransition(mConstraintLayout);
+        if (!layout_animated) {
+            constraintSet.applyTo(mConstraintLayout);
+            layout_animated = true;
+        } else {
+            initialConstraintSet.applyTo(mConstraintLayout);
+            layout_animated = false;
+        }
+    }
+
+    private void updateBusyLevel() {
+        //todo implement actual code
+        String busyLevel = "Prietenos";
+        busy_level.setText(busyLevel);
+        switch (busyLevel) {
+            case "Lejer":
+                busy_level.setTextColor(0xff2196F3);
+                break;
+            case "Prietenos":
+                busy_level.setTextColor(0xff4CAF50);
+                break;
+            case "Optim":
+                busy_level.setTextColor(0xffE91E63);
+                break;
+            case "Full":
+                busy_level.setTextColor(0xfff44336);
+                break;
+            default:
+                busy_level.setTextColor(0xff000000);
+                break;
+        }
     }
 
     private void getPreferences() {
