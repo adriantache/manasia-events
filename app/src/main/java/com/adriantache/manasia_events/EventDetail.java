@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.util.Utils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -63,8 +64,8 @@ public class EventDetail extends AppCompatActivity {
             thumbnail.setImageResource(R.drawable.manasia_logo);
 
         category_image.setImageResource(event.getCategory_image());
-        day.setText(extractDate(event.getDate(), true));
-        month.setText(extractDate(event.getDate(), false));
+        day.setText(Utils.extractDate(event.getDate(), true));
+        month.setText(Utils.extractDate(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
 
@@ -100,20 +101,13 @@ public class EventDetail extends AppCompatActivity {
         notify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //todo hide notify button for past events
                 //todo implement code to show notification
 
-//            //making a copy of the ViewHolder to set the image drawable without making the main
-//            // ViewHolder final (that results in a bug where each click changes every other item)
-//            //todo fix bug that I thought I had fixed :(
-//            //problem is assignment affects multiple list items
-//            final ImageView bookmarkIV = holder.bookmark;
-//            final Event tempEvent = event;
-//            //todo implement actual notification code
-//            //todo implement toggle mechanic, probably directly in the Event class
-//            //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
-//
+                //todo implement actual notification code
+                //todo implement toggle mechanic, probably directly in the Event class
+                //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
+
                 if (event.getNotify()) {
                     Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                     bookmark.setImageResource(R.drawable.bookmark);
@@ -128,41 +122,6 @@ public class EventDetail extends AppCompatActivity {
         });
     }
 
-    private String extractDate(String s, boolean day) {
-        String[] parts = s.split("\\.");
-
-        if (parts.length == 0) return "ERROR";
-
-        if (day) return parts[0];
-        else switch (parts[1]) {
-            case "01":
-                return "January";
-            case "02":
-                return "February";
-            case "03":
-                return "March";
-            case "04":
-                return "April";
-            case "05":
-                return "May";
-            case "06":
-                return "June";
-            case "07":
-                return "July";
-            case "08":
-                return "August";
-            case "09":
-                return "September";
-            case "10":
-                return "October";
-            case "11":
-                return "November";
-            case "12":
-                return "December";
-            default:
-                return "ERROR";
-        }
-    }
 
     //todo implement real notification system (probably with a service)
     //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
@@ -207,4 +166,7 @@ public class EventDetail extends AppCompatActivity {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, mBuilder.build());
     }
+
+    //todo create intent to open calendar to schedule event ?
+    //todo create intent to open FB event page ?
 }

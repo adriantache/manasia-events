@@ -381,12 +381,6 @@ public class MainActivity extends AppCompatActivity {
         else hub_toggle.setBackgroundColor(0xff9E9E9E);
     }
 
-    //todo create second activity to display event details
-    //todo create intent to open location of the event
-    //todo create intent to open calendar to schedule event
-    //todo create intent to open FB event page
-    //todo create intent to call manasia
-
     //todo add info about the hub somewhere (on logo click?) and indicate it visually
 
     //todo implement SwipeRefreshLayout (is it really needed?)
