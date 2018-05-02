@@ -52,6 +52,11 @@ public class EventAdapter extends ArrayAdapter<Event> {
             holder.day.setText(Utils.extractDate(event.getDate(), true));
             holder.month.setText(Utils.extractDate(event.getDate(), false));
             holder.title.setText(event.getTitle());
+
+            //hide notification group if event is in the past
+            if (Utils.compareDateToToday(event.getDate())<0)
+            holder.bookmark_layout.setVisibility(View.INVISIBLE);
+            else holder.bookmark_layout.setVisibility(View.VISIBLE);
         }
 
         return convertView;

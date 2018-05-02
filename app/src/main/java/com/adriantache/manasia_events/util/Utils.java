@@ -1,5 +1,10 @@
 package com.adriantache.manasia_events.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Class to store general utility functions
  **/
@@ -41,4 +46,24 @@ public class Utils {
         }
     }
 
+    public static int compareDateToToday(String date) {
+        final int DATE_ERROR = 999999;
+
+        Date formattedDate = null;
+        try {
+            formattedDate = new SimpleDateFormat("dd.MM.yyyy", Locale.US).parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Date today = new Date();
+
+        if (formattedDate != null) {
+            return formattedDate.compareTo(today);
+        }
+        //failure will default to show actions and let the user decide
+        else return DATE_ERROR;
+
+
+    }
 }

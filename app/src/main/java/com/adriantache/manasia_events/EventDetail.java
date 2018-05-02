@@ -5,6 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,12 +60,14 @@ public class EventDetail extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         ButterKnife.bind(this);
 
+        //get the event for which to display details
         final Event event = (Event) getIntent().getParcelableArrayListExtra("events").get(0);
+
+        //populate fields with details
         if (!TextUtils.isEmpty(event.getPhotoUrl()))
             Picasso.get().load(event.getPhotoUrl()).into(thumbnail);
         else
             thumbnail.setImageResource(R.drawable.manasia_logo);
-
         category_image.setImageResource(event.getCategory_image());
         day.setText(Utils.extractDate(event.getDate(), true));
         month.setText(Utils.extractDate(event.getDate(), false));
@@ -75,6 +80,7 @@ public class EventDetail extends AppCompatActivity {
                 finish();
             }
         });
+
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +91,7 @@ public class EventDetail extends AppCompatActivity {
                 }
             }
         });
+
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,28 +105,35 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
-        notify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo hide notify button for past events
-                //todo implement code to show notification
+        //only add notification for events in the future (or today)
+        if (Utils.compareDateToToday(event.getDate()) < 0) {
+            notify.setEnabled(false);
 
-                //todo implement actual notification code
-                //todo implement toggle mechanic, probably directly in the Event class
-                //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
+            //also hide the notification indicator up top
+            bookmark_layout.setVisibility(View.INVISIBLE);
+        } else
+            notify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //todo hide notify button for past events
+                    //todo implement code to show notification
 
-                if (event.getNotify()) {
-                    Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
-                    bookmark.setImageResource(R.drawable.bookmark);
-                    event.setNotify(false);
-                } else {
-                    Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
-                    bookmark.setImageResource(R.drawable.bookmark_green);
-                    event.setNotify(true);
-                    showNotification(event);
+                    //todo implement actual notification code
+                    //todo implement toggle mechanic, probably directly in the Event class
+                    //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
+
+                    if (event.getNotify()) {
+                        Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
+                        bookmark.setImageResource(R.drawable.bookmark);
+                        event.setNotify(false);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
+                        bookmark.setImageResource(R.drawable.bookmark_green);
+                        event.setNotify(true);
+                        showNotification(event);
+                    }
                 }
-            }
-        });
+            });
     }
 
 
