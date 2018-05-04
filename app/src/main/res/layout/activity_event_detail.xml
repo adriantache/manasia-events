@@ -92,6 +92,7 @@
 
         <ImageView
             android:id="@+id/bookmark"
+            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/bookmark" />
