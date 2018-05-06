@@ -16,6 +16,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background" />
 
+    <!-- todo add notify here as toggle  -->
+    <!-- or maybe keep it below and use this https://androidexample365.com/google-launcher-style-implementation-of-switch-icon/-->
+
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
@@ -182,6 +185,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- todo replace with fb button -->
     <TextView
         android:id="@+id/notify"
         android:layout_width="100dp"
