@@ -185,53 +185,42 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-    <com.github.zagum.switchicon.SwitchIconView
+    <LinearLayout
         android:id="@+id/notify"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="?attr/selectableItemBackground"
-        android:paddingTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="4dp"
-        android:textAlignment="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/call"
         app:layout_constraintEnd_toStartOf="@id/map"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/call"
-        app:layout_constraintTop_toTopOf="@+id/call"
-        app:si_enabled="false"
-        app:si_no_dash="true"
-        app:si_tint_color="#ff3c00"
-        app:srcCompat="@drawable/alarm" />
+        app:layout_constraintTop_toTopOf="@+id/call">
 
-    <TextView
-        android:id="@+id/notify_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NOTIFY"
-        app:layout_constraintTop_toBottomOf="@id/notify"
-        app:layout_constraintStart_toStartOf="@id/notify"
-        app:layout_constraintEnd_toEndOf="@id/notify"/>
+        <com.github.zagum.switchicon.SwitchIconView
+            android:id="@+id/notify_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="4dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            app:si_enabled="false"
+            app:si_tint_color="#ff3c00"
+            app:srcCompat="@drawable/alarm" />
 
-    <!--<TextView-->
-    <!--android:id="@+id/notify"-->
-    <!--android:layout_width="100dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginBottom="8dp"-->
-    <!--android:background="?attr/selectableItemBackground"-->
-    <!--android:clickable="true"-->
-    <!--android:drawablePadding="4dp"-->
-    <!--android:drawableTop="@drawable/alarm"-->
-    <!--android:focusable="true"-->
-    <!--android:padding="16dp"-->
-    <!--android:text="NOTIFY"-->
-    <!--android:textAlignment="center"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintEnd_toStartOf="@id/map"-->
-    <!--app:layout_constraintHorizontal_bias="0.5"-->
-    <!--app:layout_constraintStart_toEndOf="@+id/call"-->
-    <!--app:layout_constraintTop_toTopOf="@+id/call" />-->
+        <TextView
+            android:id="@+id/notify_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="NOTIFY"
+            app:layout_constraintEnd_toEndOf="@id/notify"
+            app:layout_constraintStart_toStartOf="@id/notify"
+            app:layout_constraintTop_toBottomOf="@id/notify" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/map"

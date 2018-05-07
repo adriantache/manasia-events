@@ -52,8 +52,10 @@ public class EventDetail extends AppCompatActivity {
     TextView call;
     @BindView(R.id.map)
     TextView map;
+    @BindView(R.id.notify_icon)
+    SwitchIconView notify_icon;
     @BindView(R.id.notify)
-    SwitchIconView notify;
+    LinearLayout notify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +108,12 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
+        //set notify button state depending on notify state
+        notify_icon.setIconEnabled(event.getNotify());
+
         //only add notification for events in the future (or today)
         if (Utils.compareDateToToday(event.getDate()) < 0) {
-            notify.setIconEnabled(false);
+            notify_icon.setEnabled(false);
 
             //also hide the notification indicator up top
             bookmark_layout.setVisibility(View.INVISIBLE);
@@ -123,10 +128,13 @@ public class EventDetail extends AppCompatActivity {
                     //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
 
                     if (event.getNotify()) {
+                        notify_icon.setIconEnabled(false);
                         Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                         bookmark.setImageResource(R.drawable.bookmark);
+                        //todo implement a way to send back and store data to the Event object, otherwise this is kind of pointless
                         event.setNotify(false);
                     } else {
+                        notify_icon.setIconEnabled(true);
                         Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
                         bookmark.setImageResource(R.drawable.bookmark_green);
                         event.setNotify(true);
