@@ -154,7 +154,26 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> dummyData() {
         ArrayList<Event> arrayList = new ArrayList<>();
 
-        //todo add dummy data objects
+        arrayList.add(new Event("12.05.2018",
+                "PARADAIZ grătăruts PARTY la Manasia",
+                "\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\n" +
+                        "PARADAIZ GRĂTĂRUTS PARTY ZI & NOAPTE @ Manasia Hub \n" +
+                        "\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\n" +
+                        "FETE ȘI BĂIEȚI, PE 12 MAI 2018, DE LA ORA 14.00, PARADAIZ TAPE MAȘINA RULEAZĂ CASETE CU MUZICI DE TERASĂ DIN ANII 90, ÎN TIMP CE FIASTRU RULEAZĂ LA GRĂTĂRUTS MICI - LA PREȚURI IMBATABILE - PENTRU PARTICIPANȚI.\n" +
+                        "\n" +
+                        "DUPĂ CELEBRA LĂSARE A ÎNTUNERICULUI, PETRECEREA SE MUTĂ ÎNĂUNTRU, PE AFIȘ STÂND BINE MERSI UN LINEUP ASTRAL\n" +
+                        "\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\n" +
+                        "DOMNU X /// https://www.mixcloud.com/domnux\n" +
+                        "GINO GIUVAERUL /// https://soundcloud.com/cristeainstitute\n" +
+                        "URMUM goo.gl/2WrKXR\n" +
+                        "\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\n" +
+                        "DONAȚIE LA INTRARE: 10 LEOPARZI\n" +
+                        "\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\n" +
+                        "Toți banii din donații/intrări și cei din încasările de pe mici pleacă, prin intermediul Claudia Costea/Young Roma Maramureș, către copiii din comunitatea Pirita, aflați la clasele mici ale Liceului Penticostal din Baia Mare. Cu ajutorul acestor bani, ei vor primi un mic-dejun, un gest banal dar foarte eficient în diminuarea ratei abandonului școlar în comunitățile marginalizate.\n" +
+                        "\n" +
+                        "Povestea copiilor de pe Pirita, aici: http://www.documentaria.ro/content/pirita-mircea-restea",
+                "https://scontent.fotp3-3.fna.fbcdn.net/v/t1.0-9/31919587_2160987484112671_3996558869558984704_n.jpg?_nc_cat=0&oh=d8337ee3e705bdb4ae34d77367688516&oe=5B4E9D3E",
+                R.drawable.music));
         arrayList.add(new Event("06.05.2018",
                 "Manasia Food opening event | brunching in the garden w/ KOSTA",
                 "Manasia food Opening Event | Brunching in the garden with KOSTA \n" +
