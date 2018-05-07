@@ -95,9 +95,9 @@
 
         <ImageView
             android:id="@+id/bookmark"
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="4dp"
             app:srcCompat="@drawable/bookmark" />
 
         <TextView
@@ -119,20 +119,15 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
+    <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/call"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/description_barrier">
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        >
 
         <TextView
             android:id="@+id/description"
@@ -144,7 +139,6 @@
             android:textColor="#000"
             tools:text="This will be the description." />
     </ScrollView>
-    </android.support.v7.widget.CardView>
 
     <android.support.constraint.Barrier
         android:id="@+id/description_barrier"
