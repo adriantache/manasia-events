@@ -27,6 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
+    private final int EVENT_DETAIL = 1;
+    public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
     @BindView(R.id.music_toggle)
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean shop;
     private boolean hub;
     private boolean layout_animated = false;
+    private int arrayPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,14 @@ public class MainActivity extends AppCompatActivity {
         //add visual indicators that filters are set
         checkFiltersSet();
 
+        //populate the global ArrayList of events
+        //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
+        events = (ArrayList<Event>) dummyData();
+
         //populate list
         //todo replace dummy data with real data, eventually
         //todo set empty list text view and progress bar
-        listView.setAdapter(new EventAdapter(this, filter(dummyData())));
+        listView.setAdapter(new EventAdapter(this, events));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -71,9 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<Event> temp = new ArrayList<>();
                 temp.add(event);
 
+                arrayPosition = position;
+
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
                 intent.putParcelableArrayListExtra("events", temp);
-                startActivity(intent);
+                startActivityForResult(intent, EVENT_DETAIL);
             }
         });
 
@@ -86,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //todo figure out how to fetch this (ideally same place we store the JSON)
+        //todo figure out how to fetch this (ideally same place we store the JSON or database)
         updateBusyLevel();
     }
 
@@ -415,8 +424,10 @@ public class MainActivity extends AppCompatActivity {
         setPreferences();
     }
 
+    //todo refactor this when we change the way we get event data
     private void refreshList() {
-        listView.setAdapter(new EventAdapter(this, filter(dummyData())));
+        if (events != null && events.size() != 0)
+            listView.setAdapter(new EventAdapter(this, filter(events)));
     }
 
     private void setFilterColor() {
@@ -434,7 +445,28 @@ public class MainActivity extends AppCompatActivity {
         if (music && shop && hub) filters.setText("Filters");
         else filters.setText("Filters [set]");
     }
- }
+
+    //receive and replace Event object from Event details page to update
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EVENT_DETAIL) {
+            if (resultCode == RESULT_OK) {
+                Event event = null;
+
+                try {
+                    event = (Event) data.getExtras().getParcelableArrayList("events").get(0);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+                if (event != null) events.set(arrayPosition, event);
+
+                refreshList();
+            }
+        }
+    }
+}
+
 
 //todo extract all strings into XML
 //todo fix any warnings/errors

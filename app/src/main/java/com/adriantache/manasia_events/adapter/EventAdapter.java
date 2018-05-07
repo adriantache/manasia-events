@@ -54,9 +54,15 @@ public class EventAdapter extends ArrayAdapter<Event> {
             holder.title.setText(event.getTitle());
 
             //hide notification group if event is in the past
-            if (Utils.compareDateToToday(event.getDate())<0)
-            holder.bookmark_layout.setVisibility(View.INVISIBLE);
+            if (Utils.compareDateToToday(event.getDate()) < 0)
+                holder.bookmark_layout.setVisibility(View.INVISIBLE);
             else holder.bookmark_layout.setVisibility(View.VISIBLE);
+
+            //change notification image depending on whether the user has set it to notify them
+            if (holder.bookmark_layout.getVisibility() == View.VISIBLE) {
+                if (event.getNotify()) holder.bookmark.setImageResource(R.drawable.bookmark_green);
+                else holder.bookmark.setImageResource(R.drawable.bookmark);
+            }
         }
 
         return convertView;

@@ -26,6 +26,8 @@ import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -133,17 +135,32 @@ public class EventDetail extends AppCompatActivity {
                         bookmark.setImageResource(R.drawable.bookmark);
                         //todo implement a way to send back and store data to the Event object, otherwise this is kind of pointless
                         event.setNotify(false);
+
+                        //set the event modifier in the main app since we can't access that ArrayList
+                        setResult(event);
                     } else {
                         notify_icon.setIconEnabled(true);
                         Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
                         bookmark.setImageResource(R.drawable.bookmark_green);
                         event.setNotify(true);
                         showNotification(event);
+
+                        //set the event modifier in the main app since we can't access that ArrayList
+                        setResult(event);
                     }
                 }
             });
     }
 
+    //use this to pass the modified event back to the main app
+    private void setResult(Event event) {
+        ArrayList<Event> temp = new ArrayList<>();
+        temp.add(event);
+
+        Intent intent = new Intent(getApplicationContext(), EventDetail.class);
+        intent.putParcelableArrayListExtra("events", temp);
+        setResult(RESULT_OK,intent);
+    }
 
     //todo implement real notification system (probably with a service)
     //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
