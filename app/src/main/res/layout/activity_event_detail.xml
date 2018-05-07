@@ -137,6 +137,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:textColor="#000"
+            android:autoLink="web"
             tools:text="This will be the description." />
     </ScrollView>
 
