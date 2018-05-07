@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
+import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -52,7 +53,7 @@ public class EventDetail extends AppCompatActivity {
     @BindView(R.id.map)
     TextView map;
     @BindView(R.id.notify)
-    TextView notify;
+    SwitchIconView notify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,7 @@ public class EventDetail extends AppCompatActivity {
 
         //only add notification for events in the future (or today)
         if (Utils.compareDateToToday(event.getDate()) < 0) {
-            notify.setEnabled(false);
+            notify.setIconEnabled(false);
 
             //also hide the notification indicator up top
             bookmark_layout.setVisibility(View.INVISIBLE);
