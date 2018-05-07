@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -158,7 +159,7 @@ public class EventDetail extends AppCompatActivity {
         temp.add(event);
 
         Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-        intent.putParcelableArrayListExtra("events", temp);
+        intent.putParcelableArrayListExtra("events_result", temp);
         setResult(RESULT_OK,intent);
     }
 

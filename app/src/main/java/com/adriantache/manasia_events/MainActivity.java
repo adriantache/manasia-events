@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -452,14 +453,15 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == EVENT_DETAIL) {
             if (resultCode == RESULT_OK) {
                 Event event = null;
-
                 try {
-                    event = (Event) data.getExtras().getParcelableArrayList("events").get(0);
+                    event = (Event) data.getExtras().getParcelableArrayList("events_result").get(0);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
 
-                if (event != null) events.set(arrayPosition, event);
+                if (event != null) {
+                    events.set(arrayPosition, event);
+                }
 
                 refreshList();
             }
