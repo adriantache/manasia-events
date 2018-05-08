@@ -43,9 +43,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         Event event = getItem(position);
 
-        //todo remove
-        Log.i("xxxxxx", "EventAdapter: "+event.getNotify());
-
         if (event != null) {
             if (!TextUtils.isEmpty(event.getPhotoUrl()))
                 Picasso.get().load(event.getPhotoUrl()).into(holder.thumbnail);
@@ -64,8 +61,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             //change notification image depending on whether the user has set it to notify them
             if (holder.bookmark_layout.getVisibility() == View.VISIBLE) {
-                if (event.getNotify()) holder.bookmark.setImageResource(R.drawable.bookmark_green);
-                else holder.bookmark.setImageResource(R.drawable.bookmark);
+                if (event.getNotify()) holder.bookmark.setImageResource(R.drawable.alarm_accent);
+                else holder.bookmark.setImageResource(R.drawable.alarm);
             }
         }
 

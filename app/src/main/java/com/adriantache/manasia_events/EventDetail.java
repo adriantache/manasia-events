@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,11 +76,15 @@ public class EventDetail extends AppCompatActivity {
         month.setText(Utils.extractDate(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
+        if (event.getNotify())
+            bookmark.setImageResource(R.drawable.alarm_accent);
+        else
+            bookmark.setImageResource(R.drawable.alarm);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult();
+                setResult(); //todo rethink if necessary?
                 finish();
             }
         });
@@ -132,7 +135,7 @@ public class EventDetail extends AppCompatActivity {
                     if (event.getNotify()) {
                         notify_icon.setIconEnabled(false);
                         Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
-                        bookmark.setImageResource(R.drawable.bookmark);
+                        bookmark.setImageResource(R.drawable.alarm);
                         //todo implement a way to send back and store data to the Event object, otherwise this is kind of pointless
                         event.setNotify(false);
 
@@ -141,13 +144,9 @@ public class EventDetail extends AppCompatActivity {
                     } else {
                         notify_icon.setIconEnabled(true);
                         Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
-                        bookmark.setImageResource(R.drawable.bookmark_green);
+                        bookmark.setImageResource(R.drawable.alarm_accent);
                         event.setNotify(true);
                         showNotification(event);
-
-
-                        //todo remove
-                        Log.i("xxxxxx", "onClick: " + event.getNotify());
 
                         //set the event modifier in the main app since we can't access that ArrayList
                         setResult();
@@ -158,14 +157,8 @@ public class EventDetail extends AppCompatActivity {
 
     //use this to pass the modified event back to the main app
     private void setResult() {
-        //todo remove
-        Log.i("xxxxxx", "setResult: " + event.getNotify());
-
         ArrayList<Event> temp = new ArrayList<>();
         temp.add(event);
-
-        //todo remove
-        Log.i("xxxxxx", "setResult: " + temp.get(0).getNotify());
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.putParcelableArrayListExtra("events_result", temp);

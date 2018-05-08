@@ -98,26 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            app:srcCompat="@drawable/bookmark" />
-
-        <TextView
-            android:id="@+id/bookmark_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
-            android:autoLink="web"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical|center"
-            android:text="Notify me"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="#fff"
-            app:layout_constraintBottom_toBottomOf="@id/bookmark"
-            app:layout_constraintStart_toEndOf="@+id/bookmark"
-            app:layout_constraintTop_toTopOf="@id/bookmark" />
-
+            app:srcCompat="@drawable/alarm" />
     </LinearLayout>
 
     <ScrollView
@@ -135,9 +116,9 @@
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="web"
             android:padding="8dp"
             android:textColor="#000"
-            android:autoLink="web"
             tools:text="This will be the description." />
     </ScrollView>
 
@@ -209,7 +190,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             app:si_enabled="false"
-            app:si_tint_color="#ff3c00"
+            app:si_tint_color="@color/colorAccent"
             app:srcCompat="@drawable/alarm" />
 
         <TextView

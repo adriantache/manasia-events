@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
 
         setFilterColor();
     }
-
     private void setPreferences() {
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -392,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
-
     public void shopToggle(View v) {
         if (shop && (music || hub)) {
             shop = false;
@@ -408,7 +406,6 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
-
     public void hubToggle(View v) {
         if (hub && (music || shop)) {
             hub = false;
@@ -447,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
         else filters.setText("Filters [set]");
     }
 
-    //receive and replace Event object from Event details page to update
+    //receive and replace Event object from Event details page to update notify state
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EVENT_DETAIL) {
@@ -458,9 +455,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
-
-                //todo remove
-                Log.i("xxxxxx", "onActivityResult: "+event.getNotify());
 
                 if (event != null) {
                     events.set(arrayPosition, event);
