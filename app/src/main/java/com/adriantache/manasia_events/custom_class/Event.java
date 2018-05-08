@@ -5,6 +5,16 @@ import android.os.Parcelable;
 
 public class Event implements Parcelable {
 
+    //implementation of Parcelable to transfer it to the EventDetails class
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
     private String date;
     private String title;
     private String description;
@@ -18,6 +28,15 @@ public class Event implements Parcelable {
         this.description = description;
         this.photoUrl = photoUrl;
         this.category_image = category_image;
+    }
+
+    private Event(Parcel in) {
+        this.date = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
+        this.photoUrl = in.readString();
+        this.category_image = in.readInt();
+        this.notify = in.readInt() == 1;
     }
 
     public String getTitle() {
@@ -48,25 +67,6 @@ public class Event implements Parcelable {
         this.notify = notify;
     }
 
-    //implementation of Parcelable to transfer it to the EventDetails class
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Event createFromParcel(Parcel in) {
-            return new Event(in);
-        }
-
-        public Event[] newArray(int size) {
-            return new Event[size];
-        }
-    };
-
-    private Event(Parcel in){
-        this.date = in.readString();
-        this.title = in.readString();
-        this.description = in.readString();
-        this.photoUrl = in.readString();
-        this.category_image = in.readInt();
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -79,5 +79,6 @@ public class Event implements Parcelable {
         dest.writeString(description);
         dest.writeString(photoUrl);
         dest.writeInt(category_image);
+        dest.writeInt(notify ? 1 : 0);
     }
 }

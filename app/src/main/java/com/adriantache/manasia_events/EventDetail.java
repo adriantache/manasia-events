@@ -5,9 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,6 +56,7 @@ public class EventDetail extends AppCompatActivity {
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
     LinearLayout notify;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +65,7 @@ public class EventDetail extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //get the event for which to display details
-        final Event event = (Event) getIntent().getParcelableArrayListExtra("events").get(0);
+        event = (Event) getIntent().getParcelableArrayListExtra("events").get(0);
 
         //populate fields with details
         if (!TextUtils.isEmpty(event.getPhotoUrl()))
@@ -83,6 +81,7 @@ public class EventDetail extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult();
                 finish();
             }
         });
@@ -138,7 +137,7 @@ public class EventDetail extends AppCompatActivity {
                         event.setNotify(false);
 
                         //set the event modifier in the main app since we can't access that ArrayList
-                        setResult(event);
+                        setResult();
                     } else {
                         notify_icon.setIconEnabled(true);
                         Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
@@ -146,21 +145,31 @@ public class EventDetail extends AppCompatActivity {
                         event.setNotify(true);
                         showNotification(event);
 
+
+                        //todo remove
+                        Log.i("xxxxxx", "onClick: " + event.getNotify());
+
                         //set the event modifier in the main app since we can't access that ArrayList
-                        setResult(event);
+                        setResult();
                     }
                 }
             });
     }
 
     //use this to pass the modified event back to the main app
-    private void setResult(Event event) {
+    private void setResult() {
+        //todo remove
+        Log.i("xxxxxx", "setResult: " + event.getNotify());
+
         ArrayList<Event> temp = new ArrayList<>();
         temp.add(event);
 
-        Intent intent = new Intent(getApplicationContext(), EventDetail.class);
+        //todo remove
+        Log.i("xxxxxx", "setResult: " + temp.get(0).getNotify());
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.putParcelableArrayListExtra("events_result", temp);
-        setResult(RESULT_OK,intent);
+        setResult(RESULT_OK, intent);
     }
 
     //todo implement real notification system (probably with a service)

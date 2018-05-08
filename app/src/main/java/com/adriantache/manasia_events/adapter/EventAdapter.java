@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
         }
 
         Event event = getItem(position);
+
+        //todo remove
+        Log.i("xxxxxx", "EventAdapter: "+event.getNotify());
 
         if (event != null) {
             if (!TextUtils.isEmpty(event.getPhotoUrl()))

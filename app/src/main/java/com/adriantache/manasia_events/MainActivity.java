@@ -459,6 +459,9 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                //todo remove
+                Log.i("xxxxxx", "onActivityResult: "+event.getNotify());
+
                 if (event != null) {
                     events.set(arrayPosition, event);
                 }
