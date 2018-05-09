@@ -129,7 +129,6 @@ public class EventDetail extends AppCompatActivity {
                     //todo implement code to show notification
 
                     //todo implement actual notification code
-                    //todo implement toggle mechanic, probably directly in the Event class
                     //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
 
                     if (event.getNotify()) {

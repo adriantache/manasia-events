@@ -3,6 +3,8 @@ package com.adriantache.manasia_events.custom_class;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.adriantache.manasia_events.R;
+
 public class Event implements Parcelable {
     private String date;
     private String title;
@@ -54,7 +56,6 @@ public class Event implements Parcelable {
             return new Event[size];
         }
     };
-
     private Event(Parcel in) {
         this.date = in.readString();
         this.title = in.readString();
@@ -63,12 +64,10 @@ public class Event implements Parcelable {
         this.category_image = in.readInt();
         this.notify = in.readInt() == 1;
     }
-
     @Override
     public int describeContents() {
         return 0;
     }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(date);

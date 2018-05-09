@@ -8,7 +8,10 @@ import java.util.Locale;
 /**
  * Class to store general utility functions
  **/
-public class Utils {
+public final class Utils {
+    private Utils() {
+        throw new AssertionError("No Utils Instances are allowed!");
+    }
 
     public static String extractDate(String s, boolean day) {
         String[] parts = s.split("\\.");
