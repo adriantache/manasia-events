@@ -1,0 +1,361 @@
+[33mcommit 8c1b8e5d60e0cda30728ae5cd2df438c1dea837f[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Merge: 9745c3f 5fdb22f
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu May 10 11:54:28 2018 +0300
+
+      Fix merge
+
+[33mcommit 5fdb22f1818e31048c93bed8283abdefd5a6585f[m[33m ([m[1;32mtemp[m[33m)[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu May 10 11:51:34 2018 +0300
+
+      Change notification icon
+
+[33mcommit 9745c3f1bb82074a53a8d361713f87004359b05c[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu May 10 11:46:54 2018 +0300
+
+      Try to fix Android X compatibility
+
+[33mcommit 2234359c8df2978856666f0b743a8d8b04c6930f[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu May 10 10:06:00 2018 +0300
+
+      Add Android X and Room [WIP]
+
+[33mcommit 6d7b7fb5bc7e4845aaddff89ff815f56808a2cec[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 9 20:25:56 2018 +0300
+
+      Learned some Java, applied what I learned
+
+[33mcommit 802884b7a76e145624fc84a166b7124a1794a939[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Tue May 8 17:47:04 2018 +0300
+
+      Rearrange Event class to make it more readable
+
+[33mcommit 053a0f4e0e465a047213ff8d9840554ba3c92789[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Tue May 8 11:38:48 2018 +0300
+
+      Redesign notification indicator
+
+[33mcommit 6a210228b3d973c8404da9ff9031918f3efc7822[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Tue May 8 09:15:06 2018 +0300
+
+      Send Event back to MainActivity to remember setting
+
+[33mcommit c552e3a8805afcfc854b896cc72d39fe0121275f[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 19:43:55 2018 +0300
+
+      Resolve links in event description
+
+[33mcommit c3845db8030e701860299627f9c78b0075375be4[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 19:39:13 2018 +0300
+
+      Debug intent payload
+
+[33mcommit e12c0617f00414f36bcfc7d1b5f57096afd2156c[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 19:10:16 2018 +0300
+
+      Implement sendinng Event object back to MainActivity after EventDetail finishes
+
+[33mcommit 1276a9ed5482c7c3e020949589fee52011d6474b[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 10:55:51 2018 +0300
+
+      Make links in event description clickable
+
+[33mcommit 0df4b43ad7064c2c3e75dd1ec2cbe9b1efb3770a[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 10:55:16 2018 +0300
+
+      Implement SwitchIconView properly
+
+[33mcommit 5540be59b1c06bd8448ac4e2d20e64ac32c37000[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 10:26:41 2018 +0300
+
+      Add new event
+
+[33mcommit ec16666dc9d58caf028f6d6fca3cbe8e1b83ee80[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 10:24:32 2018 +0300
+
+      Implement SwitchIconView
+
+[33mcommit dbae88c91a427a6dccccdd59833d587e291f817e[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 10:04:10 2018 +0300
+
+      Tweak event description text
+
+[33mcommit d5cfe1a635b9b93a575abe750802f3c48d201471[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 09:55:46 2018 +0300
+
+      Remove CardView
+
+[33mcommit 94e2dfd9d921d482b77f09041d2e472ef2306afa[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon May 7 09:52:01 2018 +0300
+
+      Add CardView for text description
+
+[33mcommit 096a4aec82bc5d9184d94d65653a192338ae4d69[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sun May 6 23:13:37 2018 +0300
+
+      Update to-do for tomorrow
+
+[33mcommit 94154456ac32413b633fc48b2d2070535c44ef19[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Fri May 4 17:14:38 2018 +0300
+
+      Fix bookmark padding error
+
+[33mcommit b20df060b96b3745adaadf362783a0bb94ac46e8[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Fri May 4 16:58:45 2018 +0300
+
+      Resync
+
+[33mcommit bed00b29440df8c147464a531dbc40dd08575776[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 20:24:13 2018 +0300
+
+      Minor changes
+
+[33mcommit 642d00f719f389a5aa118f8c22fd89be6776ad30[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 19:47:27 2018 +0300
+
+      Update todo
+
+[33mcommit e207d524faec0473348a5e519cf86ff218b8ea5b[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 19:43:00 2018 +0300
+
+      Add date comparison Util and hide/disable elements accordingly
+
+[33mcommit ee66244cdeae939bfe39cc379e4ebfe55f02ab00[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 11:02:42 2018 +0300
+
+      Update to-do
+
+[33mcommit afab1ed10a30a93d493af2257edae794e92e92c1[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 10:48:51 2018 +0300
+
+      Add filters set indicator
+
+[33mcommit f161c5a151a2aecd64e4a06fbd24a625fb45ce86[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 10:39:28 2018 +0300
+
+      Add occupancy level indicator
+
+[33mcommit fccb8b966a9e4f081614677150ec1338b599194b[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed May 2 09:50:30 2018 +0300
+
+      Refactor date extractor and small tweaks
+
+[33mcommit f3b9b6c61374178cd1d7f1896d4d85c26c693663[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Tue May 1 12:12:22 2018 +0300
+
+      Set up bottom action buttons in EventDetail and add new event
+
+[33mcommit 6d940330149b755d10785a2c7a7cc4dda9859547[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon Apr 30 17:30:35 2018 +0300
+
+      Minor tweaks
+
+[33mcommit d82d13f09c0a9559f86bf922a0f147b2d0bd7d52[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Mon Apr 30 11:45:50 2018 +0300
+
+      Add event detail activity
+
+[33mcommit 5b4423ee10bfdc6ea40f7fcf66270e52446f20c6[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sun Apr 29 14:46:12 2018 +0300
+
+    Minor tweaks
+
+[33mcommit 5560e33209016563783c2fb18a0c6493ce5c154d[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sun Apr 29 14:38:20 2018 +0300
+
+      Actually make ConstraintSet animation useful
+
+[33mcommit 17006b5abed9400388b795ca2054a2043c7a60bb[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sun Apr 29 13:37:43 2018 +0300
+
+      Play with ConstraintLayout animation on logo click
+
+[33mcommit e5ad325f11820d5f6047bd7e25eb5a8867e09ee6[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sun Apr 29 13:12:14 2018 +0300
+
+      Add idea for notification system
+
+[33mcommit b967cad61badac413f437cd4b8b2bb511076dc67[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sat Apr 28 11:58:30 2018 +0300
+
+      Implement different sample notification system
+
+[33mcommit fbfbe27f94673d5f2cebb762484c0150cfac51a6[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sat Apr 28 11:55:08 2018 +0300
+
+      Add latest event
+
+[33mcommit 6dd5616c596248e3c7fc0bd11ef599862d1b6a81[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sat Apr 28 11:20:06 2018 +0300
+
+      Implement onClick for notification [BUG]
+
+[33mcommit 00b3a5adacf7d15aee03facd03048df92fc5a6ac[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sat Apr 28 10:35:23 2018 +0300
+
+      Implement notification button mockup
+
+[33mcommit 348636eb5d08ad8fda4da1870c5116ef1f233b78[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Sat Apr 28 00:08:56 2018 +0300
+
+      Update to-do
+
+[33mcommit e980ed80b99d8f8960219fdc7a5550085db27a96[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Fri Apr 27 12:54:28 2018 +0300
+
+      Update to-do
+
+[33mcommit e952db24cf71a81b589f25a6eca8896a186b8380[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Fri Apr 27 12:46:40 2018 +0300
+
+      Implement mock notification
+
+[33mcommit b8bbcf7bb9dfac4236965590af9a1009bbbc809b[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Fri Apr 27 09:56:31 2018 +0300
+
+      Add icon
+
+[33mcommit 20653196b3fe30986e8e82ee805fba9805b987ed[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Fri Apr 27 09:42:51 2018 +0300
+
+      Implement preferences
+
+[33mcommit 1c06c763c011787f20ec2569c7738d147be30367[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 20:28:57 2018 +0300
+
+      Fix button transparency issue
+
+[33mcommit 5cbf503f364f575c702e5d9ea3d4e4ee4dc2fbf0[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 18:41:53 2018 +0300
+
+      Implement filters
+
+[33mcommit 4da3d612cae42a5ae15053885392b09b5f404ea3[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 15:20:14 2018 +0300
+
+      Color image backgrounds
+
+[33mcommit 4f1aa6e08ed0f21e3571be3070d9dd3917b8ea3f[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 15:17:54 2018 +0300
+
+      Remove useless drawables
+
+[33mcommit ea7578c9174b7f7fb18ccbf678f9a34f6df8ef1a[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 15:17:06 2018 +0300
+
+      Input reasonable amount of dummy data
+
+[33mcommit ad7045164cfbe188e3443293188af37135a648ea[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 14:37:19 2018 +0300
+
+      Finalize ExpansionPanel implementation
+
+[33mcommit 3ba9e48eb4e5764c24120d308e6643ee8d3314c5[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 13:14:37 2018 +0300
+
+      Attempt to implement ExpansionPanel
+
+[33mcommit 859c095255fa4b469fa9c6c5734653e4267b56f5[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 12:46:05 2018 +0300
+
+      Set up ListAdapter and dummy data
+
+[33mcommit 94c982b6df40ac586d2def965d60bac267a5b538[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 10:53:45 2018 +0300
+
+      Add Butterknife
+
+[33mcommit 311cc0499063e2a6bc0707da8007ca5dd208ba77[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 10:36:29 2018 +0300
+
+      Add Picasso
+
+[33mcommit c5afc370e68a17c4dd16e8abd3a3654cee9ca089[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 10:34:13 2018 +0300
+
+      Import adapter and make custom Event class
+
+[33mcommit a17bcce43b743375c4da6246d3fa6426bbe6d66d[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Thu Apr 26 09:20:05 2018 +0300
+
+      Add to-dos
+
+[33mcommit c68a5629ee2d7f757dbd0cc9aa5984fc036e59a4[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed Apr 25 22:15:48 2018 +0300
+
+      Initial layout
+
+[33mcommit d70d326ac06361479241bb69dbe3c322044ddac6[m
+Merge: a341df9 8605a88
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed Apr 25 21:22:20 2018 +0300
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit a341df9be7e6720b8ff5e1639ebc217aa1fc5688[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed Apr 25 21:21:53 2018 +0300
+
+      Initial commit
+
+[33mcommit 8605a8869dde6cd83595b56c90bcee1df890c8c9[m
+Author: Adrian Tache <contact@adriantache.com>
+Date:   Wed Apr 25 21:16:02 2018 +0300
+
+    Initial commit

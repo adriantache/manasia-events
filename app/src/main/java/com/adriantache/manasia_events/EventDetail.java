@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +29,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 public class EventDetail extends AppCompatActivity {
+    private static final String TAG = "EventDetail";
+    private final int EVENT_DETAIL = 1;
+    private final String OPENED_FROM_NOTIFICATION = "com.adriantache.manasia_events.openedFromNotification";
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
     @BindView(R.id.category_image)
@@ -55,6 +61,7 @@ public class EventDetail extends AppCompatActivity {
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
     LinearLayout notify;
+    boolean openedFromNotification;
     private Event event;
 
     @Override
@@ -64,7 +71,16 @@ public class EventDetail extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //get the event for which to display details
-        event = (Event) getIntent().getParcelableArrayListExtra("events").get(0);
+        Intent intent = getIntent();
+        event = (Event) intent.getParcelableArrayListExtra("events").get(0);
+
+        Log.i(TAG, "onCreate: " + intent.getExtras().toString());
+
+        //set whether activity was opened from notification
+        if (intent.hasExtra(OPENED_FROM_NOTIFICATION)) {
+            openedFromNotification = intent.getExtras().getBoolean(OPENED_FROM_NOTIFICATION);
+            Log.i(TAG, "onCreate: " + intent.getExtras().getBoolean(OPENED_FROM_NOTIFICATION));
+        }
 
         //populate fields with details
         if (!TextUtils.isEmpty(event.getPhotoUrl()))
@@ -84,8 +100,17 @@ public class EventDetail extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(); //todo rethink if necessary?
-                finish();
+                if (openedFromNotification) {
+                    ArrayList<Event> temp = new ArrayList<>();
+                    temp.add(event);
+
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putParcelableArrayListExtra("events_result", temp);
+                    startActivityForResult(intent, EVENT_DETAIL);
+                } else {
+                    setResult(); //todo rethink if necessary?
+                    finish();
+                }
             }
         });
 
@@ -188,19 +213,24 @@ public class EventDetail extends AppCompatActivity {
         //get latest event and Build notification
         String notificationTitle = "Manasia event: " + event.getTitle();
         String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
-        int notificationLogo = event.getCategory_image();
 
-        //todo improve intent and the notification in general, ideally point directly to notified event
         //maybe make activity open latest even by default, but how do you send it to it?
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), EventDetail.class);
+        //put event in the notification to open event details directly
+        ArrayList<Event> temp = new ArrayList<>();
+        temp.add(event);
+        intent.putParcelableArrayListExtra("events", temp);
+        intent.putExtra(OPENED_FROM_NOTIFICATION, true);
+
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "MANASIA")
-                .setSmallIcon(notificationLogo)
+                .setSmallIcon(R.drawable.ic_manasia_small)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
