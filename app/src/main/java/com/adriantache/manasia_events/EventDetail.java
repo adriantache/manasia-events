@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public class EventDetail extends AppCompatActivity {
+    private final static String manasia = "Manasia Event Reminder";
     private final int EVENT_DETAIL = 1;
     private final String OPENED_FROM_NOTIFICATION = "com.adriantache.manasia_events.openedFromNotification";
     @BindView(R.id.thumbnail)
@@ -62,6 +63,11 @@ public class EventDetail extends AppCompatActivity {
     boolean openedFromNotification;
     private Event event;
     private int arrayPosition = -1;
+
+    @Override
+    public void onBackPressed() {
+        backToMainActivity();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,19 +106,7 @@ public class EventDetail extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (openedFromNotification) {
-                    ArrayList<Event> temp = new ArrayList<>();
-                    temp.add(event);
-
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putParcelableArrayListExtra("events_result", temp);
-                    intent.putExtra("arrayPosition", arrayPosition);
-                    //setResult(RESULT_OK, intent);
-                    startActivityForResult(intent, EVENT_DETAIL);
-                } else {
-                    setResult(); //todo rethink if necessary?
-                    finish();
-                }
+                backToMainActivity();
             }
         });
 
@@ -181,6 +175,22 @@ public class EventDetail extends AppCompatActivity {
             });
     }
 
+    private void backToMainActivity() {
+        if (openedFromNotification) {
+            ArrayList<Event> temp = new ArrayList<>();
+            temp.add(event);
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putParcelableArrayListExtra("events_result", temp);
+            intent.putExtra("arrayPosition", arrayPosition);
+            //setResult(RESULT_OK, intent);
+            startActivityForResult(intent, EVENT_DETAIL);
+        } else {
+            setResult(); //todo rethink if necessary?
+            finish();
+        }
+    }
+
     //use this to pass the modified event back to the main app
     private void setResult() {
         ArrayList<Event> temp = new ArrayList<>();
@@ -199,10 +209,9 @@ public class EventDetail extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
-            CharSequence name = "manasia_notification";
             String description = "manasia notification channel";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("MANASIA", name, importance);
+            NotificationChannel channel = new NotificationChannel(manasia, manasia, importance);
             channel.setDescription(description);
             // Register the channel with the system
             NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -224,11 +233,16 @@ public class EventDetail extends AppCompatActivity {
         intent.putParcelableArrayListExtra("events", temp);
         intent.putExtra(OPENED_FROM_NOTIFICATION, true);
         intent.putExtra("arrayPosition", arrayPosition);
-
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "MANASIA")
+        //todo figure out TaskStackBuilder, maybe it's better than my solution
+//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+//        stackBuilder.addParentStack(MainActivity.class);
+//        stackBuilder.addNextIntent(intent);
+//        PendingIntent pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), manasia)
                 .setSmallIcon(R.drawable.ic_manasia_small)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
@@ -238,7 +252,7 @@ public class EventDetail extends AppCompatActivity {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1, mBuilder.build());
+        notificationManager.notify(1, notificationBuilder.build());
     }
 }
 

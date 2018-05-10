@@ -48,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
     private boolean hub;
     private boolean layout_animated = false;
 
+    //TODO [BIG BUG] FIX ARRAYLIST ENTRIES BEING REPLACED TO FIRST ENTRY (app returns arrayPosition == 0)
+
+    @Override
+    public void onBackPressed() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,6 +176,35 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> dummyData() {
         ArrayList<Event> arrayList = new ArrayList<>();
 
+        arrayList.add(new Event("12.05.2018",
+                "Expoziție \"Pe val\"",
+                "“Pe val” este un proiect expozițional gândit și realizat de trei tinere artiste vizuale, sub egida DISC Studio și cu susținerea Manasia Hub. Toți cei care vor trece pragul hubului Manasia în ziua de 19 mai 2018 vor pătrunde într-o lume a peisajelor marine construită atât cu imagini, cât și cu muzica live realizată de Ioana Șelaru, Cristian Galitî, Răzvan Cipcă și Traian Dosoftei. Pești, portrete, valuri și surfing - acestea sunt câteva dintre temele pe care le veți explora în cadrul aceastei expoziții. \n" +
+                        "\n" +
+                        "Anca Cobzaru este studentă în anul III la secția Grafică a UAD Cluj. Anca iubește pensulele de calitate, să râdă și să fie artistă. \n" +
+                        "\n" +
+                        "https://www.instagram.com/ancaandr/\n" +
+                        "\n" +
+                        "Ana Costov este de asemenea studentă în anul III la secția de Grafică a UAD Cluj. Ana iubește călătoriile în Spania, surfiștii și ilustrațiile, având un stil pe care nu îl poți uita prea ușor.\n" +
+                        "\n" +
+                        "https://www.behance.net/anacostov\n" +
+                        "\n" +
+                        "https://www.instagram.com/anacosmos/\n" +
+                        "\n" +
+                        "Irina Șelaru, studentă în anul II la aceeași secție a aceleași universități, iubește mirosul creioanelor proaspăt ascuțite și alege să își petreacă mare parte din timp în atelier.\n" +
+                        "\n" +
+                        "https://www.behance.net/selaruirin68fe\n" +
+                        "\n" +
+                        "https://www.instagram.com/selaruirina/\n" +
+                        "\n" +
+                        "DISC-District of Screen Composers - este o comunitate din domeniul muzical, alcătuită din tineri muzicieni care au ca scop comun crearea, adaptarea și masterizarea unei game complexe de produse audio. Mai exact, compunem coloane sonore originale pentru orice format video, evenimente si prezentări. \n" +
+                        "\n" +
+                        "https://soundcloud.com/discstudio\n" +
+                        "\n" +
+                        "https://www.instagram.com/discstudio/\n" +
+                        "\n" +
+                        "https://www.facebook.com/disc.disctrict/",
+                "https://scontent.fotp3-3.fna.fbcdn.net/v/t1.0-9/32130262_196932147697442_7189718203453407232_n.jpg?_nc_cat=0&oh=93e9533f87b8a7e96a9780e33396d3b5&oe=5B859E06",
+                R.drawable.hub));
         arrayList.add(new Event("12.05.2018",
                 "PARADAIZ grătăruts PARTY la Manasia",
                 "\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\uD83D\uDD3A\n" +
