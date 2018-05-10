@@ -1,0 +1,4 @@
+<adaptive-icon xmlns:android="http://schemas.android.com/tools">
+    <background android:drawable="#00000000"/>
+    <foreground android:drawable="@drawable/manasia_logo"/>
+</adaptive-icon>

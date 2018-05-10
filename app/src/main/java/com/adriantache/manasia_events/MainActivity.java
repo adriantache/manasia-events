@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean shop;
     private boolean hub;
     private boolean layout_animated = false;
-    private int arrayPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +77,9 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<Event> temp = new ArrayList<>();
                 temp.add(event);
 
-                arrayPosition = position;
-
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
                 intent.putParcelableArrayListExtra("events", temp);
+                intent.putExtra("arrayPosition", position);
                 startActivityForResult(intent, EVENT_DETAIL);
             }
         });
@@ -97,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
 
         //todo figure out how to fetch this (ideally same place we store the JSON or database)
         updateBusyLevel();
+
+        //check to see if an intent is returned, and send it to OnActivityResult
+        if (getIntent().hasExtra("arrayPosition")) {
+            onActivityResult(EVENT_DETAIL, RESULT_OK, getIntent());
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         setFilterColor();
     }
+
     private void setPreferences() {
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -390,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
+
     public void shopToggle(View v) {
         if (shop && (music || hub)) {
             shop = false;
@@ -405,6 +410,7 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
+
     public void hubToggle(View v) {
         if (hub && (music || shop)) {
             hub = false;
@@ -449,13 +455,15 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == EVENT_DETAIL) {
             if (resultCode == RESULT_OK) {
                 Event event = null;
+                int arrayPosition = -1;
                 try {
                     event = (Event) data.getExtras().getParcelableArrayList("events_result").get(0);
+                    arrayPosition = data.getExtras().getInt("arrayPosition");
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
 
-                if (event != null) {
+                if (event != null && arrayPosition > -1) {
                     events.set(arrayPosition, event);
                 }
 

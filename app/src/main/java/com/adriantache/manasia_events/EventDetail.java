@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +31,6 @@ import butterknife.ButterKnife;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public class EventDetail extends AppCompatActivity {
-    private static final String TAG = "EventDetail";
     private final int EVENT_DETAIL = 1;
     private final String OPENED_FROM_NOTIFICATION = "com.adriantache.manasia_events.openedFromNotification";
     @BindView(R.id.thumbnail)
@@ -63,6 +61,7 @@ public class EventDetail extends AppCompatActivity {
     LinearLayout notify;
     boolean openedFromNotification;
     private Event event;
+    private int arrayPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +73,13 @@ public class EventDetail extends AppCompatActivity {
         Intent intent = getIntent();
         event = (Event) intent.getParcelableArrayListExtra("events").get(0);
 
-        Log.i(TAG, "onCreate: " + intent.getExtras().toString());
-
         //set whether activity was opened from notification
         if (intent.hasExtra(OPENED_FROM_NOTIFICATION)) {
             openedFromNotification = intent.getExtras().getBoolean(OPENED_FROM_NOTIFICATION);
-            Log.i(TAG, "onCreate: " + intent.getExtras().getBoolean(OPENED_FROM_NOTIFICATION));
+        }
+
+        if (intent.hasExtra("arrayPosition")) {
+            arrayPosition = intent.getExtras().getInt("arrayPosition");
         }
 
         //populate fields with details
@@ -106,6 +106,8 @@ public class EventDetail extends AppCompatActivity {
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.putParcelableArrayListExtra("events_result", temp);
+                    intent.putExtra("arrayPosition", arrayPosition);
+                    //setResult(RESULT_OK, intent);
                     startActivityForResult(intent, EVENT_DETAIL);
                 } else {
                     setResult(); //todo rethink if necessary?
@@ -221,6 +223,7 @@ public class EventDetail extends AppCompatActivity {
         temp.add(event);
         intent.putParcelableArrayListExtra("events", temp);
         intent.putExtra(OPENED_FROM_NOTIFICATION, true);
+        intent.putExtra("arrayPosition", arrayPosition);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
