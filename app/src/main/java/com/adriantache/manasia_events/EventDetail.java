@@ -245,6 +245,7 @@ public class EventDetail extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
 
         //todo figure out TaskStackBuilder, maybe it's better than my solution
+        //https://developer.android.com/guide/components/activities/tasks-and-back-stack
 //        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 //        stackBuilder.addParentStack(MainActivity.class);
 //        stackBuilder.addNextIntent(intent);

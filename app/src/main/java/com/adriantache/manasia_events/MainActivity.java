@@ -112,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateDatabase(){
+        //todo implement code to update the database to remote storage (dummyData() for now)
+        //and have this method update the events ArrayList
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void minimizeLogo() {
         ConstraintSet constraintSet = new ConstraintSet();
@@ -417,7 +422,6 @@ public class MainActivity extends AppCompatActivity {
 
         return temp;
     }
-
     public void musicToggle(View v) {
         if (music && (shop || hub)) {
             music = false;
@@ -433,7 +437,6 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
-
     public void shopToggle(View v) {
         if (shop && (music || hub)) {
             shop = false;
@@ -449,7 +452,6 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
-
     public void hubToggle(View v) {
         if (hub && (music || shop)) {
             hub = false;
@@ -465,13 +467,6 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
-
-    //todo refactor this when we change the way we get event data
-    private void refreshList() {
-        if (events != null && events.size() != 0)
-            listView.setAdapter(new EventAdapter(this, filter(events)));
-    }
-
     private void setFilterColor() {
         if (music) music_toggle.setBackgroundColor(0xffFF4081);
         else music_toggle.setBackgroundColor(0xff9E9E9E);
@@ -482,10 +477,15 @@ public class MainActivity extends AppCompatActivity {
 
         checkFiltersSet();
     }
-
     private void checkFiltersSet() {
         if (music && shop && hub) filters.setText("Filters");
         else filters.setText("Filters [set]");
+    }
+
+    //todo refactor this when we change the way we get event data
+    private void refreshList() {
+        if (events != null && events.size() != 0)
+            listView.setAdapter(new EventAdapter(this, filter(events)));
     }
 
     //receive and replace Event object from Event details page to update notify state
@@ -523,3 +523,4 @@ public class MainActivity extends AppCompatActivity {
 //todo create event info subclass
 //todo add info about the hub somewhere (on logo click?) and indicate it visually
 //todo figure out data storage (firebase? facebook api?)
+//todo create method to keep database clean (<100 entries?)
