@@ -1,14 +1,17 @@
 package com.adriantache.manasia_events;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,12 +22,21 @@ import android.widget.TextView;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.db.EventDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
 
 public class MainActivity extends AppCompatActivity {
     private final int EVENT_DETAIL = 1;
@@ -112,9 +124,52 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateDatabase(){
+    //update the local database with data fetched from the server (which is already stored in events)
+    private void updateDatabase(boolean getRemote) {
         //todo implement code to update the database to remote storage (dummyData() for now)
-        //and have this method update the events ArrayList
+        //and have this method update the events ArrayList or just return an ArrayList
+
+        //todo add networking code after we figure out data input, for now this can do
+        if (getRemote) events = (ArrayList<Event>) dummyData();
+
+        //get a writable database to input the array into
+        EventDBHelper mDbHelper = new EventDBHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        //todo get current database contents, and put them inside an ArrayList<Event> = readDatabase() below
+
+        for (Event event : events) {
+
+            //todo create a method to check if the event is in the database (ignoring notify flag if getRemote)
+
+            //if the event is not already in the database, insert it
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_EVENT_TITLE, event.getTitle());
+            values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
+            values.put(COLUMN_EVENT_DATE, event.getDate());
+            if (!TextUtils.isEmpty(event.getPhotoUrl()))
+                values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
+            values.put(COLUMN_EVENT_CATEGORY_IMAGE,event.getCategory_image());
+
+            //todo decide if we keep this here, I'd actually rather just modify it in the database from EventDetail
+            //todo but if we don't keep this here, is there any other case where we would update the database for anything
+            //todo other than getting new remote data?
+            if (!getRemote)
+                values.put(COLUMN_EVENT_NOTIFY,event.getNotify());
+
+            db.insert(TABLE_NAME, null, values);
+        }
+    }
+
+    //read the events from the local database for quick startup
+    private List<Event> readDatabase() {
+        //get a readable database to get the array from
+        EventDBHelper mDbHelper = new EventDBHelper(this);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        //todo implement code
+
+        return null;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -422,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
 
         return temp;
     }
+
     public void musicToggle(View v) {
         if (music && (shop || hub)) {
             music = false;
@@ -437,6 +493,7 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
+
     public void shopToggle(View v) {
         if (shop && (music || hub)) {
             shop = false;
@@ -452,6 +509,7 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
+
     public void hubToggle(View v) {
         if (hub && (music || shop)) {
             hub = false;
@@ -467,6 +525,7 @@ public class MainActivity extends AppCompatActivity {
         refreshList();
         setPreferences();
     }
+
     private void setFilterColor() {
         if (music) music_toggle.setBackgroundColor(0xffFF4081);
         else music_toggle.setBackgroundColor(0xff9E9E9E);
@@ -477,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkFiltersSet();
     }
+
     private void checkFiltersSet() {
         if (music && shop && hub) filters.setText("Filters");
         else filters.setText("Filters [set]");

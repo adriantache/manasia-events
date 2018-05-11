@@ -3,8 +3,10 @@ package com.adriantache.manasia_events;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.db.EventDBHelper;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
@@ -30,6 +33,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
 
 public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";
@@ -177,6 +182,20 @@ public class EventDetail extends AppCompatActivity {
             });
     }
 
+    private long setNotify(boolean notify){
+        //open the database to edit
+        EventDBHelper mDbHelper = new EventDBHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        //todo figure out how to send SQL ID
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_EVENT_NOTIFY,event.getNotify());
+        //todo replace insert with update
+        return db.insert(TABLE_NAME, null, values);
+    }
+
+    //todo rewrite this to use the database
     private void backToMainActivity() {
         if (openedFromNotification) {
             ArrayList<Event> temp = new ArrayList<>();
