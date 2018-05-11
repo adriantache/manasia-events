@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(homeIntent);
     }
@@ -503,7 +503,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (event != null && arrayPosition > -1) {
-                    events.set(arrayPosition, event);
+                    Event tmp = events.get(arrayPosition);
+
+                    if (tmp.getTitle().equals(event.getTitle()))
+                        events.set(arrayPosition, event);
                 }
 
                 refreshList();

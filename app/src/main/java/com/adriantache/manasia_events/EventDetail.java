@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ import butterknife.ButterKnife;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public class EventDetail extends AppCompatActivity {
-    private final static String manasia = "Manasia Event Reminder";
+    private final static String manasia_notification_channel = "Manasia Event Reminder";
     private final int EVENT_DETAIL = 1;
     private final String OPENED_FROM_NOTIFICATION = "com.adriantache.manasia_events.openedFromNotification";
     @BindView(R.id.thumbnail)
@@ -75,6 +76,7 @@ public class EventDetail extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         ButterKnife.bind(this);
 
+        //todo remove this when I implement the database
         //get the event for which to display details
         Intent intent = getIntent();
         event = (Event) intent.getParcelableArrayListExtra("events").get(0);
@@ -206,34 +208,40 @@ public class EventDetail extends AppCompatActivity {
     //http://droidmentor.com/schedule-notifications-using-alarmmanager/
     //https://developer.android.com/topic/performance/scheduling
     private void showNotification(Event event) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            String description = "manasia notification channel";
+            //define the importance level of the notification
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(manasia, manasia, importance);
+
+            //build the actual notification channel, giving it a unique ID and name
+            NotificationChannel channel = new NotificationChannel(manasia_notification_channel, manasia_notification_channel, importance);
+
+            //we can optionally add a description for the channel
+            String description = "A channel which shows notifications about events at Manasia";
             channel.setDescription(description);
+
+            //set notification LED colour
+            channel.setLightColor(Color.MAGENTA);
+
             // Register the channel with the system
-            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().
+                    getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
             }
         }
 
-        //todo rewrite this once we figure out data delivery
-        //get latest event and Build notification
-        String notificationTitle = "Manasia event: " + event.getTitle();
-        String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
-
-        //maybe make activity open latest even by default, but how do you send it to it?
+        //create an intent to open the event details activity
         Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-        //put event in the notification to open event details directly
+        //put event object in the PendingIntent to open event details directly
         ArrayList<Event> temp = new ArrayList<>();
         temp.add(event);
         intent.putParcelableArrayListExtra("events", temp);
         intent.putExtra(OPENED_FROM_NOTIFICATION, true);
         intent.putExtra("arrayPosition", arrayPosition);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //put together the PendingIntent
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
 
         //todo figure out TaskStackBuilder, maybe it's better than my solution
@@ -242,7 +250,14 @@ public class EventDetail extends AppCompatActivity {
 //        stackBuilder.addNextIntent(intent);
 //        PendingIntent pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), manasia)
+        //todo rewrite this once we figure out data delivery
+        //get latest event details
+        String notificationTitle = "Manasia event: " + event.getTitle();
+        String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
+
+        //build the notification
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(getApplicationContext(), manasia_notification_channel)
                 .setSmallIcon(R.drawable.ic_manasia_small)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
@@ -250,8 +265,8 @@ public class EventDetail extends AppCompatActivity {
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
+        //trigger the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, notificationBuilder.build());
     }
 }
