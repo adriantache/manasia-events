@@ -154,7 +154,10 @@ public class MainActivity extends AppCompatActivity {
         int maxID = 0;
 
         try {
-            if (cursor.getCount() == 0) return null;
+            if (cursor.getCount() == 0) {
+                db.close();
+                return null;
+            }
 
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndex(_ID));
@@ -174,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
         }
 
+        db.close();
         return DBEvents;
     }
 
@@ -243,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        db.close();
     }
 
     /**
