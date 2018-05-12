@@ -57,9 +57,6 @@ public class Event implements Parcelable {
     public void setNotify(boolean notify) {
         this.notify = notify;
     }
-    public void setDatabaseID(int databaseID) {
-        this.databaseID = databaseID;
-    }
 
     //implementation of Parcelable to transfer it to the EventDetails class
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

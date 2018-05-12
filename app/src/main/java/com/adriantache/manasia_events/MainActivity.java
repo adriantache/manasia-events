@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -38,7 +36,6 @@ import butterknife.ButterKnife;
 import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
@@ -46,7 +43,8 @@ import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private final int EVENT_DETAIL = 1;
+    private static final int EVENT_DETAIL = 1;
+    private static final String DBEventIDTag = "DBEventID";
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
@@ -69,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
     //DBEventID used in the updateDatabase method
     private int DBEventID;
 
-    //TODO [BIG BUG] FIX ARRAYLIST ENTRIES BEING REPLACED TO FIRST ENTRY (app returns arrayPosition == 0)
-
+    //todo test if necessary after DB refactor
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
@@ -84,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //activate ButterKnife
         ButterKnife.bind(this);
 
         //retrieve SharedPrefs before binding the ArrayAdapter
@@ -97,55 +92,39 @@ public class MainActivity extends AppCompatActivity {
         //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
         updateDatabase(true);
         events = (ArrayList<Event>) Utils.readDatabase(this);
-        //reverse order of events in ArrayList to keep most recent on top
+
         if (events != null) {
+            //reverse order of events in ArrayList to keep most recent on top
             Collections.reverse(events);
-        }
 
-        //populate list
-        //todo replace dummy data with real data, eventually
-        //todo set empty list text view and progress bar
-        if (events != null) {
+            //populate list
+            //todo replace dummy data with real data, eventually
+            //todo set empty list text view and progress bar
             listView.setAdapter(new EventAdapter(this, events));
-        }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            listView.setOnItemClickListener((parent, view, position, id) -> {
                 Event event = (Event) parent.getItemAtPosition(position);
-                ArrayList<Event> temp = new ArrayList<>();
-                temp.add(event);
 
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-                intent.putParcelableArrayListExtra("events", temp);
-                intent.putExtra("arrayPosition", position);
+                intent.putExtra(DBEventIDTag, event.getDatabaseID());
                 startActivityForResult(intent, EVENT_DETAIL);
-            }
-        });
+            });
+        }
 
         //code to minimize and maximize logo on click (maybe not terribly useful, but it looks neat)
-        logo.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onClick(View v) {
-                minimizeLogo();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            logo.setOnClickListener(v -> minimizeLogo());
+        }
 
         //todo figure out how to fetch this (ideally same place we store the JSON or database)
         updateBusyLevel();
-
-        //check to see if an intent is returned, and send it to OnActivityResult
-        if (getIntent().hasExtra("arrayPosition")) {
-            onActivityResult(EVENT_DETAIL, RESULT_OK, getIntent());
-        }
     }
 
     /**
      * This method does three things:
-     * 1. Fetches an ArrayList of data from a remote source (TBD - using dummyData for now)
+     * 1. Fetches an ArrayList of data from a remote source (todo - using dummyData for now)
      * 2. Updates the local SQLite database with new events or updates to existing events
-     * 3. Synchronizes ListView positions with SQLite IDs (TBD - using maxID?)
+     * 3. Synchronizes ListView positions with SQLite IDs (todo - rewrite this or ignore it, IDs are stored in each Event object)
      * todo add logic to delete entries deleted from remote
      *
      * @param getRemote get remote data to store in the DB (TBD - does this make any sense if we update only in EventDetail?)
@@ -297,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void updateBusyLevel() {
         //todo implement actual code
         String busyLevel = "Prietenos";
@@ -654,10 +634,16 @@ public class MainActivity extends AppCompatActivity {
     private void refreshList() {
         if (events != null && events.size() != 0)
             listView.setAdapter(new EventAdapter(this, filter(events)));
+        else {
+            events = (ArrayList<Event>) Utils.readDatabase(this);
+            //todo check code to make sure this doesn't become an infinite loop
+            refreshList();
+        }
     }
 
     //receive and replace Event object from Event details page to update notify state
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EVENT_DETAIL) {
             if (resultCode == RESULT_OK) {
@@ -683,7 +669,8 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-
+//todo [HIGH] implement notification handling; auto-eliminate notifications in the past
+//todo add notification on new events added to remote database
 //todo extract all strings into XML
 //todo fix any warnings/errors
 //todo [IDEA] indication on how crowded it is
@@ -692,3 +679,4 @@ public class MainActivity extends AppCompatActivity {
 //todo add info about the hub somewhere (on logo click?) and indicate it visually
 //todo figure out data storage (firebase? facebook api?)
 //todo create method to keep database clean (<100 entries?)
+//todo [low] translate app (modify class, ensure input of event translations)
