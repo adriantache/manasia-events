@@ -1,9 +1,13 @@
 package com.adriantache.manasia_events.util;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Class to store general utility functions
@@ -61,12 +65,20 @@ public final class Utils {
 
         Date today = new Date();
 
+        //fix to set time to midnight -1 second, to ensure events from today are shown
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTime(today);
+        calendar.set(Calendar.HOUR, -12);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, -1);
+        today = calendar.getTime();
+
         if (formattedDate != null) {
             return formattedDate.compareTo(today);
         }
+
         //failure will default to show actions and let the user decide
         else return DATE_ERROR;
-
-
     }
 }
