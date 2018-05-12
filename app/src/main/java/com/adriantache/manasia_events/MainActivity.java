@@ -631,38 +631,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //todo refactor this when we change the way we get event data
+    //todo add flag for filters, to prevent hitting the database when we're just filtering
     private void refreshList() {
-        if (events != null && events.size() != 0)
+        events = (ArrayList<Event>) Utils.readDatabase(this);
+
+        if (events != null) {
+            //todo figure out how to eliminate this problematic step (include in readDatabase?)
+            Collections.reverse(events);
+
             listView.setAdapter(new EventAdapter(this, filter(events)));
-        else {
-            events = (ArrayList<Event>) Utils.readDatabase(this);
-            //todo check code to make sure this doesn't become an infinite loop
-            refreshList();
         }
     }
 
     //receive and replace Event object from Event details page to update notify state
     @Override
-    @SuppressWarnings("ConstantConditions")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EVENT_DETAIL) {
             if (resultCode == RESULT_OK) {
-                Event event = null;
-                int arrayPosition = -1;
-                try {
-                    event = (Event) data.getExtras().getParcelableArrayList("events_result").get(0);
-                    arrayPosition = data.getExtras().getInt("arrayPosition");
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-
-                if (event != null && arrayPosition > -1) {
-                    Event tmp = events.get(arrayPosition);
-
-                    if (tmp.getTitle().equals(event.getTitle()))
-                        events.set(arrayPosition, event);
-                }
-
                 refreshList();
             }
         }

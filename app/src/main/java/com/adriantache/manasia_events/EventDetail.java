@@ -172,9 +172,11 @@ public class EventDetail extends AppCompatActivity {
         if (openedFromNotification) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             int EVENT_DETAIL = 1;
+            setResult(RESULT_OK);
             startActivityForResult(intent, EVENT_DETAIL);
         } else {
             updateDatabase(); //todo rethink if necessary?
+            setResult(RESULT_OK);
             finish();
         }
     }
