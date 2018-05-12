@@ -27,6 +27,7 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.EventDBHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
         //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
         updateDatabase(true);
         events = (ArrayList<Event>) readDatabase();
+        //reverse order of events in ArrayList to keep most recent on top
+        if (events != null) {
+            Collections.reverse(events);
+        }
 
         //populate list
         //todo replace dummy data with real data, eventually
