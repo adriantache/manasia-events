@@ -1,13 +1,29 @@
 package com.adriantache.manasia_events.util;
 
-import android.util.Log;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.db.EventDBHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
+import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
 
 /**
  * Class to store general utility functions
@@ -80,5 +96,44 @@ public final class Utils {
 
         //failure will default to show actions and let the user decide
         else return DATE_ERROR;
+    }
+
+    //read the events from the local database for quick startup
+    public static List<Event> readDatabase(Context context) {
+        //get a readable database to get the array from
+        EventDBHelper mDbHelper = new EventDBHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String[] projection =
+                {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
+                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
+        Cursor cursor =
+                db.query(TABLE_NAME, projection, null, null, null, null, null);
+
+        ArrayList<Event> DBEvents = new ArrayList<>();
+
+        try {
+            if (cursor.getCount() == 0) {
+                db.close();
+                return null;
+            }
+
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(_ID));
+                String title = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_TITLE));
+                String description = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DESCRIPTION));
+                String date = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DATE));
+                String photoUrl = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_PHOTO_URL));
+                int categoryImage = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_CATEGORY_IMAGE));
+                int notify = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_NOTIFY));
+
+                DBEvents.add(new Event(id, date, title, description, photoUrl, categoryImage, notify));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        db.close();
+        return DBEvents;
     }
 }

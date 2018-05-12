@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.EventDBHelper;
+import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         //populate the global ArrayList of events
         //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
         updateDatabase(true);
-        events = (ArrayList<Event>) readDatabase();
+        events = (ArrayList<Event>) Utils.readDatabase(this);
         //reverse order of events in ArrayList to keep most recent on top
         if (events != null) {
             Collections.reverse(events);
@@ -104,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
         //populate list
         //todo replace dummy data with real data, eventually
         //todo set empty list text view and progress bar
-        listView.setAdapter(new EventAdapter(this, events));
+        if (events != null) {
+            listView.setAdapter(new EventAdapter(this, events));
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,49 +141,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //read the events from the local database for quick startup
-    private List<Event> readDatabase() {
-        //get a readable database to get the array from
-        EventDBHelper mDbHelper = new EventDBHelper(this);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-        String[] projection =
-                {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
-                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
-        Cursor cursor =
-                db.query(TABLE_NAME, projection, null, null, null, null, null);
-
-        ArrayList<Event> DBEvents = new ArrayList<>();
-        int maxID = 0;
-
-        try {
-            if (cursor.getCount() == 0) {
-                db.close();
-                return null;
-            }
-
-            while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndex(_ID));
-                String title = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_TITLE));
-                String description = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DESCRIPTION));
-                String date = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DATE));
-                String photoUrl = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_PHOTO_URL));
-                int categoryImage = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_CATEGORY_IMAGE));
-                int notify = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_NOTIFY));
-
-                DBEvents.add(new Event(id, date, title, description, photoUrl, categoryImage, notify));
-
-                //todo think how to use this (purpose is synchronising database ID with list ID) HashMap?
-                if (id > maxID) maxID = id;
-            }
-        } finally {
-            cursor.close();
-        }
-
-        db.close();
-        return DBEvents;
-    }
-
     /**
      * This method does three things:
      * 1. Fetches an ArrayList of data from a remote source (TBD - using dummyData for now)
@@ -202,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         //get current database contents
-        ArrayList<Event> DBEvents = (ArrayList<Event>) readDatabase();
+        ArrayList<Event> DBEvents = (ArrayList<Event>) Utils.readDatabase(this);
 
         if (remoteEvents != null) {
             for (Event event : remoteEvents) {
