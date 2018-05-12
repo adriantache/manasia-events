@@ -3,8 +3,6 @@ package com.adriantache.manasia_events.custom_class;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.adriantache.manasia_events.R;
-
 public class Event implements Parcelable {
     private String date;
     private String title;
@@ -12,6 +10,7 @@ public class Event implements Parcelable {
     private String photoUrl;
     private int category_image;
     private boolean notify = false;
+    private int databaseID;
 
     public Event(String date, String title, String description, String photoUrl, int category_image) {
         this.date = date;
@@ -19,6 +18,16 @@ public class Event implements Parcelable {
         this.description = description;
         this.photoUrl = photoUrl;
         this.category_image = category_image;
+    }
+
+    public Event(int databaseID, String date, String title, String description, String photoUrl, int category_image, int notify) {
+        this.databaseID = databaseID;
+        this.date = date;
+        this.title = title;
+        this.description = description;
+        this.photoUrl = photoUrl;
+        this.category_image = category_image;
+        this.notify = notify == 1;
     }
 
     //getters
@@ -40,10 +49,16 @@ public class Event implements Parcelable {
     public boolean getNotify() {
         return notify;
     }
+    public int getDatabaseID() {
+        return databaseID;
+    }
 
-    //setter for notify flag
+    //setters
     public void setNotify(boolean notify) {
         this.notify = notify;
+    }
+    public void setDatabaseID(int databaseID) {
+        this.databaseID = databaseID;
     }
 
     //implementation of Parcelable to transfer it to the EventDetails class
