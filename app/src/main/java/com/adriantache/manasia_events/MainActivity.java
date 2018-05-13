@@ -81,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        refreshList();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -113,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //code to animate event details between activities
                 //todo add elements if it makes sense
+                //todo add reverse animation?
                 ActivityOptions options = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     if (Utils.compareDateToToday(event.getDate()) < 0)
