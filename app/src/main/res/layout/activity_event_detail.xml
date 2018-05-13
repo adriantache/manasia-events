@@ -12,6 +12,7 @@
         android:layout_height="200dp"
         android:layout_marginTop="0dp"
         android:scaleType="centerCrop"
+        android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background" />
@@ -77,10 +78,12 @@
         android:layout_marginTop="4dp"
         android:background="#aa607D8B"
         android:padding="4dp"
+        android:transitionName="category_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background"
         app:srcCompat="@drawable/shop" />
 
+    <!-- todo remove this layout -->
     <LinearLayout
         android:id="@+id/bookmark_layout"
         android:layout_width="wrap_content"
@@ -90,6 +93,7 @@
         android:background="#aa607D8B"
         android:orientation="horizontal"
         android:padding="4dp"
+        android:transitionName="bookmark_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background">
 

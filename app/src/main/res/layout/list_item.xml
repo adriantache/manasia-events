@@ -13,6 +13,7 @@
         android:background="@color/colorAccent"
         android:scaleType="centerCrop"
         android:scrollY="-30dp"
+        android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,28 +64,31 @@
         android:layout_marginTop="8dp"
         android:background="#aa607D8B"
         android:padding="4dp"
+        android:transitionName="category_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/shop" />
 
+    <!-- todo remove this layout -->
     <LinearLayout
         android:id="@+id/bookmark_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
         android:background="#aa607D8B"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:transitionName="bookmark_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/bookmark"
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="4dp"
             app:srcCompat="@drawable/alarm" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

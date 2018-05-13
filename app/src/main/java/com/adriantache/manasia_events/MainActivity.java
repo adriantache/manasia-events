@@ -1,5 +1,6 @@
 package com.adriantache.manasia_events;
 
+import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,7 +26,6 @@ import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.db.EventDBHelper;
-import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,7 +109,25 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
                 intent.putExtra(DBEventIDTag, event.getDatabaseID());
-                startActivityForResult(intent, EVENT_DETAIL);
+
+                //code to animate event details between activities
+                //todo add elements if it makes sense
+                ActivityOptions options = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    options = ActivityOptions
+                            .makeSceneTransitionAnimation(this,
+                                    Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                    Pair.create(view.findViewById(R.id.bookmark_layout), "bookmark_layout"),
+                                    Pair.create(view.findViewById(R.id.category_image), "category_image")
+                            );
+                }
+
+                //todo determine if this makes sense, and whether to keep startActivityForResult
+                if (options != null) {
+                    startActivity(intent, options.toBundle());
+                } else {
+                    startActivityForResult(intent, EVENT_DETAIL);
+                }
             });
         }
 
@@ -651,7 +670,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 refreshList();
             }
-        }
+       }
     }
 }
 
