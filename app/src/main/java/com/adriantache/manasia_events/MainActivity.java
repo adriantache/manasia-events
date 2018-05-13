@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.db.EventDBHelper;
 import com.adriantache.manasia_events.util.Utils;
 
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         //populate the global ArrayList of events
         //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
         updateDatabase(true);
-        events = (ArrayList<Event>) Utils.readDatabase(this);
+        events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null) {
             //reverse order of events in ArrayList to keep most recent on top
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         //get current database contents
-        ArrayList<Event> DBEvents = (ArrayList<Event>) Utils.readDatabase(this);
+        ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (remoteEvents != null) {
             for (Event event : remoteEvents) {
@@ -633,7 +634,7 @@ public class MainActivity extends AppCompatActivity {
     //todo refactor this when we change the way we get event data
     //todo add flag for filters, to prevent hitting the database when we're just filtering
     private void refreshList() {
-        events = (ArrayList<Event>) Utils.readDatabase(this);
+        events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null) {
             //todo figure out how to eliminate this problematic step (include in readDatabase?)

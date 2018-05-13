@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
@@ -34,6 +36,7 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";
     private static final String DBEventIDTag = "DBEventID";
+    private static final String TAG = "EventDetail";
     private final String OPENED_FROM_NOTIFICATION = "com.adriantache.manasia_events.openedFromNotification";
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
@@ -81,7 +84,7 @@ public class EventDetail extends AppCompatActivity {
         DBEventID = Objects.requireNonNull(intent.getExtras()).getInt(DBEventIDTag);
 
         if (DBEventID != -1)
-            event = Utils.getEventFromDatabase(this, DBEventID);
+            event = DBUtils.getEventFromDatabase(this, DBEventID);
 
         if (event != null)
             populateDetails();
@@ -158,7 +161,9 @@ public class EventDetail extends AppCompatActivity {
     //method to update event in the local database
     //todo determine if updateNotify flag is necessary (in MainActivity)
     private void updateDatabase() {
-        Utils.updateEventToDatabase(this, DBEventID, event, true);
+        long result = DBUtils.updateEventToDatabase(this, DBEventID, event, true);
+
+        if (result == -1) Log.d(TAG, "updateDatabase: Error writing event to database.");
     }
 
     //method that handles clicking the back button to create an artificial back stack to MainActivity
