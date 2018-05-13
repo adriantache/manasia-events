@@ -26,6 +26,7 @@ import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.db.EventDBHelper;
+import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,12 +115,19 @@ public class MainActivity extends AppCompatActivity {
                 //todo add elements if it makes sense
                 ActivityOptions options = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    options = ActivityOptions
-                            .makeSceneTransitionAnimation(this,
-                                    Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                    Pair.create(view.findViewById(R.id.bookmark_layout), "bookmark_layout"),
-                                    Pair.create(view.findViewById(R.id.category_image), "category_image")
-                            );
+                    if (Utils.compareDateToToday(event.getDate()) < 0)
+                        options = ActivityOptions
+                                .makeSceneTransitionAnimation(this,
+                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
+                                );
+                    else
+                        options = ActivityOptions
+                                .makeSceneTransitionAnimation(this,
+                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                        Pair.create(view.findViewById(R.id.bookmark_layout), "bookmark_layout"),
+                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
+                                );
                 }
 
                 //todo determine if this makes sense, and whether to keep startActivityForResult
@@ -670,7 +678,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 refreshList();
             }
-       }
+        }
     }
 }
 
