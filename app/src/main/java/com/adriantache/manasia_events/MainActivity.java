@@ -19,6 +19,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -112,6 +113,13 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(new EventAdapter(this, events));
 
             listView.setOnItemClickListener((parent, view, position, id) -> {
+                ImageView thumbnail = findViewById(R.id.thumbnail);
+                TextView day = findViewById(R.id.day);
+                TextView month = findViewById(R.id.month);
+                LinearLayout bookmark_layout = findViewById(R.id.bookmark_layout);
+                ImageView category_image = findViewById(R.id.category_image);
+                TextView title = findViewById(R.id.title);
+
                 Event event = (Event) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
@@ -125,15 +133,21 @@ public class MainActivity extends AppCompatActivity {
                     if (Utils.compareDateToToday(event.getDate()) < 0)
                         options = ActivityOptions
                                 .makeSceneTransitionAnimation(this,
-                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
+                                        Pair.create(thumbnail, "thumbnail"),
+                                        Pair.create(category_image, "category_image"),
+                                        Pair.create(day, "day"),
+                                        Pair.create(month, "month"),
+                                        Pair.create(title, "title")
                                 );
                     else
                         options = ActivityOptions
                                 .makeSceneTransitionAnimation(this,
-                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                        Pair.create(view.findViewById(R.id.bookmark_layout), "bookmark_layout"),
-                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
+                                        Pair.create(thumbnail, "thumbnail"),
+                                        Pair.create(bookmark_layout, "bookmark_layout"),
+                                        Pair.create(category_image, "category_image"),
+                                        Pair.create(day, "day"),
+                                        Pair.create(month, "month"),
+                                        Pair.create(title, "title")
                                 );
                 }
 

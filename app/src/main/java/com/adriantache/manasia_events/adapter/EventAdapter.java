@@ -69,7 +69,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         return convertView;
     }
 
-    static class ViewHolder {
+    public static class ViewHolder {
         @BindView(R.id.thumbnail)
         ImageView thumbnail;
         @BindView(R.id.day)
