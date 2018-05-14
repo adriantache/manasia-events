@@ -37,7 +37,6 @@ public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";
     private static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "EventDetail";
-    private final String OPENED_FROM_NOTIFICATION = "com.adriantache.manasia_events.openedFromNotification";
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
     @BindView(R.id.category_image)
@@ -64,7 +63,6 @@ public class EventDetail extends AppCompatActivity {
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
     LinearLayout notify;
-    private boolean openedFromNotification;
     private Event event;
     private int DBEventID = -1;
 
@@ -169,21 +167,9 @@ public class EventDetail extends AppCompatActivity {
     //method that handles clicking the back button to create an artificial back stack to MainActivity
     //todo test if TaskStackBuilder is usable now
     private void backToMainActivity() {
-        //set whether activity was opened from notification
-        if (getIntent().hasExtra(OPENED_FROM_NOTIFICATION)) {
-            openedFromNotification = Objects.requireNonNull(getIntent().getExtras()).getBoolean(OPENED_FROM_NOTIFICATION);
-        }
-
-        if (openedFromNotification) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            int EVENT_DETAIL = 1;
-            setResult(RESULT_OK);
-            startActivityForResult(intent, EVENT_DETAIL);
-        } else {
-            updateDatabase(); //todo rethink if necessary?
-            setResult(RESULT_OK);
-            finish();
-        }
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        //todo test animations here
+        startActivity(intent);
     }
 
     //todo implement real notification system (probably with a service)
@@ -219,7 +205,6 @@ public class EventDetail extends AppCompatActivity {
         //create an intent to open the event details activity when the user clicks the notification
         Intent intent = new Intent(getApplicationContext(), EventDetail.class);
         intent.putExtra(DBEventIDTag, DBEventID);
-        intent.putExtra(OPENED_FROM_NOTIFICATION, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //put together the PendingIntent
         PendingIntent pendingIntent =

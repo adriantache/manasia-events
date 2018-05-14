@@ -19,7 +19,6 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -47,7 +46,6 @@ import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private static final int EVENT_DETAIL = 1;
     private static final String DBEventIDTag = "DBEventID";
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
@@ -81,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(homeIntent);
     }
 
+    //update list from db when returning from EventDetail
     @Override
     protected void onResume() {
         super.onResume();
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 if (options != null) {
                     startActivity(intent, options.toBundle());
                 } else {
-                    startActivityForResult(intent, EVENT_DETAIL);
+                    startActivity(intent);
                 }
             });
         }
@@ -675,16 +674,6 @@ public class MainActivity extends AppCompatActivity {
             Collections.reverse(events);
 
             listView.setAdapter(new EventAdapter(this, filter(events)));
-        }
-    }
-
-    //receive and replace Event object from Event details page to update notify state
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EVENT_DETAIL) {
-            if (resultCode == RESULT_OK) {
-                refreshList();
-            }
         }
     }
 }
