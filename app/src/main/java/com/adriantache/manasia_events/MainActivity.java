@@ -113,41 +113,27 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(new EventAdapter(this, events));
 
             listView.setOnItemClickListener((parent, view, position, id) -> {
-                ImageView thumbnail = findViewById(R.id.thumbnail);
-                TextView day = findViewById(R.id.day);
-                TextView month = findViewById(R.id.month);
-                LinearLayout bookmark_layout = findViewById(R.id.bookmark_layout);
-                ImageView category_image = findViewById(R.id.category_image);
-                TextView title = findViewById(R.id.title);
-
                 Event event = (Event) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
                 intent.putExtra(DBEventIDTag, event.getDatabaseID());
 
                 //code to animate event details between activities
-                //todo add elements if it makes sense
                 //todo add reverse animation?
                 ActivityOptions options = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     if (Utils.compareDateToToday(event.getDate()) < 0)
                         options = ActivityOptions
                                 .makeSceneTransitionAnimation(this,
-                                        Pair.create(thumbnail, "thumbnail"),
-                                        Pair.create(category_image, "category_image"),
-                                        Pair.create(day, "day"),
-                                        Pair.create(month, "month"),
-                                        Pair.create(title, "title")
+                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
                                 );
                     else
                         options = ActivityOptions
                                 .makeSceneTransitionAnimation(this,
-                                        Pair.create(thumbnail, "thumbnail"),
-                                        Pair.create(bookmark_layout, "bookmark_layout"),
-                                        Pair.create(category_image, "category_image"),
-                                        Pair.create(day, "day"),
-                                        Pair.create(month, "month"),
-                                        Pair.create(title, "title")
+                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                        Pair.create(view.findViewById(R.id.bookmark_layout), "bookmark_layout"),
+                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
                                 );
                 }
 
