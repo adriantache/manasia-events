@@ -15,7 +15,9 @@
         android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_background" />
+        app:layout_constraintTop_toBottomOf="@id/back_background"
+        tools:targetApi="lollipop"
+        android:contentDescription="@string/event_thumbnail" />
 
     <!-- todo add notify here as toggle  -->
     <!-- or maybe keep it below and use this https://androidexample365.com/google-launcher-style-implementation-of-switch-icon/-->
@@ -28,7 +30,7 @@
         android:drawablePadding="4dp"
         android:drawableStart="@drawable/location"
         android:gravity="center_vertical"
-        android:text="Stelea Spataru 13, Bucuresti"
+        android:text="@string/manasia_address"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
@@ -44,7 +46,8 @@
         app:layout_constraintEnd_toEndOf="@+id/month"
         app:layout_constraintStart_toStartOf="@+id/month"
         app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-        tools:text="21" />
+        tools:text="21"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/month"
@@ -55,7 +58,8 @@
         android:transitionName="month"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/day"
-        tools:text="APRIL" />
+        tools:text="APRIL"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/title"
@@ -71,7 +75,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/month"
         app:layout_constraintTop_toTopOf="@+id/day"
-        tools:text="Record Shop Day After Party w/ The Groovers Delight" />
+        tools:text="Record Shop Day After Party w/ The Groovers Delight"
+        tools:targetApi="lollipop" />
 
     <ImageView
         android:id="@+id/category_image"
@@ -84,7 +89,9 @@
         android:transitionName="category_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background"
-        app:srcCompat="@drawable/shop" />
+        app:srcCompat="@drawable/shop"
+        tools:targetApi="lollipop"
+        android:contentDescription="@string/category_image" />
 
     <!-- todo remove this layout -->
     <LinearLayout
@@ -98,14 +105,16 @@
         android:padding="4dp"
         android:transitionName="bookmark_layout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_background">
+        app:layout_constraintTop_toBottomOf="@id/back_background"
+        tools:targetApi="lollipop">
 
         <ImageView
             android:id="@+id/bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            app:srcCompat="@drawable/alarm" />
+            app:srcCompat="@drawable/alarm"
+            android:contentDescription="@string/bookmark_icon" />
     </LinearLayout>
 
     <ScrollView
@@ -154,7 +163,8 @@
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
+        app:srcCompat="@drawable/back"
+        android:contentDescription="@string/back_button" />
 
     <TextView
         android:id="@+id/call"
@@ -168,7 +178,7 @@
         android:drawableTop="@drawable/call"
         android:focusable="true"
         android:padding="16dp"
-        android:text="CALL"
+        android:text="@string/call"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/notify"
@@ -206,7 +216,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="NOTIFY"
+            android:text="@string/notify"
             app:layout_constraintEnd_toEndOf="@id/notify"
             app:layout_constraintStart_toStartOf="@id/notify"
             app:layout_constraintTop_toBottomOf="@id/notify" />
@@ -224,7 +234,7 @@
         android:drawableTop="@drawable/navigate"
         android:focusable="true"
         android:padding="16dp"
-        android:text="MAP"
+        android:text="@string/map"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

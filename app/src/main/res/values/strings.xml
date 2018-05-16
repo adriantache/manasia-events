@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">manasia</string>
+    <string name="manasia_address">Stelea Spataru 13, Bucuresti</string>
+    <string name="category_image">Category image</string>
+    <string name="bookmark_icon">bookmark_icon</string>
+    <string name="back_button">Back button</string>
+    <string name="call">CALL</string>
+    <string name="notify">NOTIFY</string>
+    <string name="map">MAP</string>
+    <string name="event_thumbnail">Event thumbnail</string>
+    <string name="manasia_logo">Manasia logo</string>
+    <string name="filters">Filters</string>
+    <string name="music">MUSIC</string>
+    <string name="shops">SHOPS</string>
+    <string name="hub">HUB</string>
+    <string name="level_of_crowdedness">Level of crowdedness:</string>
 </resources>

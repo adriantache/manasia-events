@@ -17,7 +17,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/manasia_logo" />
+        app:srcCompat="@drawable/manasia_logo"
+        android:contentDescription="@string/manasia_logo" />
 
     <!-- EXPANSION PANEL START-->
     <LinearLayout
@@ -31,7 +32,8 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo">
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        tools:targetApi="lollipop">
 
         <com.github.florent37.expansionpanel.ExpansionHeader
             android:id="@+id/expansionHeader"
@@ -49,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8dp"
-                android:text="Filters"
+                android:text="@string/filters"
                 android:textAllCaps="true" />
 
             <!-- HEADER INDICATOR -->
@@ -87,7 +89,7 @@
                     android:drawableTop="@drawable/music"
                     android:onClick="musicToggle"
                     android:padding="8dp"
-                    android:text="MUSIC"
+                    android:text="@string/music"
                     android:textColor="#fff" />
 
                 <Space
@@ -104,7 +106,7 @@
                     android:drawableTop="@drawable/shop"
                     android:onClick="shopToggle"
                     android:padding="8dp"
-                    android:text="SHOPS"
+                    android:text="@string/shops"
                     android:textColor="#fff" />
 
                 <Space
@@ -123,7 +125,7 @@
                     android:drawableTop="@drawable/hub"
                     android:onClick="hubToggle"
                     android:padding="8dp"
-                    android:text="HUB"
+                    android:text="@string/hub"
                     android:textColor="#fff" />
 
             </LinearLayout>
@@ -162,7 +164,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:text="Nivelul de aglomeratie:" />
+            android:text="@string/level_of_crowdedness" />
 
         <TextView
             android:id="@+id/busy_level"
@@ -173,6 +175,6 @@
             android:gravity="center_vertical"
             android:textAllCaps="true"
             android:textColor="#000"
-            tools:text="Prietenos" />
+            tools:text="Friendly" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

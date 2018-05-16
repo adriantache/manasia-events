@@ -16,7 +16,9 @@
         android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/event_thumbnail"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/day"
@@ -30,7 +32,8 @@
         app:layout_constraintEnd_toEndOf="@+id/month"
         app:layout_constraintStart_toStartOf="@+id/month"
         app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-        tools:text="21" />
+        tools:text="21"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/month"
@@ -41,7 +44,8 @@
         android:transitionName="month"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/day"
-        tools:text="APRIL" />
+        tools:text="APRIL"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/title"
@@ -57,7 +61,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/month"
         app:layout_constraintTop_toTopOf="@+id/day"
-        tools:text="Record Shop Day After Party w/ The Groovers Delight" />
+        tools:text="Record Shop Day After Party w/ The Groovers Delight"
+        tools:targetApi="lollipop" />
 
     <ImageView
         android:id="@+id/category_image"
@@ -70,7 +75,9 @@
         android:transitionName="category_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/shop" />
+        app:srcCompat="@drawable/shop"
+        tools:targetApi="lollipop"
+        android:contentDescription="@string/category_image" />
 
     <!-- todo remove this layout -->
     <LinearLayout
@@ -85,13 +92,15 @@
         android:padding="4dp"
         android:transitionName="bookmark_layout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="lollipop">
 
         <ImageView
             android:id="@+id/bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            app:srcCompat="@drawable/alarm" />
+            app:srcCompat="@drawable/alarm"
+            android:contentDescription="@string/bookmark_icon" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
