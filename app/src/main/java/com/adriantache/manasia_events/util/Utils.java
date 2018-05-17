@@ -1,31 +1,11 @@
 package com.adriantache.manasia_events.util;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
-
-import com.adriantache.manasia_events.custom_class.Event;
-import com.adriantache.manasia_events.db.EventDBHelper;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
 
 /**
  * Class to store general utility functions

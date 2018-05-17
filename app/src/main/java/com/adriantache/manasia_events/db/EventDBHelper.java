@@ -4,14 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
 /**
  * Creates and updates SQL database
@@ -27,7 +27,7 @@ public class EventDBHelper extends SQLiteOpenHelper {
                     COLUMN_EVENT_DESCRIPTION + " TEXT NOT NULL, " +
                     COLUMN_EVENT_DATE + " TEXT NOT NULL, " +
                     COLUMN_EVENT_PHOTO_URL + " TEXT, " +
-                    COLUMN_EVENT_CATEGORY_IMAGE + " INTEGER, "+
+                    COLUMN_EVENT_CATEGORY_IMAGE + " INTEGER, " +
                     COLUMN_EVENT_NOTIFY + " INTEGER DEFAULT 0);";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;

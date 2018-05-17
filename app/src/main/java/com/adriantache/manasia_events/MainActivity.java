@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

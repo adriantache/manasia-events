@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static android.support.design.widget.Snackbar.LENGTH_SHORT;
 
 public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";

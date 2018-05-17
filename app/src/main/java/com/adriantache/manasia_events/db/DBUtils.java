@@ -11,14 +11,14 @@ import com.adriantache.manasia_events.custom_class.Event;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_CATEGORY_IMAGE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DATE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_DESCRIPTION;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_NOTIFY;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_PHOTO_URL;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry.TABLE_NAME;
-import static com.adriantache.manasia_events.db.EventContract.PetEntry._ID;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
 /**
  * Class to store general utility functions for database operations
