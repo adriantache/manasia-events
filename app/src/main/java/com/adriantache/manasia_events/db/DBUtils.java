@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
 
@@ -35,19 +36,27 @@ public final class DBUtils {
      * todo decide if we impose a limit on how many database entries to fetch
      */
     public static List<Event> readDatabase(Context context) {
+        //todo remove logging (maybe)
+
+        //todo map out db operations to figure out bug
+        final String TAG = "DBUtils";
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
 
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, null);
 
-        if (cursor == null) return null;
+        if (cursor == null) {
+            Log.d(TAG, "readDatabase: Cannot retrieve cursor from EventProvider");
+            return null;
+        }
 
         ArrayList<Event> DBEvents = new ArrayList<>();
 
         try {
             if (cursor.getCount() == 0) {
                 cursor.close();
+                Log.d(TAG, "readDatabase: Cursor is empty");
                 return null;
             }
 
@@ -119,21 +128,17 @@ public final class DBUtils {
      * @param context      Context for EventDBHelper
      * @param DBEventID    Unique database ID of the event, as fetched from the database
      * @param event        Event object to be updated into the database
-     * @param updateNotify Whether to update the notification flag (todo decide if necessary)
      * @return (long) Result of the insertion operation, should be == DBEventID
      */
-    public static int updateEventToDatabase(Context context, int DBEventID, Event event, boolean updateNotify) {
+    public static int updateEventToDatabase(Context context, int DBEventID, Event event) {
         ContentValues values = new ContentValues();
-        //todo check if the line below is needed
-        //values.put(_ID, DBEventID);
         values.put(COLUMN_EVENT_TITLE, event.getTitle());
         values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
         values.put(COLUMN_EVENT_DATE, event.getDate());
         if (!TextUtils.isEmpty(event.getPhotoUrl()))
             values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
         values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
-        if (updateNotify)
-            values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
+        values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
 
         String selection = _ID + " == ?";
         String selectionArgs[] = {String.valueOf(DBEventID)};

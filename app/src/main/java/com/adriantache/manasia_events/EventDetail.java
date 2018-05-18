@@ -37,6 +37,7 @@ public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";
     private static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "EventDetail";
+    private static final int ERROR_VALUE = -1;
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
     @BindView(R.id.category_image)
@@ -63,8 +64,8 @@ public class EventDetail extends AppCompatActivity {
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
     LinearLayout notify;
-    private Event event;
-    private int DBEventID = -1;
+    private Event event = null;
+    private int DBEventID = ERROR_VALUE;
 
     @Override
     public void onBackPressed() {
@@ -81,7 +82,7 @@ public class EventDetail extends AppCompatActivity {
         Intent intent = getIntent();
         DBEventID = Objects.requireNonNull(intent.getExtras()).getInt(DBEventIDTag);
 
-        if (DBEventID != -1)
+        if (DBEventID != ERROR_VALUE)
             event = DBUtils.getEventFromDatabase(this, DBEventID);
 
         if (event != null)
@@ -116,7 +117,7 @@ public class EventDetail extends AppCompatActivity {
             bookmark_layout.setVisibility(View.INVISIBLE);
         } else
             notify.setOnClickListener(v -> {
-                if (event.getNotify()==1) {
+                if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
                     Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                     bookmark.setImageResource(R.drawable.alarm);
@@ -147,21 +148,23 @@ public class EventDetail extends AppCompatActivity {
         month.setText(Utils.extractDate(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
-        if (event.getNotify()==1)
+        if (event.getNotify() == 1)
             bookmark.setImageResource(R.drawable.alarm_accent);
         else
             bookmark.setImageResource(R.drawable.alarm);
 
         //set notify button state depending on notify state
-        notify_icon.setIconEnabled(event.getNotify()==1);
+        notify_icon.setIconEnabled(event.getNotify() == 1);
     }
 
     //method to update event in the local database
-    //todo determine if updateNotify flag is necessary (in MainActivity)
     private void updateDatabase() {
-        long result = DBUtils.updateEventToDatabase(this, DBEventID, event, true);
+        int result = ERROR_VALUE;
+        if (DBEventID != ERROR_VALUE) {
+            result = DBUtils.updateEventToDatabase(this, DBEventID, event);
+        }
 
-        if (result == -1) Log.d(TAG, "updateDatabase: Error writing event to database.");
+        if (result == ERROR_VALUE) Log.d(TAG, "updateDatabase: Error writing event to database.");
     }
 
     //method that handles clicking the back button to create an artificial back stack to MainActivity
