@@ -116,17 +116,17 @@ public class EventDetail extends AppCompatActivity {
             bookmark_layout.setVisibility(View.INVISIBLE);
         } else
             notify.setOnClickListener(v -> {
-                if (event.getNotify()) {
+                if (event.getNotify()==1) {
                     notify_icon.setIconEnabled(false);
                     Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                     bookmark.setImageResource(R.drawable.alarm);
-                    event.setNotify(false);
+                    event.setNotify(0);
                     updateDatabase();
                 } else {
                     notify_icon.setIconEnabled(true);
                     Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
                     bookmark.setImageResource(R.drawable.alarm_accent);
-                    event.setNotify(true);
+                    event.setNotify(1);
                     updateDatabase();
 
                     //todo remove this and replace it with some kind of scheduling
@@ -147,13 +147,13 @@ public class EventDetail extends AppCompatActivity {
         month.setText(Utils.extractDate(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
-        if (event.getNotify())
+        if (event.getNotify()==1)
             bookmark.setImageResource(R.drawable.alarm_accent);
         else
             bookmark.setImageResource(R.drawable.alarm);
 
         //set notify button state depending on notify state
-        notify_icon.setIconEnabled(event.getNotify());
+        notify_icon.setIconEnabled(event.getNotify()==1);
     }
 
     //method to update event in the local database

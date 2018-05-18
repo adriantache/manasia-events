@@ -3,7 +3,6 @@ package com.adriantache.manasia_events.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.adriantache.manasia_events.custom_class.Event;
@@ -18,7 +17,6 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
 /**
@@ -41,7 +39,7 @@ public final class DBUtils {
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
 
-        Cursor cursor = context.getContentResolver().query(CONTENT_URI,projection,null,null,null);
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, null);
 
         if (cursor == null) return null;
 
@@ -65,7 +63,7 @@ public final class DBUtils {
                 DBEvents.add(new Event(id, date, title, description, photoUrl, categoryImage, notify));
             }
         } finally {
-                cursor.close();
+            cursor.close();
         }
 
         return DBEvents;
@@ -85,7 +83,7 @@ public final class DBUtils {
         String selection = _ID + " == ?";
         String selectionArgs[] = {String.valueOf(DBEventID)};
 
-        Cursor cursor = context.getContentResolver().query(CONTENT_URI,projection,selection,selectionArgs,null);
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, null);
 
         if (cursor == null) return null;
 
@@ -109,7 +107,7 @@ public final class DBUtils {
                 event = new Event(id, date, title, description, photoUrl, categoryImage, notify);
             }
         } finally {
-           cursor.close();
+            cursor.close();
         }
 
         return event;

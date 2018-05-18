@@ -94,7 +94,7 @@ public final class Utils {
         while (iterator.hasNext()) {
             Event localEvent = iterator.next();
 
-            if (!localEvent.getNotify()) {
+            if (localEvent.getNotify() == 0) {
                 iterator.remove();
                 continue;
             }
@@ -110,7 +110,7 @@ public final class Utils {
 
             for (Event remoteEvent : remoteEvents) {
                 if (remoteEvent.getTitle().equals(title) && remoteEvent.getDescription().equals(description))
-                    remoteEvent.setNotify(true);
+                    remoteEvent.setNotify(1);
             }
         }
 

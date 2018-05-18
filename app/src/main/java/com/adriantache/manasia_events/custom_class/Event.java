@@ -9,7 +9,7 @@ public class Event implements Parcelable {
     private String description;
     private String photoUrl;
     private int category_image;
-    private boolean notify = false;
+    private int notify = 0;
     private int databaseID;
 
     public Event(String date, String title, String description, String photoUrl, int category_image) {
@@ -27,7 +27,7 @@ public class Event implements Parcelable {
         this.description = description;
         this.photoUrl = photoUrl;
         this.category_image = category_image;
-        this.notify = notify == 1;
+        this.notify = notify;
     }
 
     //getters
@@ -46,7 +46,7 @@ public class Event implements Parcelable {
     public String getPhotoUrl() {
         return photoUrl;
     }
-    public boolean getNotify() {
+    public int getNotify() {
         return notify;
     }
     public int getDatabaseID() {
@@ -54,7 +54,7 @@ public class Event implements Parcelable {
     }
 
     //setters
-    public void setNotify(boolean notify) {
+    public void setNotify(int notify) {
         this.notify = notify;
     }
 
@@ -74,7 +74,7 @@ public class Event implements Parcelable {
         this.description = in.readString();
         this.photoUrl = in.readString();
         this.category_image = in.readInt();
-        this.notify = in.readInt() == 1;
+        this.notify = in.readInt();
     }
     @Override
     public int describeContents() {
@@ -87,6 +87,6 @@ public class Event implements Parcelable {
         dest.writeString(description);
         dest.writeString(photoUrl);
         dest.writeInt(category_image);
-        dest.writeInt(notify ? 1 : 0);
+        dest.writeInt(notify);
     }
 }
