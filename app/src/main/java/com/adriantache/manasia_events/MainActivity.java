@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
@@ -163,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param getRemote get remote data to store in the DB (TBD - does this make any sense if we update only in EventDetail?)
      */
+    //todo improve duplicate identification code OR keep code to just delete database contents (but add check for remote events FIRST)
     private void updateDatabase(boolean getRemote) {
         //get current working ArrayList, if it exists
         ArrayList<Event> remoteEvents = events;
@@ -170,57 +172,68 @@ public class MainActivity extends AppCompatActivity {
         //todo add networking code after we figure out data input, for now this can do
         if (getRemote) remoteEvents = (ArrayList<Event>) dummyData();
 
-        //get a writable database to input the array into
-        EventDBHelper mDbHelper = new EventDBHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         //get current database contents
         ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (remoteEvents != null) {
+            //firstly delete ALL events from the table
+            getContentResolver().delete(CONTENT_URI, null, null);
+
+            //then add the remote events
             for (Event event : remoteEvents) {
-                //initialize DBEventID to prevent errors
-                DBEventID = -1;
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_EVENT_TITLE, event.getTitle());
+                values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
+                values.put(COLUMN_EVENT_DATE, event.getDate());
+                if (!TextUtils.isEmpty(event.getPhotoUrl()))
+                    values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
+                values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
 
-                //method to check if the event is already in the local database (ignoring notify flag)
-                int searchResult = searchEventInArrayList(event, DBEvents);
-
-                //if we find exactly one match, the event is already synchronised
-                if (searchResult == 1) {
-                    continue;
-                }
-                //if the event is not already in the database, insert it
-                else if (searchResult == 0) {
-                    ContentValues values = new ContentValues();
-                    values.put(COLUMN_EVENT_TITLE, event.getTitle());
-                    values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
-                    values.put(COLUMN_EVENT_DATE, event.getDate());
-                    if (!TextUtils.isEmpty(event.getPhotoUrl()))
-                        values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
-                    values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
-
-                    db.insert(TABLE_NAME, null, values);
-                }
-                //if we find exactly one partial match, we update the event in the database
-                else if (searchResult == -1 && DBEventID != -1) {
-                    ContentValues values = new ContentValues();
-                    values.put(COLUMN_EVENT_TITLE, event.getTitle());
-                    values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
-                    values.put(COLUMN_EVENT_DATE, event.getDate());
-                    if (!TextUtils.isEmpty(event.getPhotoUrl()))
-                        values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
-                    values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
-
-                    String selection = _ID + " == ?";
-                    String selectionArgs[] = {String.valueOf(DBEventID)};
-
-                    db.update(TABLE_NAME, values, selection, selectionArgs);
-                } else {
-                    Log.d(TAG, "updateDatabase: Multiple possible entries in remote database. Error code: " + searchResult);
-                }
+                getContentResolver().insert(CONTENT_URI, values);
             }
         }
-        db.close();
+        
+//            for (Event event : remoteEvents) {
+//                //initialize DBEventID to prevent errors
+//                DBEventID = -1;
+//
+//                //method to check if the event is already in the local database (ignoring notify flag)
+//                int searchResult = searchEventInArrayList(event, DBEvents);
+//
+//                //if we find exactly one match, the event is already synchronised
+//                if (searchResult == 1) {
+//                    continue;
+//                }
+//                //if the event is not already in the database, insert it
+//                else if (searchResult == 0) {
+//                    ContentValues values = new ContentValues();
+//                    values.put(COLUMN_EVENT_TITLE, event.getTitle());
+//                    values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
+//                    values.put(COLUMN_EVENT_DATE, event.getDate());
+//                    if (!TextUtils.isEmpty(event.getPhotoUrl()))
+//                        values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
+//                    values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
+//
+//                    db.insert(TABLE_NAME, null, values);
+//                }
+//                //if we find exactly one partial match, we update the event in the database
+//                else if (searchResult == -1 && DBEventID != -1) {
+//                    ContentValues values = new ContentValues();
+//                    values.put(COLUMN_EVENT_TITLE, event.getTitle());
+//                    values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
+//                    values.put(COLUMN_EVENT_DATE, event.getDate());
+//                    if (!TextUtils.isEmpty(event.getPhotoUrl()))
+//                        values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
+//                    values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
+//
+//                    String selection = _ID + " == ?";
+//                    String selectionArgs[] = {String.valueOf(DBEventID)};
+//
+//                    db.update(TABLE_NAME, values, selection, selectionArgs);
+//                } else {
+//                    Log.d(TAG, "updateDatabase: Multiple possible entries in remote database. Error code: " + searchResult);
+//                }
+//            }
     }
 
     /**
