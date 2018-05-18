@@ -32,8 +32,8 @@ public class EventProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        uriMatcher.addURI(CONTENT_AUTHORITY, "pets", EVENTS);
-        uriMatcher.addURI(CONTENT_AUTHORITY, "pets/#", SINGLE_EVENT);
+        uriMatcher.addURI(CONTENT_AUTHORITY, "events", EVENTS);
+        uriMatcher.addURI(CONTENT_AUTHORITY, "events/#", SINGLE_EVENT);
     }
 
     private EventDBHelper eventDBHelper;

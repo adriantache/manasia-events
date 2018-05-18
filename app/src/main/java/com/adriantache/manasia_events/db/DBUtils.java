@@ -11,6 +11,7 @@ import com.adriantache.manasia_events.custom_class.Event;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
@@ -36,23 +37,19 @@ public final class DBUtils {
      * todo decide if we impose a limit on how many database entries to fetch
      */
     public static List<Event> readDatabase(Context context) {
-        //get a readable database to get the array from
-        EventDBHelper mDbHelper = new EventDBHelper(context);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
-        Cursor cursor =
-                db.query(TABLE_NAME, projection, null, null,
-                        null, null, null);
+
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI,projection,null,null,null);
+
+        if (cursor == null) return null;
 
         ArrayList<Event> DBEvents = new ArrayList<>();
 
         try {
             if (cursor.getCount() == 0) {
                 cursor.close();
-                db.close();
                 return null;
             }
 
@@ -68,10 +65,9 @@ public final class DBUtils {
                 DBEvents.add(new Event(id, date, title, description, photoUrl, categoryImage, notify));
             }
         } finally {
-            cursor.close();
+                cursor.close();
         }
 
-        db.close();
         return DBEvents;
     }
 
@@ -83,24 +79,21 @@ public final class DBUtils {
      * @return The event requested by ID
      */
     public static Event getEventFromDatabase(Context context, int DBEventID) {
-        EventDBHelper mDbHelper = new EventDBHelper(context);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
         String selection = _ID + " == ?";
         String selectionArgs[] = {String.valueOf(DBEventID)};
-        Cursor cursor =
-                db.query(TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, null);
+
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI,projection,selection,selectionArgs,null);
+
+        if (cursor == null) return null;
 
         Event event = null;
 
         try {
             if (cursor.getCount() == 0) {
                 cursor.close();
-                db.close();
                 return null;
             }
 
@@ -116,10 +109,9 @@ public final class DBUtils {
                 event = new Event(id, date, title, description, photoUrl, categoryImage, notify);
             }
         } finally {
-            cursor.close();
+           cursor.close();
         }
 
-        db.close();
         return event;
     }
 
@@ -132,10 +124,7 @@ public final class DBUtils {
      * @param updateNotify Whether to update the notification flag (todo decide if necessary)
      * @return (long) Result of the insertion operation, should be == DBEventID
      */
-    public static long updateEventToDatabase(Context context, int DBEventID, Event event, boolean updateNotify) {
-        EventDBHelper mDbHelper = new EventDBHelper(context);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
+    public static int updateEventToDatabase(Context context, int DBEventID, Event event, boolean updateNotify) {
         ContentValues values = new ContentValues();
         //todo check if the line below is needed
         //values.put(_ID, DBEventID);
@@ -151,9 +140,6 @@ public final class DBUtils {
         String selection = _ID + " == ?";
         String selectionArgs[] = {String.valueOf(DBEventID)};
 
-        long result = db.update(TABLE_NAME, values, selection, selectionArgs);
-
-        db.close();
-        return result;
+        return context.getContentResolver().update(CONTENT_URI, values, selection, selectionArgs);
     }
 }
