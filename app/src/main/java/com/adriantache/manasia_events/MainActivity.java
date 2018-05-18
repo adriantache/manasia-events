@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 getContentResolver().insert(CONTENT_URI, values);
             }
         }
-        
+
 //            for (Event event : remoteEvents) {
 //                //initialize DBEventID to prevent errors
 //                DBEventID = -1;
@@ -592,6 +592,14 @@ public class MainActivity extends AppCompatActivity {
                         "https://www.facebook.com/disc.disctrict/",
                 "https://scontent.fotp3-3.fna.fbcdn.net/v/t1.0-9/32130262_196932147697442_7189718203453407232_n.jpg?_nc_cat=0&oh=93e9533f87b8a7e96a9780e33396d3b5&oe=5B859E06",
                 R.drawable.hub));
+        arrayList.add(new Event("26.05.2018",
+                "Search for Sucarov",
+                "Sucarov revine la Manasia, de data aceasta ,,cu Noaptea în cap’’( bu-hu-hu), pe zi.\n" +
+                        "În funcție de stare, vreme și fizică, Sucarov prezintă bijuterii muzicale din anii 1900-1980.\n" +
+                        "Search for Sucarov, curând apare și proiectul personal \uD83C\uDFB6 sub același nume.\n" +
+                        "Iubirea noastră-i un kazoo!",
+                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/32650661_2150225811877557_8249354285406486528_n.jpg?_nc_cat=0&_nc_eui2=AeGTWRiiUSLtLab1hq25iUa0TkJu_xjfnaqEh6QnuyPJCNWFnLOdzN07nF6fTY6vPuenSw9PDgip4k4puDS38BMOENdlU3gv0otv08iNvG0fDA&oh=23420b5ddaa2d1dd483e84a9c7e56a94&oe=5B87CCE5",
+                R.drawable.music));
 
         return arrayList;
     }
