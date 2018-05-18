@@ -1,9 +1,15 @@
 package com.adriantache.manasia_events.util;
 
+import android.support.annotation.Nullable;
+
+import com.adriantache.manasia_events.custom_class.Event;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -78,5 +84,36 @@ public final class Utils {
 
         //failure will default to show actions and let the user decide
         else return DATE_ERROR;
+    }
+
+    public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
+        if (localEvents == null) return remoteEvents;
+
+        //firstly remove all events that don't have a notify flag set or which are in the past
+        Iterator<Event> iterator = localEvents.iterator();
+        while (iterator.hasNext()) {
+            Event localEvent = iterator.next();
+
+            if (!localEvent.getNotify()) {
+                iterator.remove();
+                continue;
+            }
+            if (compareDateToToday(localEvent.getDate()) < 0)
+                iterator.remove();
+        }
+
+        //then update the notify flag for remote events that match
+        //reversing it because there are likely fewer local events that match
+        for (Event localEvent : localEvents) {
+            String title = localEvent.getTitle();
+            String description = localEvent.getDescription();
+
+            for (Event remoteEvent : remoteEvents) {
+                if (remoteEvent.getTitle().equals(title) && remoteEvent.getDescription().equals(description))
+                    remoteEvent.setNotify(true);
+            }
+        }
+
+        return remoteEvents;
     }
 }

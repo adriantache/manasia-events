@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -14,7 +13,6 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +23,6 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
-import com.adriantache.manasia_events.db.EventDBHelper;
 import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
@@ -42,11 +39,8 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     private static final String DBEventIDTag = "DBEventID";
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
@@ -167,16 +161,18 @@ public class MainActivity extends AppCompatActivity {
     //todo improve duplicate identification code OR keep code to just delete database contents (but add check for remote events FIRST)
     private void updateDatabase(boolean getRemote) {
         //get current working ArrayList, if it exists
+        //todo figure out what this did, then most likely refactor it out of existence
         ArrayList<Event> remoteEvents = events;
 
         //todo add networking code after we figure out data input, for now this can do
         if (getRemote) remoteEvents = (ArrayList<Event>) dummyData();
 
-        //get current database contents
-        ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
-
         if (remoteEvents != null) {
-            //firstly delete ALL events from the table
+            //first of all transfer all notify statuses from the local database to the temporary remote database
+            ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
+            remoteEvents = Utils.updateNotifyInRemote(remoteEvents, DBEvents);
+
+            //then delete ALL events from the table
             getContentResolver().delete(CONTENT_URI, null, null);
 
             //then add the remote events
@@ -235,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
     }
+
 
     /**
      * Method searches whether an Event exists in an ArrayList
