@@ -1,5 +1,6 @@
 package com.adriantache.manasia_events.util;
 
+import android.os.Build;
 import android.support.annotation.Nullable;
 
 import com.adriantache.manasia_events.custom_class.Event;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 /**
  * Class to store general utility functions
@@ -115,5 +117,79 @@ public final class Utils {
         }
 
         return remoteEvents;
+    }
+
+    /**
+     * Method searches whether an Event exists in an ArrayList
+     * todo use this or remove this
+     *
+     * @param event      Event object to be searched
+     * @param eventsTemp ArrayList to search in
+     * @return Returns 0 if event not found, <0 for partial match and >0 if found
+     */
+    public static int searchEventInArrayList(Event event, @Nullable ArrayList<Event> eventsTemp) {
+        if (eventsTemp == null) return 0;
+
+        //search the array for the event
+        if (Build.VERSION.SDK_INT >= 24) {
+            ArrayList<Event> result = (ArrayList<Event>) eventsTemp.parallelStream()
+                    .filter(a -> a.getTitle().equals(event.getTitle()) &&
+                            a.getDescription().equals(event.getDescription()) &&
+                            a.getDate().equals(event.getDate()) &&
+                            a.getPhotoUrl().equals(event.getPhotoUrl()) &&
+                            a.getCategory_image() == event.getCategory_image())
+                    .collect(Collectors.toList());
+
+            if (result.size() > 0) return result.size();
+
+            result = (ArrayList<Event>) eventsTemp.parallelStream()
+                    .filter(a -> (a.getTitle().equals(event.getTitle()) &&
+                            a.getDescription().equals(event.getDescription()) ||
+                            a.getDate().equals(event.getDate()) ||
+                            a.getPhotoUrl().equals(event.getPhotoUrl()) ||
+                            a.getCategory_image() == event.getCategory_image())
+                            ||
+                            (a.getDescription().equals(event.getDescription()) &&
+                                    a.getTitle().equals(event.getTitle()) ||
+                                    a.getDate().equals(event.getDate()) ||
+                                    a.getPhotoUrl().equals(event.getPhotoUrl()) ||
+                                    a.getCategory_image() == event.getCategory_image())
+                    )
+                    .collect(Collectors.toList());
+
+            if (result.size() == 1) {
+                //this sets the DBEventID it has found, but this isn't working with the way we
+                //currently process the return value for this method
+                int DBEventID = result.get(0).getDatabaseID();
+            } else if (result.size() > 0) return -result.size();
+        } else {
+            int foundMatch = 0;
+            int foundPartial = 0;
+
+            for (Event a : eventsTemp) {
+                if (a.getTitle().equals(event.getTitle()) &&
+                        a.getDescription().equals(event.getDescription()) &&
+                        a.getDate().equals(event.getDate()) &&
+                        a.getPhotoUrl().equals(event.getPhotoUrl()) &&
+                        a.getCategory_image() == event.getCategory_image())
+                    foundMatch++;
+                else if ((a.getTitle().equals(event.getTitle()) &&
+                        a.getDescription().equals(event.getDescription()) ||
+                        a.getDate().equals(event.getDate()) ||
+                        a.getPhotoUrl().equals(event.getPhotoUrl()) ||
+                        a.getCategory_image() == event.getCategory_image())
+                        ||
+                        (a.getDescription().equals(event.getDescription()) &&
+                                a.getTitle().equals(event.getTitle()) ||
+                                a.getDate().equals(event.getDate()) ||
+                                a.getPhotoUrl().equals(event.getPhotoUrl()) ||
+                                a.getCategory_image() == event.getCategory_image()))
+                    foundPartial++;
+            }
+
+            if (foundMatch > 0) return foundMatch;
+            else if (foundPartial > 0) return -foundPartial;
+        }
+        return 0;
     }
 }
