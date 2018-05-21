@@ -11,16 +11,13 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginTop="0dp"
+        android:contentDescription="@string/event_thumbnail"
         android:scaleType="centerCrop"
         android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background"
-        tools:targetApi="lollipop"
-        android:contentDescription="@string/event_thumbnail" />
-
-    <!-- todo add notify here as toggle  -->
-    <!-- or maybe keep it below and use this https://androidexample365.com/google-launcher-style-implementation-of-switch-icon/-->
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/location"
@@ -46,8 +43,8 @@
         app:layout_constraintEnd_toEndOf="@+id/month"
         app:layout_constraintStart_toStartOf="@+id/month"
         app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-        tools:text="21"
-        tools:targetApi="lollipop" />
+        tools:targetApi="lollipop"
+        tools:text="21" />
 
     <TextView
         android:id="@+id/month"
@@ -58,8 +55,8 @@
         android:transitionName="month"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/day"
-        tools:text="APRIL"
-        tools:targetApi="lollipop" />
+        tools:targetApi="lollipop"
+        tools:text="APRIL" />
 
     <TextView
         android:id="@+id/title"
@@ -75,8 +72,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/month"
         app:layout_constraintTop_toTopOf="@+id/day"
-        tools:text="Record Shop Day After Party w/ The Groovers Delight"
-        tools:targetApi="lollipop" />
+        tools:targetApi="lollipop"
+        tools:text="@tools:sample/lorem" />
 
     <ImageView
         android:id="@+id/category_image"
@@ -85,37 +82,28 @@
         android:layout_marginEnd="4dp"
         android:layout_marginTop="4dp"
         android:background="#aa607D8B"
+        android:contentDescription="@string/category_image"
         android:padding="4dp"
         android:transitionName="category_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background"
         app:srcCompat="@drawable/shop"
-        tools:targetApi="lollipop"
-        android:contentDescription="@string/category_image" />
+        tools:targetApi="lollipop" />
 
-    <!-- todo remove this layout -->
-    <LinearLayout
-        android:id="@+id/bookmark_layout"
+    <ImageView
+        android:id="@+id/notify_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:background="#aa607D8B"
-        android:orientation="horizontal"
-        android:padding="4dp"
-        android:transitionName="bookmark_layout"
+        android:contentDescription="@string/notify_status"
+        android:padding="8dp"
+        android:transitionName="notify_status"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_background"
-        tools:targetApi="lollipop">
-
-        <ImageView
-            android:id="@+id/bookmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            app:srcCompat="@drawable/alarm"
-            android:contentDescription="@string/bookmark_icon" />
-    </LinearLayout>
+        app:srcCompat="@drawable/alarm"
+        tools:targetApi="lollipop" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -159,12 +147,12 @@
         android:layout_height="50dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
+        android:contentDescription="@string/back_button"
         android:focusable="true"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back"
-        android:contentDescription="@string/back_button" />
+        app:srcCompat="@drawable/back" />
 
     <TextView
         android:id="@+id/call"
@@ -242,6 +230,6 @@
         app:layout_constraintStart_toEndOf="@id/notify"
         app:layout_constraintTop_toTopOf="@id/notify" />
 
-    <!--todo add extra elements-->
+    <!--todo add extra elements for each event (SoundCloud, etc.)-->
 
 </android.support.constraint.ConstraintLayout>

@@ -48,10 +48,8 @@ public class EventDetail extends AppCompatActivity {
     TextView month;
     @BindView(R.id.title)
     TextView title;
-    @BindView(R.id.bookmark)
-    ImageView bookmark;
-    @BindView(R.id.bookmark_layout)
-    LinearLayout bookmark_layout;
+    @BindView (R.id.notify_status)
+    ImageView notify_status;
     @BindView(R.id.description)
     TextView description;
     @BindView(R.id.back)
@@ -114,19 +112,19 @@ public class EventDetail extends AppCompatActivity {
             notify_icon.setEnabled(false);
 
             //also hide the notification indicator up top
-            bookmark_layout.setVisibility(View.INVISIBLE);
+            notify_status.setVisibility(View.INVISIBLE);
         } else
             notify.setOnClickListener(v -> {
                 if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
                     Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
-                    bookmark.setImageResource(R.drawable.alarm);
+                    notify_status.setImageResource(R.drawable.alarm);
                     event.setNotify(0);
                     updateDatabase();
                 } else {
                     notify_icon.setIconEnabled(true);
                     Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
-                    bookmark.setImageResource(R.drawable.alarm_accent);
+                    notify_status.setImageResource(R.drawable.alarm_accent);
                     event.setNotify(1);
                     updateDatabase();
 
@@ -149,9 +147,9 @@ public class EventDetail extends AppCompatActivity {
         title.setText(event.getTitle());
         description.setText(event.getDescription());
         if (event.getNotify() == 1)
-            bookmark.setImageResource(R.drawable.alarm_accent);
+            notify_status.setImageResource(R.drawable.alarm_accent);
         else
-            bookmark.setImageResource(R.drawable.alarm);
+            notify_status.setImageResource(R.drawable.alarm);
 
         //set notify button state depending on notify state
         notify_icon.setIconEnabled(event.getNotify() == 1);

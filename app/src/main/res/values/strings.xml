@@ -2,7 +2,7 @@
     <string name="app_name">manasia</string>
     <string name="manasia_address">Stelea Spataru 13, Bucuresti</string>
     <string name="category_image">Category image</string>
-    <string name="bookmark_icon">bookmark_icon</string>
+    <string name="notify_status">bookmark_icon</string>
     <string name="back_button">Back button</string>
     <string name="call">CALL</string>
     <string name="notify">NOTIFY</string>

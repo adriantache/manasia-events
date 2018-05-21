@@ -55,14 +55,14 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             //hide notification group if event is in the past
             if (Utils.compareDateToToday(event.getDate()) < 0)
-                holder.bookmark_layout.setVisibility(View.INVISIBLE);
-            else holder.bookmark_layout.setVisibility(View.VISIBLE);
+                holder.notify_status.setVisibility(View.INVISIBLE);
+            else holder.notify_status.setVisibility(View.VISIBLE);
 
             //change notification image depending on whether the user has set it to notify them
-            if (holder.bookmark_layout.getVisibility() == View.VISIBLE) {
+            if (holder.notify_status.getVisibility() == View.VISIBLE) {
                 if (event.getNotify() == 1)
-                    holder.bookmark.setImageResource(R.drawable.alarm_accent);
-                else holder.bookmark.setImageResource(R.drawable.alarm);
+                    holder.notify_status.setImageResource(R.drawable.alarm_accent);
+                else holder.notify_status.setImageResource(R.drawable.alarm);
             }
         }
 
@@ -80,10 +80,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView title;
         @BindView(R.id.category_image)
         ImageView category_image;
-        @BindView(R.id.bookmark)
-        ImageView bookmark;
-        @BindView(R.id.bookmark_layout)
-        LinearLayout bookmark_layout;
+        @BindView(R.id.notify_status)
+        ImageView notify_status;
 
         private ViewHolder(View view) {
             ButterKnife.bind(this, view);
