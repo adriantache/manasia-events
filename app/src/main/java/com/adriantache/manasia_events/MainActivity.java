@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         options = ActivityOptions
                                 .makeSceneTransitionAnimation(this,
                                         Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                        Pair.create(view.findViewById(R.id.bookmark_layout), "notify_status"),
+                                        Pair.create(view.findViewById(R.id.notify_status), "notify_status"),
                                         Pair.create(view.findViewById(R.id.category_image), "category_image")
                                 );
                 }

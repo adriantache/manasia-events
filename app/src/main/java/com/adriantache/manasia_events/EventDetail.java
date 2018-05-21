@@ -160,7 +160,6 @@ public class EventDetail extends AppCompatActivity {
         int result = ERROR_VALUE;
         if (DBEventID != ERROR_VALUE) {
             result = DBUtils.updateEventToDatabase(this, DBEventID, event);
-            Log.d(TAG, "updateDatabase: " + result + " DBEventID: " + DBEventID);
         }
 
         if (result == ERROR_VALUE) Log.d(TAG, "updateDatabase: Error writing event to database.");
