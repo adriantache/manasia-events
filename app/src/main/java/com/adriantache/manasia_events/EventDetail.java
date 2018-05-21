@@ -168,6 +168,7 @@ public class EventDetail extends AppCompatActivity {
 
     //method that handles clicking the back button to create an artificial back stack to MainActivity
     //todo test if TaskStackBuilder is usable now
+    //todo [IDEA] scroll list in MainActivity to appropriate event
     private void backToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         //todo test animations here
@@ -178,6 +179,7 @@ public class EventDetail extends AppCompatActivity {
     //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
     //http://droidmentor.com/schedule-notifications-using-alarmmanager/
     //https://developer.android.com/topic/performance/scheduling
+    //https://medium.com/google-developer-experts/services-the-life-with-without-and-worker-6933111d62a6
     private void showNotification(Event event) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -238,12 +240,11 @@ public class EventDetail extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(1, notificationBuilder.build());
 
+        //todo setting to always notify on the day of the event
         //todo display a snackbar to offer notification on all events https://www.androidhive.info/2015/09/android-material-design-snackbar-example/
         //Snackbar.make(snackbar_layout, "TESTED", LENGTH_SHORT);
     }
 }
 
-//todo create intent to open calendar to schedule event ?
-//todo create intent to open FB event page ?
-//todo setting to always notify on the day of the event
-//todo implement SnackBar to ask if user wants to always get notified
+//todo [IDEA] create intent to open calendar to schedule event ?
+//todo [IDEA] create intent to open FB event page ?

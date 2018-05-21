@@ -129,7 +129,6 @@
     </LinearLayout>
     <!-- EXPANSION PANEL END-->
 
-    <!--todo replace with RecyclerView-->
     <ListView
         android:id="@+id/list_view"
         android:layout_width="0dp"

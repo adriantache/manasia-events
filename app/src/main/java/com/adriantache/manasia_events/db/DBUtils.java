@@ -3,10 +3,7 @@ package com.adriantache.manasia_events.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
 
@@ -20,7 +17,6 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
 /**
@@ -39,10 +35,6 @@ public final class DBUtils {
      * todo decide if we impose a limit on how many database entries to fetch
      */
     public static List<Event> readDatabase(Context context) {
-        //todo remove logging (maybe)
-
-        //todo map out db operations to figure out bug
-        final String TAG = "DBUtils";
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
@@ -54,7 +46,6 @@ public final class DBUtils {
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, sortOrder);
 
         if (cursor == null) {
-            Log.d(TAG, "readDatabase: Cannot retrieve cursor from EventProvider");
             return null;
         }
 
@@ -63,7 +54,6 @@ public final class DBUtils {
         try {
             if (cursor.getCount() == 0) {
                 cursor.close();
-                Log.d(TAG, "readDatabase: Cursor is empty");
                 return null;
             }
 
@@ -132,9 +122,9 @@ public final class DBUtils {
     /**
      * Method to send an Event object to the database and update its details
      *
-     * @param context      Context for EventDBHelper
-     * @param DBEventID    Unique database ID of the event, as fetched from the database
-     * @param event        Event object to be updated into the database
+     * @param context   Context for EventDBHelper
+     * @param DBEventID Unique database ID of the event, as fetched from the database
+     * @param event     Event object to be updated into the database
      * @return (long) Result of the insertion operation, should be == DBEventID
      */
     public static int updateEventToDatabase(Context context, int DBEventID, Event event) {

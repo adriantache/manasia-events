@@ -37,7 +37,6 @@ public class EventProvider extends ContentProvider {
     }
 
     private EventDBHelper eventDBHelper;
-    //todo [IMPORTANT] replace all database access with this provider
 
     @Override
     public boolean onCreate() {
@@ -135,7 +134,7 @@ public class EventProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        //todo properly understand what this does and why we should care
+        //we don't need to bother with this method, so we'll leave it unused
         return null;
     }
 
@@ -154,7 +153,7 @@ public class EventProvider extends ContentProvider {
         String date = values.getAsString(COLUMN_EVENT_DATE);
         if (date == null)
             throw new IllegalArgumentException("Event requires a date");
-        //todo determine if we allow past dates
+        //todo determine if we allow past dates after updating data acquisition
         //else if (compareDateToToday(date)<0)
         // throw new IllegalArgumentException("Event cannot be in the past");
 

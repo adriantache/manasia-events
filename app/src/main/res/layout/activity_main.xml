@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--todo add actions like call and navigate-->
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
@@ -145,8 +147,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/expansionLinearLayout" />
 
-
-    <!--todo wrap this stuff in an ExpansionPanel and add actions like call and navigate-->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"

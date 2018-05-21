@@ -27,7 +27,6 @@ import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,10 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean shop;
     private boolean hub;
     private boolean layout_animated = false;
-    //DBEventID used in the updateDatabase method
-    private int DBEventID;
 
     //todo test if necessary after DB refactor
+    //todo test if necessary after using TaskStackBuilder
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         options = ActivityOptions
                                 .makeSceneTransitionAnimation(this,
                                         Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                        Pair.create(view.findViewById(R.id.bookmark_layout), "bookmark_layout"),
+                                        Pair.create(view.findViewById(R.id.bookmark_layout), "notify_status"),
                                         Pair.create(view.findViewById(R.id.category_image), "category_image")
                                 );
                 }
@@ -626,7 +624,6 @@ public class MainActivity extends AppCompatActivity {
 //todo add notification on new events added to remote database
 //todo extract all strings into XML
 //todo fix any warnings/errors
-//todo [IDEA] indication on how crowded it is
 //todo [IDEA] feature hub shops to attract clients (i.e. give them space in the app or include their events)
 //todo create event info subclass
 //todo add info about the hub somewhere (on logo click?) and indicate it visually
