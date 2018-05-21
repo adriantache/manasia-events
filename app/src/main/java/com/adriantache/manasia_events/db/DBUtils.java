@@ -47,7 +47,11 @@ public final class DBUtils {
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
 
-        Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, null);
+        //sort events in descending order to have most recent first
+        //todo determine this order after figuring out remote fetching
+        String sortOrder = "DESC";
+
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, sortOrder);
 
         if (cursor == null) {
             Log.d(TAG, "readDatabase: Cannot retrieve cursor from EventProvider");

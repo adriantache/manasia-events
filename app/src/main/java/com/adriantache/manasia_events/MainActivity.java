@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -24,11 +23,9 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
-import com.adriantache.manasia_events.db.EventDBHelper;
 import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null) {
-            //reverse order of events in ArrayList to keep most recent on top
-            Collections.reverse(events);
-
             //populate list
             //todo replace dummy data with real data, eventually
             //todo set empty list text view and progress bar
@@ -694,9 +688,6 @@ public class MainActivity extends AppCompatActivity {
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null) {
-            //todo figure out how to eliminate this problematic step (include in readDatabase?)
-            Collections.reverse(events);
-
             listView.setAdapter(new EventAdapter(this, filter(events)));
         }
     }
