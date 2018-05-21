@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
+import com.adriantache.manasia_events.db.EventDBHelper;
 import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             //todo set empty list text view and progress bar
             listView.setAdapter(new EventAdapter(this, events));
 
+            //set click listener and transition animation
             listView.setOnItemClickListener((parent, view, position, id) -> {
                 Event event = (Event) parent.getItemAtPosition(position);
 
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //code to minimize and maximize logo on click (maybe not terribly useful, but it looks neat)
+        //todo modify code to show some useful info instead of just minimizing logo (figure out available size)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             logo.setOnClickListener(v -> minimizeLogo());
         }
@@ -156,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
      * 3. Synchronizes ListView positions with SQLite IDs (todo - rewrite this or ignore it, IDs are stored in each Event object)
      * todo add logic to delete entries deleted from remote
      *
-     * @param getRemote get remote data to store in the DB (TBD - does this make any sense if we update only in EventDetail?)
+     * @param getRemote get remote data to store in the DB (todo - does this make any sense if we update only in EventDetail?)
      */
     //todo improve duplicate identification code OR keep code to just delete database contents (but add check for remote events FIRST)
     private void updateDatabase(boolean getRemote) {
@@ -172,10 +177,10 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
             remoteEvents = Utils.updateNotifyInRemote(remoteEvents, DBEvents);
 
-            //then delete ALL events from the table
+            //then delete ALL events from the local table
             getContentResolver().delete(CONTENT_URI, null, null);
 
-            //then add the remote events
+            //then add the remote events to the local database
             for (Event event : remoteEvents) {
                 ContentValues values = new ContentValues();
                 values.put(COLUMN_EVENT_TITLE, event.getTitle());
@@ -184,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(event.getPhotoUrl()))
                     values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
                 values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
+                values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
 
                 getContentResolver().insert(CONTENT_URI, values);
             }

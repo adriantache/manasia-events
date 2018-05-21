@@ -119,10 +119,10 @@ public class EventProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case EVENTS:
                 SQLiteDatabase db = eventDBHelper.getWritableDatabase();
+
                 return db.delete(TABLE_NAME, selection, selectionArgs);
             case SINGLE_EVENT:
                 SQLiteDatabase db2 = eventDBHelper.getWritableDatabase();
-
                 selection = _ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 

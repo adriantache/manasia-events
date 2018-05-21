@@ -25,7 +25,7 @@ public final class EventContract {
         public static final String COLUMN_EVENT_DATE = "date";
         public static final String COLUMN_EVENT_PHOTO_URL = "photo_url";
         public static final String COLUMN_EVENT_CATEGORY_IMAGE = "category_image";
-        static final String COLUMN_EVENT_NOTIFY = "notify";
+        public static final String COLUMN_EVENT_NOTIFY = "notify";
 
         //possible values for category image column
         static final int CATEGORY_HUB = R.drawable.hub;
