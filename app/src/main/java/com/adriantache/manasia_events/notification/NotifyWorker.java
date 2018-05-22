@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
  **/
 public class NotifyWorker extends Worker {
     private static final int ERROR_VALUE = -1;
+    private static final String manasia_notification_channel = "Manasia Event Reminder";
 
     @NonNull
     @Override
@@ -39,7 +41,6 @@ public class NotifyWorker extends Worker {
     }
 
     private void triggerNotification() {
-        final String manasia_notification_channel = "Manasia Event Reminder";
         final int DBEventID = getInputData().getInt(DBEventIDTag, ERROR_VALUE);
 
         Event event = null;
@@ -53,7 +54,7 @@ public class NotifyWorker extends Worker {
 
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !notificationChannelExists()) {
             //define the importance level of the notification
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
@@ -108,5 +109,17 @@ public class NotifyWorker extends Worker {
         //trigger the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(1, notificationBuilder.build());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean notificationChannelExists() {
+        NotificationManager manager = (NotificationManager)
+                getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = null;
+
+        if (manager != null)
+            channel = manager.getNotificationChannel(manasia_notification_channel);
+
+        return channel != null && channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
     }
 }

@@ -26,11 +26,11 @@ public class NotifyUtils {
     /**
      * Method to read all events from the database and set notifications for the ones that
      * the user selected to be notified for.
-     *
+     * <p>
      * todo [IDEA] allow user to be notified for all events but opt out of some
      *
      * @param context application context for database operation
-     * @param addAll flag to determine if user will be notified for all events in the future
+     * @param addAll  flag to determine if user will be notified for all events in the future
      */
     public static void scheduleNotifications(Context context, boolean addAll) {
         ArrayList<Event> events = (ArrayList<Event>) readDatabase(context);
