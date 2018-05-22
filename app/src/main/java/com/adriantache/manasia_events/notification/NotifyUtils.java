@@ -23,10 +23,6 @@ public class NotifyUtils {
     //set a tag in order to be able to disable all work if needed
     private static final String workTag = "notificationWork";
 
-    private static void resetAllWork() {
-        WorkManager.getInstance().cancelAllWorkByTag(workTag);
-    }
-
     /**
      * Method to read all events from the database and set notifications for the ones that
      * the user selected to be notified for.
@@ -50,6 +46,24 @@ public class NotifyUtils {
             if (event.getNotify() == 1)
                 addNotification(event.getDatabaseID(), event.getDate());
         }
+    }
+
+    //creating a similar method for the remote events fetch since we already have that array
+    //this method schedules all future events since that's the only way it will be triggered
+    public static void scheduleNotifications(ArrayList<Event> events) {
+        if (events == null || events.size() == 0) return;
+
+        resetAllWork();
+
+        for (Event event : events) {
+            if (compareDateToToday(event.getDate()) > -1) {
+                addNotification(event.getDatabaseID(), event.getDate());
+            }
+        }
+    }
+
+    private static void resetAllWork() {
+        WorkManager.getInstance().cancelAllWorkByTag(workTag);
     }
 
     private static void addNotification(int DBEventID, String eventDate) {

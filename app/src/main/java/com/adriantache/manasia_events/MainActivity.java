@@ -38,6 +38,7 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 
 public class MainActivity extends AppCompatActivity {
     public static final String DBEventIDTag = "DBEventID";
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean music;
     private boolean shop;
     private boolean hub;
+    private boolean notifyOnAllEvents;
     private boolean layout_animated = false;
 
     //todo test if necessary after DB refactor
@@ -184,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
 
                 getContentResolver().insert(CONTENT_URI, values);
             }
+
+            //update event notifications for all future events fetched from the remote database
+            if (notifyOnAllEvents) scheduleNotifications(remoteEvents);
         }
     }
 
@@ -228,11 +233,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //todo enable functionality to toggle all notifications
     private void getPreferences() {
         SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
         music = sharedPrefs.getBoolean("music", true);
         shop = sharedPrefs.getBoolean("shop", true);
         hub = sharedPrefs.getBoolean("hub", true);
+        notifyOnAllEvents = sharedPrefs.getBoolean("notify", false);
 
         setFilterColor();
     }
