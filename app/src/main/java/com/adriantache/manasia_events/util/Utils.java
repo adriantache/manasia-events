@@ -1,19 +1,10 @@
 package com.adriantache.manasia_events.util;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,7 +62,7 @@ public final class Utils {
     public static int compareDateToToday(String date) {
         final int DATE_ERROR = 999999;
 
-        Date formattedDate = convertDate(date,false);
+        Date formattedDate = convertDate(date, false);
         Date today = getToday(true);
 
         if (formattedDate != null)
@@ -227,7 +218,7 @@ public final class Utils {
     }
 
     public static long calculateDelay(String eventDate) {
-        Date event = convertDate(eventDate,true);
+        Date event = convertDate(eventDate, true);
         Date today = getToday(false);
 
         return event.getTime() - today.getTime();

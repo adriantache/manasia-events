@@ -9,14 +9,18 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +68,8 @@ public class EventDetail extends AppCompatActivity {
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
     LinearLayout notify;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
 
@@ -131,9 +137,11 @@ public class EventDetail extends AppCompatActivity {
                     notify_status.setImageResource(R.drawable.alarm_accent);
                     event.setNotify(1);
                     updateDatabase();
+
+                    //if we set the notify flag, use the Snackbar to prompt the user to always get notified
+                    showSnackbar();
                 }
 
-                //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
                 scheduleNotifications(getApplicationContext(), false);
             });
     }
@@ -176,76 +184,15 @@ public class EventDetail extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //todo implement real notification system (probably with a service)
-    //todo schedule notification https://stackoverflow.com/questions/36902667/how-to-schedule-notification-in-android
-    //http://droidmentor.com/schedule-notifications-using-alarmmanager/
-    //https://developer.android.com/topic/performance/scheduling
-    //https://medium.com/google-developer-experts/services-the-life-with-without-and-worker-6933111d62a6
-    private void showNotification(Event event) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //define the importance level of the notification
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            //build the actual notification channel, giving it a unique ID and name
-            NotificationChannel channel =
-                    new NotificationChannel(manasia_notification_channel, manasia_notification_channel, importance);
-
-            //set a description for the channel
-            String description = "A channel which shows notifications about events at Manasia";
-            channel.setDescription(description);
-
-            //set notification LED colour
-            channel.setLightColor(Color.MAGENTA);
-
-            // Register the channel with the system
-            NotificationManager notificationManager = (NotificationManager) getApplicationContext().
-                    getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-
-        //create an intent to open the event details activity when the user clicks the notification
-        Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-        intent.putExtra(DBEventIDTag, DBEventID);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //put together the PendingIntent
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
-
-        //todo figure out TaskStackBuilder, maybe it's better than my solution
-        //https://developer.android.com/guide/components/activities/tasks-and-back-stack
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-//        stackBuilder.addParentStack(MainActivity.class);
-//        stackBuilder.addNextIntent(intent);
-//        PendingIntent pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_ONE_SHOT);
-
-        //get event details to show in the notification
-        String notificationTitle = "Manasia event: " + event.getTitle();
-        String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
-
-        //build the notification
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(getApplicationContext(), manasia_notification_channel)
-                        .setSmallIcon(R.drawable.ic_manasia_small)
-                        .setContentTitle(notificationTitle)
-                        .setContentText(notificationText)
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        //trigger the notification
-        //todo figure out how to schedule this instead of just showing it
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        notificationManager.notify(1, notificationBuilder.build());
-    }
-
-    private void showSnackbar() {
-        //todo setting to always notify on the day of the event
-        //todo display a snackbar to offer notification on all events https://www.androidhive.info/2015/09/android-material-design-snackbar-example/
-        //Snackbar.make(snackbar_layout, "TESTED", LENGTH_SHORT);
+    //todo [IDEA] always notify on the day of the event
+    public void showSnackbar() {
+        Snackbar snackbar = Snackbar.make(scrollView,
+                "Would you like to be notified for all events?",
+                Snackbar.LENGTH_SHORT);
+        snackbar.show();
+        View view = snackbar.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 }
 
