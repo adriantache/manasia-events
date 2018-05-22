@@ -28,7 +28,6 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.support.v4.app.NotificationCompat.CATEGORY_EVENT;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
-import static com.adriantache.manasia_events.util.Utils.extractDate;
 
 /**
  * Custom class to trigger scheduled notifications
@@ -36,6 +35,7 @@ import static com.adriantache.manasia_events.util.Utils.extractDate;
 public class NotifyWorker extends Worker {
     private static final int ERROR_VALUE = -1;
     private static final String manasia_notification_channel = "Manasia Event Reminder";
+    private static final String manasia_notification_channel_group = "Manasia Events";
 
     @NonNull
     @Override
@@ -101,7 +101,7 @@ public class NotifyWorker extends Worker {
 
         //get event details to show in the notification
         String notificationTitle = "Manasia event: " + event.getTitle();
-        String notificationText = "Today at Stelea Spatarul 13, Bucuresti";
+        String notificationText = "Today, " + event.getDate() + ", at Stelea Spatarul 13, Bucuresti";
 
         //set the event image in the notification
         Bitmap largeImage = null;
@@ -123,6 +123,7 @@ public class NotifyWorker extends Worker {
                         .setCategory(CATEGORY_EVENT)
                         .setColor(0xFF4081)
                         .setVisibility(VISIBILITY_PUBLIC)
+                        .setGroup(manasia_notification_channel_group)
 //                        .setStyle(new NotificationCompat.BigTextStyle()
 //                                .bigText(event.getDescription()))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
