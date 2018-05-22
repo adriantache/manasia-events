@@ -488,6 +488,25 @@ public class MainActivity extends AppCompatActivity {
                         "Iubirea noastră-i un kazoo!",
                 "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/32650661_2150225811877557_8249354285406486528_n.jpg?_nc_cat=0&_nc_eui2=AeGTWRiiUSLtLab1hq25iUa0TkJu_xjfnaqEh6QnuyPJCNWFnLOdzN07nF6fTY6vPuenSw9PDgip4k4puDS38BMOENdlU3gv0otv08iNvG0fDA&oh=23420b5ddaa2d1dd483e84a9c7e56a94&oe=5B87CCE5",
                 R.drawable.music));
+        arrayList.add(new Event("27.05.2018",
+                "Grillty Pleasure la Manasia",
+                "Grătarul este o formă de gătit care implică căldură uscată aplicată pe suprafața alimentelor, in acelasi timp fiind si o forma de socilizare des intalnita in cultura romaneasca.\n" +
+                        "\n" +
+                        "Avem un mix bun pentru ultima duminica din Mai. \n" +
+                        "Ne hranim placerile nevinovate cu un gratar autentic romanesc si muzica de calitate. Avem terasa, umbra deasa si un aer de vacanta. \n" +
+                        "\n" +
+                        "Pastrama, carnaciorii, mititeii, frigaruile insotite cu legume la gratar, cartofi de tot felul, asortate cu un mix de muraturi ca sa fie ca la carte. \n" +
+                        "\n" +
+                        "Daytime Dj set - ESCU \n" +
+                        "\n" +
+                        "27 mai de Manasia 12 PM - 09 PM \n" +
+                        "\n" +
+                        "Manasia HUB\n" +
+                        "real people | real stories \n" +
+                        "Stelea Spataru 13\n" +
+                        "Kid Friendly",
+                "https://scontent.fotp3-1.fna.fbcdn.net/v/t15.0-10/29782337_161227571387958_4862142659721953280_n.jpg?_nc_cat=0&oh=cd43a6ff8db08d58050a33f65bbc37fa&oe=5BC4AB2F",
+                R.drawable.hub));
 
         return arrayList;
     }
