@@ -17,10 +17,10 @@ import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 
-import androidx.work.WorkManager;
 import androidx.work.Worker;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 
 /**
  * Custom class to trigger scheduled notifications
@@ -40,7 +40,6 @@ public class NotifyWorker extends Worker {
 
     private void triggerNotification() {
         final String manasia_notification_channel = "Manasia Event Reminder";
-        final String DBEventIDTag = "DBEventID";
         final int DBEventID = getInputData().getInt(DBEventIDTag, ERROR_VALUE);
 
         Event event = null;
@@ -49,6 +48,8 @@ public class NotifyWorker extends Worker {
             Toast.makeText(getApplicationContext(), "Error retrieving Event ID", Toast.LENGTH_SHORT).show();
         else
             event = DBUtils.getEventFromDatabase(getApplicationContext(), DBEventID);
+
+        if (event == null) return;
 
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -105,7 +106,6 @@ public class NotifyWorker extends Worker {
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         //trigger the notification
-        //todo figure out how to schedule this instead of just showing it
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(1, notificationBuilder.build());
     }

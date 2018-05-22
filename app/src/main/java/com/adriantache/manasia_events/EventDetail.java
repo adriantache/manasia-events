@@ -22,26 +22,22 @@ import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
-import com.adriantache.manasia_events.notification.NotifyWorker;
+import com.adriantache.manasia_events.notification.NotifyUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static com.adriantache.manasia_events.util.Utils.calculateDelay;
+import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
+import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 
 public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";
-    private static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
     @BindView(R.id.thumbnail)
@@ -135,31 +131,11 @@ public class EventDetail extends AppCompatActivity {
                     notify_status.setImageResource(R.drawable.alarm_accent);
                     event.setNotify(1);
                     updateDatabase();
-
-                    //todo remove this and replace it with some kind of scheduling
-                    //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
-                    //showNotification(event);
-                    scheduleNotification();
                 }
+
+                //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
+                scheduleNotifications(getApplicationContext(), false);
             });
-    }
-
-    private void scheduleNotification() {
-        //set a tag in order to be able to disable all work if needed
-        //todo figure out if we will actually use this mechanism
-        final String workTag = "notificationWork";
-        WorkManager.getInstance().cancelAllWorkByTag(workTag);
-
-        //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
-        Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
-
-        OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
-                .setInitialDelay(calculateDelay(event.getDate()), TimeUnit.MILLISECONDS)
-                .setInputData(inputData)
-                .addTag(workTag)
-                .build();
-
-        WorkManager.getInstance().enqueue(notificationWork);
     }
 
     private void populateDetails() {

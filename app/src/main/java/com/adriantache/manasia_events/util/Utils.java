@@ -222,9 +222,6 @@ public final class Utils {
         Date event = convertDate(eventDate,true);
         Date today = getToday(false);
 
-        Log.d("UTILS", "calculateDelay: "+event.toString());
-        Log.d("UTILS", "Delay: "+ String.valueOf(event.getTime() - today.getTime()));
-
         return event.getTime() - today.getTime();
     }
 }

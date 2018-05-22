@@ -40,7 +40,7 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String DBEventIDTag = "DBEventID";
+    public static final String DBEventIDTag = "DBEventID";
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
