@@ -1,5 +1,6 @@
 package com.adriantache.manasia_events.notification;
 
+import android.app.NotificationManager;
 import android.content.Context;
 
 import com.adriantache.manasia_events.custom_class.Event;
@@ -29,14 +30,14 @@ public class NotifyUtils {
      * <p>
      * todo [IDEA] allow user to be notified for all events but opt out of some
      *
-     * @param context application context for database operation
+     * @param context application context for database operation and notification clearing
      * @param addAll  flag to determine if user will be notified for all events in the future
      */
     public static void scheduleNotifications(Context context, boolean addAll) {
         ArrayList<Event> events = (ArrayList<Event>) readDatabase(context);
         if (events == null || events.size() == 0) return;
 
-        resetAllWork();
+        resetAllWork(context);
 
         for (Event event : events) {
             if (addAll && compareDateToToday(event.getDate()) > -1) {
@@ -50,10 +51,10 @@ public class NotifyUtils {
 
     //creating a similar method for the remote events fetch since we already have that array
     //this method schedules all future events since that's the only way it will be triggered
-    public static void scheduleNotifications(ArrayList<Event> events) {
+    public static void scheduleNotifications(Context context, ArrayList<Event> events) {
         if (events == null || events.size() == 0) return;
 
-        resetAllWork();
+        resetAllWork(context);
 
         for (Event event : events) {
             if (compareDateToToday(event.getDate()) > -1) {
@@ -62,8 +63,17 @@ public class NotifyUtils {
         }
     }
 
-    private static void resetAllWork() {
+    private static void resetAllWork(Context context) {
+        //cancel all pending work tasks
         WorkManager.getInstance().cancelAllWorkByTag(workTag);
+
+        //clear all notifications to prevent duplicates
+        //todo [IMPORTANT] figure out database ID increment problem, should negate the need for this code
+        NotificationManager notificationManager = (NotificationManager) context.
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
     }
 
     private static void addNotification(int DBEventID, String eventDate) {

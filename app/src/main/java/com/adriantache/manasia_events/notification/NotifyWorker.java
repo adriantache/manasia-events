@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -17,11 +18,17 @@ import com.adriantache.manasia_events.EventDetail;
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 import androidx.work.Worker;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static android.support.v4.app.NotificationCompat.CATEGORY_EVENT;
+import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
+import static com.adriantache.manasia_events.util.Utils.extractDate;
 
 /**
  * Custom class to trigger scheduled notifications
@@ -94,7 +101,15 @@ public class NotifyWorker extends Worker {
 
         //get event details to show in the notification
         String notificationTitle = "Manasia event: " + event.getTitle();
-        String notificationText = event.getDate() + " at Stelea Spatarul 13, Bucuresti";
+        String notificationText = "Today at Stelea Spatarul 13, Bucuresti";
+
+        //set the event image in the notification
+        Bitmap largeImage = null;
+        try {
+            largeImage = Picasso.get().load(event.getPhotoUrl()).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //build the notification
         NotificationCompat.Builder notificationBuilder =
@@ -104,9 +119,16 @@ public class NotifyWorker extends Worker {
                         .setContentText(notificationText)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
+                        .setLargeIcon(largeImage)
+                        .setCategory(CATEGORY_EVENT)
+                        .setColor(0xFF4081)
+                        .setVisibility(VISIBILITY_PUBLIC)
+//                        .setStyle(new NotificationCompat.BigTextStyle()
+//                                .bigText(event.getDescription()))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        //trigger the notification, using DBEventID as its ID in order to show multiple notifications, if applicable
+        //trigger the notification, using DBEventID as its ID in order to show multiple
+        //notifications, if applicable, but no duplicates
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(DBEventID, notificationBuilder.build());
     }

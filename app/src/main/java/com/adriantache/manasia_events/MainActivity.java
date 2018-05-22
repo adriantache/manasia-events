@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //update event notifications for all future events fetched from the remote database
-            if (notifyOnAllEvents) scheduleNotifications(remoteEvents);
+            if (notifyOnAllEvents) scheduleNotifications(this, remoteEvents);
         }
     }
 
