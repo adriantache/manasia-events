@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginTop="0dp"
+        android:background="@color/colorAccent"
         android:contentDescription="@string/event_thumbnail"
         android:scaleType="centerCrop"
         android:transitionName="thumbnail"
@@ -139,12 +140,15 @@
         android:id="@+id/back_background"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorAccent" />
+        android:elevation="8dp"
+        android:background="@color/colorAccent"
+        tools:targetApi="lollipop" />
 
     <ImageView
         android:id="@+id/back"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:elevation="9dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:contentDescription="@string/back_button"
@@ -152,7 +156,8 @@
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
+        app:srcCompat="@drawable/back"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/call"
