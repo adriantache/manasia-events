@@ -106,9 +106,9 @@ public class NotifyWorker extends Worker {
                         .setAutoCancel(true)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        //trigger the notification
+        //trigger the notification, using DBEventID as its ID in order to show multiple notifications, if applicable
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        notificationManager.notify(1, notificationBuilder.build());
+        notificationManager.notify(DBEventID, notificationBuilder.build());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
