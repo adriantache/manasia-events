@@ -22,16 +22,22 @@ import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
+import com.adriantache.manasia_events.notification.NotifyWorker;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 
 public class EventDetail extends AppCompatActivity {
     private final static String manasia_notification_channel = "Manasia Event Reminder";
@@ -48,7 +54,7 @@ public class EventDetail extends AppCompatActivity {
     TextView month;
     @BindView(R.id.title)
     TextView title;
-    @BindView (R.id.notify_status)
+    @BindView(R.id.notify_status)
     ImageView notify_status;
     @BindView(R.id.description)
     TextView description;
@@ -82,6 +88,8 @@ public class EventDetail extends AppCompatActivity {
 
         if (DBEventID != ERROR_VALUE)
             event = DBUtils.getEventFromDatabase(this, DBEventID);
+        else
+            Toast.makeText(this, "Error getting event ID.", Toast.LENGTH_SHORT).show();
 
         if (event != null)
             populateDetails();
@@ -130,9 +138,28 @@ public class EventDetail extends AppCompatActivity {
 
                     //todo remove this and replace it with some kind of scheduling
                     //todo implement notifications in the main Event class, then run a method to reset and then set all notifications (might be inefficient)
-                    showNotification(event);
+                    //showNotification(event);
+                    scheduleNotification();
                 }
             });
+    }
+
+    private void scheduleNotification() {
+        //set a tag in order to be able to disable all work if needed
+        //todo figure out if we will actually use this mechanism
+        final String workTag = "notificationWork";
+        WorkManager.getInstance().cancelAllWorkByTag(workTag);
+
+        //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
+        Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
+
+        OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
+                .setInitialDelay(calculateDelay(event.getDate()), TimeUnit.MILLISECONDS)
+                .setInputData(inputData)
+                .addTag(workTag)
+                .build();
+
+        WorkManager.getInstance().enqueue(notificationWork);
     }
 
     private void populateDetails() {
@@ -170,7 +197,6 @@ public class EventDetail extends AppCompatActivity {
     //todo [IDEA] scroll list in MainActivity to appropriate event
     private void backToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        //todo test animations here
         startActivity(intent);
     }
 
@@ -238,7 +264,9 @@ public class EventDetail extends AppCompatActivity {
         //todo figure out how to schedule this instead of just showing it
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(1, notificationBuilder.build());
+    }
 
+    private void showSnackbar() {
         //todo setting to always notify on the day of the event
         //todo display a snackbar to offer notification on all events https://www.androidhive.info/2015/09/android-material-design-snackbar-example/
         //Snackbar.make(snackbar_layout, "TESTED", LENGTH_SHORT);

@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(DBEventIDTag, event.getDatabaseID());
 
                 //code to animate event details between activities
-                //todo add reverse animation?
                 ActivityOptions options = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     if (Utils.compareDateToToday(event.getDate()) < 0)
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                                 );
                 }
 
-                //todo determine if this makes sense, and whether to keep startActivityForResult
+                //if we can animate, do that, otherwise just open the EventDetail activity
                 if (options != null) {
                     startActivity(intent, options.toBundle());
                 } else {

@@ -41,7 +41,7 @@ public final class DBUtils {
 
         //sort events in descending order to have most recent first
         //todo determine this order after figuring out remote fetching
-        String sortOrder = "DESC";
+        String sortOrder = _ID + " DESC";
 
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, sortOrder);
 

@@ -2,6 +2,7 @@ package com.adriantache.manasia_events.util;
 
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
 
@@ -62,30 +63,54 @@ public final class Utils {
     public static int compareDateToToday(String date) {
         final int DATE_ERROR = 999999;
 
+        Date formattedDate = convertDate(date,false);
+        Date today = getToday(true);
+
+        if (formattedDate != null)
+            return formattedDate.compareTo(today);
+
+            //failure will default to show actions and let the user decide
+        else return DATE_ERROR;
+    }
+
+    private static Date getToday(boolean getMidnight) {
+        Date today = new Date();
+
+        if (getMidnight) {
+            //fix to set time to midnight -1 second, to ensure events from today are shown
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getDefault());
+            calendar.setTime(today);
+            calendar.set(Calendar.HOUR, -12);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, -1);
+            today = calendar.getTime();
+        }
+
+        return today;
+    }
+
+    private static Date convertDate(String date, boolean getNoon) {
         Date formattedDate = null;
+
         try {
             formattedDate = new SimpleDateFormat("dd.MM.yyyy", Locale.US).parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        Date today = new Date();
-
-        //fix to set time to midnight -1 second, to ensure events from today are shown
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getDefault());
-        calendar.setTime(today);
-        calendar.set(Calendar.HOUR, -12);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, -1);
-        today = calendar.getTime();
-
-        if (formattedDate != null) {
-            return formattedDate.compareTo(today);
+        if (getNoon) {
+            //set time to noon to prevent sending annoying notifications
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getDefault());
+            calendar.setTime(formattedDate);
+            calendar.set(Calendar.HOUR, +12);
+//            calendar.set(Calendar.MINUTE, 0);
+//            calendar.set(Calendar.SECOND, 0);
+            formattedDate = calendar.getTime();
         }
 
-        //failure will default to show actions and let the user decide
-        else return DATE_ERROR;
+        return formattedDate;
     }
 
     public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
@@ -191,5 +216,15 @@ public final class Utils {
             else if (foundPartial > 0) return -foundPartial;
         }
         return 0;
+    }
+
+    public static long calculateDelay(String eventDate) {
+        Date event = convertDate(eventDate,true);
+        Date today = getToday(false);
+
+        Log.d("UTILS", "calculateDelay: "+event.toString());
+        Log.d("UTILS", "Delay: "+ String.valueOf(event.getTime() - today.getTime()));
+
+        return event.getTime() - today.getTime();
     }
 }
