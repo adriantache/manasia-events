@@ -511,6 +511,13 @@ public class MainActivity extends AppCompatActivity {
                         "Kid Friendly",
                 "https://scontent.fotp3-1.fna.fbcdn.net/v/t15.0-10/29782337_161227571387958_4862142659721953280_n.jpg?_nc_cat=0&oh=cd43a6ff8db08d58050a33f65bbc37fa&oe=5BC4AB2F",
                 R.drawable.hub));
+        arrayList.add(new Event("01.06.2018",
+                "AM LOC!",
+                "Știm cât de important este să ai loc când ești LGBT. Cu surle, trâmbițe, bucurie în suflet și entuziasm te invităm pe 1 iunie, de la ora 16, la noul sediu MozaiQ la Manasia Hub, unde o să găsești o comunitate de oameni misto și muzică bună. Hai să-ți arătăm unde și cum lucrăm să facem România mai gay.\n" +
+                        "\n" +
+                        "Avem steaguri, avem tricouri, avem căni pline de curcubeu!",
+                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/33186798_2161717270508608_244750867436142592_n.jpg?_nc_cat=0&oh=c6519d13586f5bc8ce2d0ce19a10fd84&oe=5BC4DF8E",
+                R.drawable.hub));
 
         return arrayList;
     }
