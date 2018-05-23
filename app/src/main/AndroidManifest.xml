@@ -26,10 +26,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Settings"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
         <provider
-            android:authorities="com.adriantache.manasia_events"
             android:name=".db.EventProvider"
-            android:exported="false"/>
+            android:authorities="com.adriantache.manasia_events"
+            android:exported="false" />
     </application>
 
 </manifest>

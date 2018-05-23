@@ -215,7 +215,8 @@ public class EventDetail extends AppCompatActivity {
                     "You are already being notified for all events.",
                     Snackbar.LENGTH_LONG);
             snackbar.setAction("Settings", v -> {
-                //todo add action here to go to application settings
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
             });
             snackbar.show();
             View view = snackbar.getView();

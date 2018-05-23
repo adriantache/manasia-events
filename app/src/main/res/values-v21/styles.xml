@@ -10,5 +10,6 @@
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 </resources>

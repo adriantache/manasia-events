@@ -14,4 +14,7 @@
     <string name="shops">SHOPS</string>
     <string name="hub">HUB</string>
     <string name="level_of_crowdedness">Level of crowdedness:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
