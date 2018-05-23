@@ -1,5 +1,7 @@
 package com.adriantache.manasia_events.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.Nullable;
 
@@ -14,6 +16,9 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 
 /**
  * Class to store general utility functions
@@ -222,5 +227,10 @@ public final class Utils {
         Date today = getToday(false);
 
         return event.getTime() - today.getTime();
+    }
+
+    public static boolean getNotifyAllSetting(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        return sharedPref.getBoolean("notify", false);
     }
 }

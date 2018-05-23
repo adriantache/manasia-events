@@ -1,6 +1,7 @@
 package com.adriantache.manasia_events.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -21,6 +22,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventAdapter extends ArrayAdapter<Event> {
     public EventAdapter(@NonNull Context context, @NonNull List<Event> objects) {
@@ -60,7 +63,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             //change notification image depending on whether the user has set it to notify them
             if (holder.notify_status.getVisibility() == View.VISIBLE) {
-                if (event.getNotify() == 1)
+                if (event.getNotify() == 1 || getNotifyAllSetting(getContext()))
                     holder.notify_status.setImageResource(R.drawable.alarm_accent);
                 else holder.notify_status.setImageResource(R.drawable.alarm);
             }

@@ -1,18 +1,10 @@
 package com.adriantache.manasia_events;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,7 +18,6 @@ import android.widget.Toast;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
-import com.adriantache.manasia_events.notification.NotifyUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
@@ -36,12 +27,12 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
+import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventDetail extends AppCompatActivity {
-    private final static String manasia_notification_channel = "Manasia Event Reminder";
+    public static final String SHARED_PREFERENCES_TAG = "MainActivity.java";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
     @BindView(R.id.thumbnail)
@@ -72,6 +63,7 @@ public class EventDetail extends AppCompatActivity {
     ScrollView scrollView;
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
+    private boolean notifyOnAllEvents;
 
     @Override
     public void onBackPressed() {
@@ -83,6 +75,9 @@ public class EventDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
         ButterKnife.bind(this);
+
+        //read settings
+        notifyOnAllEvents = getNotifyAllSetting(this);
 
         //get the event for which to display details
         Intent intent = getIntent();
@@ -123,18 +118,24 @@ public class EventDetail extends AppCompatActivity {
 
             //also hide the notification indicator up top
             notify_status.setVisibility(View.INVISIBLE);
+        } else if (notifyOnAllEvents) {
+            notify_icon.setIconEnabled(true);
+            notify_status.setImageResource(R.drawable.alarm_accent);
+            notify.setOnClickListener(v -> showSnackbar());
         } else
             notify.setOnClickListener(v -> {
                 if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
-                    Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                     notify_status.setImageResource(R.drawable.alarm);
+
                     event.setNotify(0);
                     updateDatabase();
+
+                    Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                 } else {
                     notify_icon.setIconEnabled(true);
-                    Toast.makeText(getApplicationContext(), "We will notify you on the day of the event.", Toast.LENGTH_SHORT).show();
                     notify_status.setImageResource(R.drawable.alarm_accent);
+
                     event.setNotify(1);
                     updateDatabase();
 
@@ -185,14 +186,42 @@ public class EventDetail extends AppCompatActivity {
     }
 
     //todo [IDEA] always notify on the day of the event
+    //todo move this to Utils
+    //todo call this from MainActivity as well
+    //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {
-        Snackbar snackbar = Snackbar.make(scrollView,
-                "Would you like to be notified for all events?",
-                Snackbar.LENGTH_SHORT);
-        snackbar.show();
-        View view = snackbar.getView();
-        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        if (!notifyOnAllEvents) {
+            Snackbar snackbar = Snackbar.make(scrollView,
+                    "You will be notified on the day of the event.\n" +
+                            "Would you like to be notified for all events?",
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction("Activate", v -> {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("notify", true);
+                editor.apply();
+
+                //since we're activating the setting to always be notified, go ahead and schedule notifications
+                scheduleNotifications(getApplicationContext(), true);
+
+                Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
+            });
+            snackbar.show();
+            View view = snackbar.getView();
+            TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        } else {
+            Snackbar snackbar = Snackbar.make(scrollView,
+                    "You are already being notified for all events.",
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction("Settings", v -> {
+                //todo add action here to go to application settings
+            });
+            snackbar.show();
+            View view = snackbar.getView();
+            TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
     }
 }
 

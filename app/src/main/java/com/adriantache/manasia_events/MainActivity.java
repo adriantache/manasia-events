@@ -250,6 +250,10 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("music", music);
         editor.putBoolean("shop", shop);
         editor.putBoolean("hub", hub);
+
+        //todo remove [for testing, we can reset the notify setting by setting a preference]
+        editor.putBoolean("notify", false);
+
         editor.apply();
     }
 
@@ -512,6 +516,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //filter posts by category
+    //todo [IDEA] allow multiple categories
     private List<Event> filter(List<Event> list) {
         if (list == null) return null;
 
