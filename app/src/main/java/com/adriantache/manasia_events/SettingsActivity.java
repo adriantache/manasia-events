@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.adriantache.manasia_events.EventDetail.NOTIFY;
+import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -49,23 +50,16 @@ public class SettingsActivity extends AppCompatActivity {
         //<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.preferences);
-            Preference notify = findPreference(NOTIFY);
+            Preference notify  = findPreference(NOTIFY);
             notify.setOnPreferenceChangeListener(this);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(notify.getContext());
-            boolean preferenceString = preferences.getBoolean(NOTIFY, false);
-            onPreferenceChange(notify, preferenceString);
         }
-
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            String stringValue = newValue.toString();
-            preference.setSummary(stringValue);
-            Preference notify = findPreference(NOTIFY);
-
-            return true;
+            Log.d("SETTINGS", "onCreatePreferences: "+preference.getKey());
+            SharedPreferences sharedPref = getContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            Log.d("SETTINGS", "Notify: "+sharedPref.getBoolean(NOTIFY, false));
+            return false;
         }
-
-
     }
 }

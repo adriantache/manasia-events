@@ -32,10 +32,10 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventDetail extends AppCompatActivity {
-    public static final String SHARED_PREFERENCES_TAG = "MainActivity.java";
+    public static final String SHARED_PREFERENCES_TAG = "preferences";
+    public static final String NOTIFY = "notify";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
-    public static final String NOTIFY = "notify";
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
     @BindView(R.id.category_image)
@@ -209,6 +209,8 @@ public class EventDetail extends AppCompatActivity {
                 editor.putBoolean(NOTIFY, true);
                 editor.apply();
 
+                notifyOnAllEvents = true;
+
                 //since we're activating the setting to always be notified, go ahead and schedule notifications
                 scheduleNotifications(getApplicationContext(), true);
 
@@ -220,12 +222,13 @@ public class EventDetail extends AppCompatActivity {
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
             Snackbar snackbar = Snackbar.make(scrollView,
-                    "You are already being notified for all events.",
+                    "You are already being notified for all events.\n" +
+                            "You can change this option in the settings.",
                     Snackbar.LENGTH_LONG);
             snackbar.setAction("Settings", v -> {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                settingsIntent.putExtra("activity",2);
-                settingsIntent.putExtra(DBEventIDTag,DBEventID);
+                settingsIntent.putExtra("activity", 2);
+                settingsIntent.putExtra(DBEventIDTag, DBEventID);
                 startActivity(settingsIntent);
             });
             snackbar.show();

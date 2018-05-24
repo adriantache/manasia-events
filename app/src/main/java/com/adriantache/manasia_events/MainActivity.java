@@ -31,6 +31,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.adriantache.manasia_events.EventDetail.NOTIFY;
+import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
@@ -235,25 +237,21 @@ public class MainActivity extends AppCompatActivity {
 
     //todo enable functionality to toggle all notifications
     private void getPreferences() {
-        SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG,Context.MODE_PRIVATE);
         music = sharedPrefs.getBoolean("music", true);
         shop = sharedPrefs.getBoolean("shop", true);
         hub = sharedPrefs.getBoolean("hub", true);
-        notifyOnAllEvents = sharedPrefs.getBoolean("notify", false);
+        notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY, false);
 
         setFilterColor();
     }
 
     private void setPreferences() {
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getSharedPreferences(SHARED_PREFERENCES_TAG,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("music", music);
         editor.putBoolean("shop", shop);
         editor.putBoolean("hub", hub);
-
-        //todo remove [for testing, we can reset the notify setting by setting a preference]
-        editor.putBoolean("notify", false);
-
         editor.apply();
     }
 
