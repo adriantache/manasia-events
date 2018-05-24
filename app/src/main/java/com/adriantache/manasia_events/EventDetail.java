@@ -35,6 +35,7 @@ public class EventDetail extends AppCompatActivity {
     public static final String SHARED_PREFERENCES_TAG = "MainActivity.java";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
+    public static final String NOTIFY = "notify";
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
     @BindView(R.id.category_image)
@@ -68,6 +69,13 @@ public class EventDetail extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         backToMainActivity();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //read settings
+        notifyOnAllEvents = getNotifyAllSetting(this);
     }
 
     @Override
@@ -198,7 +206,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.setAction("Activate", v -> {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean("notify", true);
+                editor.putBoolean(NOTIFY, true);
                 editor.apply();
 
                 //since we're activating the setting to always be notified, go ahead and schedule notifications
@@ -216,6 +224,8 @@ public class EventDetail extends AppCompatActivity {
                     Snackbar.LENGTH_LONG);
             snackbar.setAction("Settings", v -> {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                settingsIntent.putExtra("activity",2);
+                settingsIntent.putExtra(DBEventIDTag,DBEventID);
                 startActivity(settingsIntent);
             });
             snackbar.show();

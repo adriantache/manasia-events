@@ -18,6 +18,7 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.adriantache.manasia_events.EventDetail.NOTIFY;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 
 /**
@@ -231,6 +232,6 @@ public final class Utils {
 
     public static boolean getNotifyAllSetting(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        return sharedPref.getBoolean("notify", false);
+        return sharedPref.getBoolean(NOTIFY, false);
     }
 }
