@@ -81,7 +81,7 @@ public class NotifyUtils {
         Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
 
         OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
-             //todo   .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
+                .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
                 .setInputData(inputData)
                 .addTag(workTag)
                 .build();

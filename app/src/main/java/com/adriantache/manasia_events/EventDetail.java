@@ -60,6 +60,8 @@ public class EventDetail extends AppCompatActivity {
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
     LinearLayout notify;
+    @BindView(R.id.notify_label)
+    TextView notify_label;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     private Event event = null;
@@ -132,7 +134,9 @@ public class EventDetail extends AppCompatActivity {
             notify_status.setVisibility(View.INVISIBLE);
         } else if (notifyOnAllEvents) {
             notify_icon.setIconEnabled(true);
+            notify_label.setText("Notifying");
             notify_status.setImageResource(R.drawable.alarm_accent);
+
             notify.setOnClickListener(v -> showSnackbar());
         } else {
             notify.setOnClickListener(v -> {
@@ -142,6 +146,7 @@ public class EventDetail extends AppCompatActivity {
                 if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
                     notify_status.setImageResource(R.drawable.alarm);
+                    notify_label.setText("Notify");
 
                     event.setNotify(0);
                     updateDatabase();
@@ -150,6 +155,7 @@ public class EventDetail extends AppCompatActivity {
                 } else {
                     notify_icon.setIconEnabled(true);
                     notify_status.setImageResource(R.drawable.alarm_accent);
+                    notify_label.setText("Notifying");
 
                     event.setNotify(1);
                     updateDatabase();
