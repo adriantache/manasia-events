@@ -74,7 +74,7 @@ public class EventDetail extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //read settings
+        //read notify setting
         notifyOnAllEvents = getNotifyAllSetting(this);
     }
 
@@ -84,7 +84,7 @@ public class EventDetail extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         ButterKnife.bind(this);
 
-        //read settings
+        //read notify setting
         notifyOnAllEvents = getNotifyAllSetting(this);
 
         //get the event for which to display details
@@ -120,6 +120,10 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
+        setNotifyOnClickListener();
+    }
+
+    private void setNotifyOnClickListener() {
         //only add notification for events in the future (or today)
         if (Utils.compareDateToToday(event.getDate()) < 0) {
             notify_icon.setEnabled(false);
@@ -130,8 +134,11 @@ public class EventDetail extends AppCompatActivity {
             notify_icon.setIconEnabled(true);
             notify_status.setImageResource(R.drawable.alarm_accent);
             notify.setOnClickListener(v -> showSnackbar());
-        } else
+        } else {
             notify.setOnClickListener(v -> {
+                //read notify setting
+                notifyOnAllEvents = getNotifyAllSetting(this);
+
                 if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
                     notify_status.setImageResource(R.drawable.alarm);
@@ -153,6 +160,7 @@ public class EventDetail extends AppCompatActivity {
 
                 scheduleNotifications(getApplicationContext(), false);
             });
+        }
     }
 
     private void populateDetails() {
@@ -215,6 +223,8 @@ public class EventDetail extends AppCompatActivity {
                 scheduleNotifications(getApplicationContext(), true);
 
                 Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
+
+                setNotifyOnClickListener();
             });
             snackbar.show();
             View view = snackbar.getView();

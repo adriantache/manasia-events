@@ -1,18 +1,14 @@
 package com.adriantache.manasia_events;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.util.Log;
 import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.adriantache.manasia_events.EventDetail.NOTIFY;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 
@@ -43,23 +39,13 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
-
+    public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
         //in the future, remember to add this line to the styles.xml theme:
         //<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_TAG);
             addPreferencesFromResource(R.xml.preferences);
-            Preference notify  = findPreference(NOTIFY);
-            notify.setOnPreferenceChangeListener(this);
-        }
-
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d("SETTINGS", "onCreatePreferences: "+preference.getKey());
-            SharedPreferences sharedPref = getContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-            Log.d("SETTINGS", "Notify: "+sharedPref.getBoolean(NOTIFY, false));
-            return false;
         }
     }
 }
