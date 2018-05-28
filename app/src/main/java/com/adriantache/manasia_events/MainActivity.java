@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
+import com.adriantache.manasia_events.loader.EventLoader;
 import com.adriantache.manasia_events.util.Utils;
 
 import java.io.IOException;
@@ -47,9 +50,9 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Event>> {
     public static final String DBEventIDTag = "DBEventID";
-    private String REMOTE_URL;
+    private static final String TAG = "MainActivity";
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
@@ -65,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
     TextView busy_level;
     @BindView(R.id.filters)
     TextView filters;
+    private String REMOTE_URL;
     private boolean music;
     private boolean shop;
     private boolean hub;
     private boolean notifyOnAllEvents;
     private boolean layout_animated = false;
-    private static final String TAG = "MainActivity";
 
     //todo test if necessary after DB refactor
     //todo test if necessary after using TaskStackBuilder
@@ -106,47 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
         //populate the global ArrayList of events
         //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
-        updateDatabase(true);
+        updateDatabase(!TextUtils.isEmpty(REMOTE_URL));
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null) {
-            //populate list
-            //todo replace dummy data with real data, eventually
-            //todo set empty list text view and progress bar
-            listView.setAdapter(new EventAdapter(this, events));
-
-            //set click listener and transition animation
-            listView.setOnItemClickListener((parent, view, position, id) -> {
-                Event event = (Event) parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-                intent.putExtra(DBEventIDTag, event.getDatabaseID());
-
-                //code to animate event details between activities
-                ActivityOptions options = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (Utils.compareDateToToday(event.getDate()) < 0)
-                        options = ActivityOptions
-                                .makeSceneTransitionAnimation(this,
-                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
-                                );
-                    else
-                        options = ActivityOptions
-                                .makeSceneTransitionAnimation(this,
-                                        Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                        Pair.create(view.findViewById(R.id.notify_status), "notify_status"),
-                                        Pair.create(view.findViewById(R.id.category_image), "category_image")
-                                );
-                }
-
-                //if we can animate, do that, otherwise just open the EventDetail activity
-                if (options != null) {
-                    startActivity(intent, options.toBundle());
-                } else {
-                    startActivity(intent);
-                }
-            });
+            populateListView();
         }
 
         //code to minimize and maximize logo on click (maybe not terribly useful, but it looks neat)
@@ -157,6 +124,46 @@ public class MainActivity extends AppCompatActivity {
 
         //todo figure out how to fetch this (ideally same place we store the JSON or database)
         updateBusyLevel();
+    }
+
+    private void populateListView() {
+        //populate list
+        //todo replace dummy data with real data, eventually
+        //todo set empty list text view and progress bar
+        listView.setAdapter(new EventAdapter(this, events));
+
+        //set click listener and transition animation
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = (Event) parent.getItemAtPosition(position);
+
+            Intent intent = new Intent(getApplicationContext(), EventDetail.class);
+            intent.putExtra(DBEventIDTag, event.getDatabaseID());
+
+            //code to animate event details between activities
+            ActivityOptions options = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Utils.compareDateToToday(event.getDate()) < 0)
+                    options = ActivityOptions
+                            .makeSceneTransitionAnimation(this,
+                                    Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                    Pair.create(view.findViewById(R.id.category_image), "category_image")
+                            );
+                else
+                    options = ActivityOptions
+                            .makeSceneTransitionAnimation(this,
+                                    Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
+                                    Pair.create(view.findViewById(R.id.notify_status), "notify_status"),
+                                    Pair.create(view.findViewById(R.id.category_image), "category_image")
+                            );
+            }
+
+            //if we can animate, do that, otherwise just open the EventDetail activity
+            if (options != null) {
+                startActivity(intent, options.toBundle());
+            } else {
+                startActivity(intent);
+            }
+        });
     }
 
     private String getRemoteURL() {
@@ -205,13 +212,13 @@ public class MainActivity extends AppCompatActivity {
      */
     //todo improve duplicate identification code OR keep code to just delete database contents (but add check for remote events FIRST)
     private void updateDatabase(boolean getRemote) {
-        //get current working ArrayList, if it exists
-        //todo figure out what this did, then most likely refactor it out of existence
-        ArrayList<Event> remoteEvents = events;
+        if (!getRemote) {
+            inputRemoteEventsIntoDatabase((ArrayList<Event>) dummyData());
+        } else
+            getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+    }
 
-        //todo add networking code after we figure out data input, for now this can do
-        if (getRemote) remoteEvents = (ArrayList<Event>) dummyData();
-
+    private void inputRemoteEventsIntoDatabase(ArrayList<Event> remoteEvents) {
         if (remoteEvents != null) {
             //first of all transfer all notify statuses from the local database to the temporary remote database
             ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
@@ -238,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
             if (notifyOnAllEvents) scheduleNotifications(this, remoteEvents);
         }
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void minimizeLogo() {
@@ -282,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
 
     //todo enable functionality to toggle all notifications
     private void getPreferences() {
-        SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG,Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         music = sharedPrefs.getBoolean("music", true);
         shop = sharedPrefs.getBoolean("shop", true);
         hub = sharedPrefs.getBoolean("hub", true);
@@ -292,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setPreferences() {
-        SharedPreferences sharedPref = this.getSharedPreferences(SHARED_PREFERENCES_TAG,Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("music", music);
         editor.putBoolean("shop", shop);
@@ -666,6 +674,23 @@ public class MainActivity extends AppCompatActivity {
         if (events != null) {
             listView.setAdapter(new EventAdapter(this, filter(events)));
         }
+    }
+
+    @Override
+    public Loader<List<Event>> onCreateLoader(int id, Bundle args) {
+        return new EventLoader(this, REMOTE_URL);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Event>> loader, List<Event> data) {
+        inputRemoteEventsIntoDatabase((ArrayList<Event>) data);
+        events = (ArrayList<Event>) DBUtils.readDatabase(this);
+        populateListView();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Event>> loader) {
+        listView.setAdapter(new EventAdapter(this, new ArrayList<>()));
     }
 }
 

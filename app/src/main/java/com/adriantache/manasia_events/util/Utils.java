@@ -4,8 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +23,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -235,9 +245,124 @@ public final class Utils {
         return sharedPref.getBoolean(NOTIFY, false);
     }
 
-    public static ArrayList<Event> parseJSON(){
-        ArrayList<Event> events = null;
+    public static ArrayList<Event> parseJSON(String JSON) {
+        if (TextUtils.isEmpty(JSON)) return null;
+
+        ArrayList<Event> events = new ArrayList<>();
+
+        //parse JSON String
+        try {
+            JSONObject root = new JSONObject(JSON);
+            JSONArray event_title = root.getJSONArray("event_title");
+
+            for (int i = 0; i < event_title.length(); i++) {
+                JSONObject child = event_title.getJSONObject(i);
+                String title = child.getString("name");
+                String date = buildDate(child.getString("month"), child.getString("day"));
+                String description = child.getString("description");
+                String image_url = child.optString("image_url");
+                if (!TextUtils.isEmpty(image_url)) image_url = getImageUrl(image_url);
+
+                if (date != null && title !=null && description!=null)
+                    events.add(new Event(date, title, description, image_url, R.drawable.hub));
+            }
+        } catch (JSONException e) {
+            Log.e("parseJSON", "Cannot parse JSON", e);
+        }
 
         return events;
+    }
+
+    private static String buildDate(String month, String day) {
+        StringBuilder date = new StringBuilder();
+
+        if (day.length() > 2 || day.length() == 0) return null;
+
+        if (day.length() == 1) date.append("0");
+        date.append(day);
+        date.append(".");
+
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTime(today);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        int monthNumber;
+
+        switch (month) {
+            case "JAN":
+                monthNumber = 1;
+                break;
+            case "FEB":
+                monthNumber = 2;
+                break;
+            case "MAR":
+                monthNumber = 3;
+                break;
+            case "APR":
+                monthNumber = 4;
+                break;
+            case "MAY":
+                monthNumber = 5;
+                break;
+            case "JUN":
+                monthNumber = 6;
+                break;
+            case "JUL":
+                monthNumber = 7;
+                break;
+            case "AUG":
+                monthNumber = 8;
+                break;
+            case "SEP":
+                monthNumber = 9;
+                break;
+            case "OCT":
+                monthNumber = 10;
+                break;
+            case "NOV":
+                monthNumber = 11;
+                break;
+            case "DEC":
+                monthNumber = 12;
+                break;
+            default:
+                return null;
+        }
+
+        if (monthNumber < 10) {
+            date.append("0");
+            date.append(monthNumber);
+        } else date.append(monthNumber);
+        date.append(".");
+
+        if (currentMonth < 4 && monthNumber > 9)
+            date.append(currentYear - 1);
+        else if (currentMonth > 9 && monthNumber < 4)
+            date.append(currentYear + 1);
+        else
+            date.append(currentYear);
+
+        Log.i("REMOVE THIS", "buildDate: " + date.toString());
+
+        return date.toString();
+    }
+
+    private static String getImageUrl(String image_tag) {
+        image_tag = image_tag
+                .replace("scontent-yyz1-1.xx.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
+                .replace("&amp;", "&")
+                .replace("\\\"", "\"");
+
+        Pattern pattern = Pattern.compile("data-plsi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
+        Matcher matcher = pattern.matcher(image_tag);
+
+        if (matcher.find()) image_tag = matcher.group(1);
+
+        Log.i("REMOVE THIS", "buildDate: " + image_tag);
+
+        return image_tag;
     }
 }

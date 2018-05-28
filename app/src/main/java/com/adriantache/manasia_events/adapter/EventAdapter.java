@@ -46,10 +46,13 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         if (event != null) {
-            if (!TextUtils.isEmpty(event.getPhotoUrl()))
+            if (!TextUtils.isEmpty(event.getPhotoUrl())){
                 Picasso.get().load(event.getPhotoUrl()).into(holder.thumbnail);
-            else
+                holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);}
+            else {
                 holder.thumbnail.setImageResource(R.drawable.manasia_logo);
+                holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER);
+            }
 
             holder.category_image.setImageResource(event.getCategory_image());
             holder.day.setText(Utils.extractDate(event.getDate(), true));

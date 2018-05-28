@@ -171,10 +171,13 @@ public class EventDetail extends AppCompatActivity {
 
     private void populateDetails() {
         //populate fields with details
-        if (!TextUtils.isEmpty(event.getPhotoUrl()))
+        if (!TextUtils.isEmpty(event.getPhotoUrl())){
             Picasso.get().load(event.getPhotoUrl()).into(thumbnail);
-        else
+            thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);}
+        else {
             thumbnail.setImageResource(R.drawable.manasia_logo);
+            thumbnail.setScaleType(ImageView.ScaleType.CENTER);
+        }
         category_image.setImageResource(event.getCategory_image());
         day.setText(Utils.extractDate(event.getDate(), true));
         month.setText(Utils.extractDate(event.getDate(), false));
