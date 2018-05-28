@@ -516,6 +516,17 @@ public class MainActivity extends AppCompatActivity {
                         "Avem steaguri, avem tricouri, avem căni pline de curcubeu!",
                 "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/33186798_2161717270508608_244750867436142592_n.jpg?_nc_cat=0&oh=c6519d13586f5bc8ce2d0ce19a10fd84&oe=5BC4DF8E",
                 R.drawable.hub));
+        arrayList.add(new Event("02.06.2018",
+                "Discotecă #Tropicalia la Manasia Hub",
+                "\uD83C\uDF34 Discotecă #TROPICALIA la Manasia Hub\n" +
+                        "\n" +
+                        "Tradiționala primă ieșire anuală în decorul tropical al Bucureștiului ne va găsi sîmbătă, 2 iunie 2018, între orele 14.00 și 23.00, în grădina clorofilizată de la Manasia Hub, pentru o zi-lumină de dans, soare și cocteiluri exotice pe tot ceea ce a produs Electrecordul mai latino-american pentru vocile locale.\n" +
+                        "\n" +
+                        "\uD83C\uDF79\n" +
+                        "Gardening\n" +
+                        "Kid Friendly",
+                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/33576478_1066399266845601_761101928934408192_n.jpg?_nc_cat=0&oh=99e5b3e8a90de317ad93a32d7a872247&oe=5B7677D1",
+                R.drawable.music));
 
         return arrayList;
     }
