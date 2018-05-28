@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -13,6 +14,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +27,10 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +49,7 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 
 public class MainActivity extends AppCompatActivity {
     public static final String DBEventIDTag = "DBEventID";
+    private String REMOTE_URL;
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
@@ -64,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean hub;
     private boolean notifyOnAllEvents;
     private boolean layout_animated = false;
+    private static final String TAG = "MainActivity";
 
     //todo test if necessary after DB refactor
     //todo test if necessary after using TaskStackBuilder
@@ -93,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         getPreferences();
         //add visual indicators that filters are set
         checkFiltersSet();
+
+        //get remote URL or use local data
+        REMOTE_URL = getRemoteURL();
 
         //populate the global ArrayList of events
         //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
@@ -147,6 +157,41 @@ public class MainActivity extends AppCompatActivity {
 
         //todo figure out how to fetch this (ideally same place we store the JSON or database)
         updateBusyLevel();
+    }
+
+    private String getRemoteURL() {
+        String remoteURL = null;
+
+        //get API key from file
+        try {
+            if (Arrays.asList(getResources().getAssets().list("")).contains("dataURL.txt")) {
+                AssetManager am = getApplicationContext().getAssets();
+                InputStream inputStream = null;
+                try {
+                    inputStream = am.open("dataURL.txt");
+                } catch (IOException e) {
+                    Log.e(TAG, "Cannot read API key from file.", e);
+                }
+
+                if (inputStream != null) {
+                    int ch;
+                    StringBuilder sb = new StringBuilder();
+                    try {
+                        while ((ch = inputStream.read()) != -1) {
+                            sb.append((char) ch);
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "Cannot read API key InputStream.", e);
+                    }
+
+                    if (sb.length() != 0) remoteURL = sb.toString();
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Cannot open API key file.", e);
+        }
+
+        return remoteURL;
     }
 
     /**

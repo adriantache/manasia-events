@@ -151,7 +151,7 @@ public final class Utils {
 
     /**
      * Method searches whether an Event exists in an ArrayList
-     * todo use this or remove this
+     * todo use this method or remove it
      *
      * @param event      Event object to be searched
      * @param eventsTemp ArrayList to search in
@@ -233,5 +233,11 @@ public final class Utils {
     public static boolean getNotifyAllSetting(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
         return sharedPref.getBoolean(NOTIFY, false);
+    }
+
+    public static ArrayList<Event> parseJSON(){
+        ArrayList<Event> events = null;
+
+        return events;
     }
 }
