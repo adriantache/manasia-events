@@ -13,7 +13,6 @@ import com.adriantache.manasia_events.custom_class.Event;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -263,7 +262,7 @@ public final class Utils {
                 String image_url = child.optString("image_url");
                 if (!TextUtils.isEmpty(image_url)) image_url = getImageUrl(image_url);
 
-                if (date != null && title !=null && description!=null)
+                if (date != null && title != null && description != null)
                     events.add(new Event(date, title, description, image_url, R.drawable.hub));
             }
         } catch (JSONException e) {
@@ -359,7 +358,16 @@ public final class Utils {
         Pattern pattern = Pattern.compile("data-plsi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
         Matcher matcher = pattern.matcher(image_tag);
 
-        if (matcher.find()) image_tag = matcher.group(1);
+        if (matcher.find()) {
+            image_tag = matcher.group(1);
+        } else {
+            Pattern pattern2 = Pattern.compile("data-ploi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
+            Matcher matcher2 = pattern2.matcher(image_tag);
+
+            if (matcher2.find()) {
+                image_tag = matcher2.group(1);
+            }
+        }
 
         Log.i("REMOVE THIS", "buildDate: " + image_tag);
 
