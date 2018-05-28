@@ -67,7 +67,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:elevation="8dp"
             android:orientation="vertical">
 
@@ -77,8 +77,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="5dp"
+                android:elevation="4dp"
                 android:textColor="#000"
                 android:textSize="18sp"
                 android:transitionName="title"
@@ -94,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:drawablePadding="4dp"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="8dp"
                 android:drawableStart="@drawable/location"
                 android:gravity="center_vertical"
                 android:text="@string/manasia_address"
