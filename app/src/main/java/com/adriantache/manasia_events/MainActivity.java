@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -673,20 +674,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    @NonNull
     @Override
     public Loader<List<Event>> onCreateLoader(int id, Bundle args) {
         return new EventLoader(this, REMOTE_URL);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Event>> loader, List<Event> data) {
+    public void onLoadFinished(@NonNull Loader<List<Event>> loader, List<Event> data) {
         inputRemoteEventsIntoDatabase((ArrayList<Event>) data);
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
         populateListView();
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Event>> loader) {
+    public void onLoaderReset(@NonNull Loader<List<Event>> loader) {
         listView.setAdapter(new EventAdapter(this, new ArrayList<>()));
     }
 }
