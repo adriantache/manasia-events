@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList();
+        refreshList(false);
     }
 
     @Override
@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         REMOTE_URL = getRemoteURL();
 
         //populate the global ArrayList of events
-        //todo decide if filter makes sense, currently keeping it to simplify transition to EventDetail activity
         updateDatabase(!TextUtils.isEmpty(REMOTE_URL));
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
@@ -620,7 +619,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         setFilterColor();
-        refreshList();
+        refreshList(true);
         setPreferences();
     }
 
@@ -636,7 +635,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         setFilterColor();
-        refreshList();
+        refreshList(true);
         setPreferences();
     }
 
@@ -652,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         setFilterColor();
-        refreshList();
+        refreshList(true);
         setPreferences();
     }
 
@@ -673,13 +672,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     //todo refactor this when we change the way we get event data
-    //todo add flag for filters, to prevent hitting the database when we're just filtering
-    private void refreshList() {
-        events = (ArrayList<Event>) DBUtils.readDatabase(this);
+    private void refreshList(boolean onlyUpdateFilters) {
+        if (!onlyUpdateFilters)
+            events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        if (events != null) {
+        if (events != null)
             listView.setAdapter(new EventAdapter(this, filter(events)));
-        }
     }
 
     public void showSnackbar() {
@@ -698,7 +696,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             scheduleNotifications(getApplicationContext(), true);
 
             Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
-            refreshList();
+            refreshList(false);
         });
 
         snackbar.show();

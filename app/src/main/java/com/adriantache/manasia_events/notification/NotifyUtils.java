@@ -28,7 +28,6 @@ public class NotifyUtils {
     /**
      * Method to read all events from the database and set notifications for the ones that
      * the user selected to be notified for.
-     * <p>
      * todo [IDEA] allow user to be notified for all events but opt out of some
      *
      * @param context application context for database operation and notification clearing
@@ -41,13 +40,9 @@ public class NotifyUtils {
         resetAllWork(context);
 
         for (Event event : events) {
-            if (addAll && compareDateToToday(event.getDate()) > -1) {
+            if (compareDateToToday(event.getDate()) > -1 && (addAll || event.getNotify() == 1)) {
                 addNotification(event.getDatabaseID(), event.getDate());
-                continue;
             }
-
-            if (event.getNotify() == 1)
-                addNotification(event.getDatabaseID(), event.getDate());
         }
     }
 
@@ -67,11 +62,9 @@ public class NotifyUtils {
     private static void addNotification(int DBEventID, String eventDate) {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
         Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
-        Log.i("REMOVE THIS", "addNotification: "+DBEventID);
 
         OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
-               //todo  .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
-                .setInitialDelay(5, TimeUnit.SECONDS)
+                .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
                 .setInputData(inputData)
                 .addTag(workTag)
                 .build();
