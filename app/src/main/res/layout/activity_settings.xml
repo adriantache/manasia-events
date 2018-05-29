@@ -47,12 +47,13 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Manasia Events Settings"
+        android:text="@string/manasia_events_settings"
         android:textColor="#fff"
         android:elevation="8dp"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/settings_fragment"
         app:layout_constraintStart_toEndOf="@+id/back"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="lollipop" />
 
 </android.support.constraint.ConstraintLayout>

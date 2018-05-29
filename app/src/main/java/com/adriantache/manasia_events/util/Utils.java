@@ -180,7 +180,8 @@ public final class Utils {
                 JSONObject child = event_title.getJSONObject(i);
                 String title = child.getString("name");
                 String date = buildDate(child.getString("month"), child.getString("day"));
-                String description = child.getString("description");
+                String description = child.optString("description_long");
+                if (TextUtils.isEmpty(description)) description = child.getString("description");
                 String image_url = child.optString("image_url");
                 if (!TextUtils.isEmpty(image_url)) image_url = getImageUrl(image_url);
 
