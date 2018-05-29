@@ -29,7 +29,6 @@
         android:elevation="8dp"
         android:orientation="horizontal"
         android:paddingBottom="8dp"
-        android:visibility="invisible"
         android:paddingTop="8dp"
         app:layout_constraintBottom_toBottomOf="@id/thumbnail"
         app:layout_constraintEnd_toEndOf="parent"

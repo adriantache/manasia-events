@@ -131,16 +131,6 @@ public class EventDetail extends AppCompatActivity {
         });
 
         setNotifyOnClickListener();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Transition transition = new Fade();
-            transition.setDuration(1000);
-            transition.setInterpolator(new LinearOutSlowInInterpolator());
-            transition.setStartDelay(500);
-            transition.addTarget(title_bar);
-            TransitionManager.beginDelayedTransition(constraint_layout, transition);
-            title_bar.setVisibility(View.VISIBLE);
-        } else title_bar.setVisibility(View.VISIBLE);
     }
 
     private void setNotifyOnClickListener() {

@@ -262,6 +262,10 @@ public final class Utils {
                 String image_url = child.optString("image_url");
                 if (!TextUtils.isEmpty(image_url)) image_url = getImageUrl(image_url);
 
+                //give the description breathing room
+                if (description != null)
+                    description = description.replace("\n", "\n\n");
+
                 if (date != null && title != null && description != null)
                     events.add(new Event(date, title, description, image_url, R.drawable.hub));
             }
@@ -344,8 +348,6 @@ public final class Utils {
         else
             date.append(currentYear);
 
-        Log.i("REMOVE THIS", "buildDate: " + date.toString());
-
         return date.toString();
     }
 
@@ -368,8 +370,6 @@ public final class Utils {
                 image_tag = matcher2.group(1);
             }
         }
-
-        Log.i("REMOVE THIS", "buildDate: " + image_tag);
 
         return image_tag;
     }
