@@ -216,7 +216,6 @@ public class EventDetail extends AppCompatActivity {
     }
 
     //todo [IDEA] always notify on the day of the event
-    //todo move this to Utils
     //todo call this from MainActivity as well
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {

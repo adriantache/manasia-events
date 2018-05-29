@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +20,13 @@ import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView busy_level;
     @BindView(R.id.filters)
     TextView filters;
+    @BindView(R.id.constraint_layout)
+    ConstraintLayout constraint_layout;
     private String REMOTE_URL;
     private boolean music;
     private boolean shop;
@@ -101,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
+
+        if (!notifyOnAllEvents) showSnackbar();
+
         //add visual indicators that filters are set
         checkFiltersSet();
 
@@ -672,6 +680,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (events != null) {
             listView.setAdapter(new EventAdapter(this, filter(events)));
         }
+    }
+
+    public void showSnackbar() {
+        Snackbar snackbar = Snackbar.make(constraint_layout,
+                "Would you like to be notified for all events?",
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Activate", v -> {
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(NOTIFY, true);
+            editor.apply();
+
+            notifyOnAllEvents = true;
+
+            //since we're activating the setting to always be notified, go ahead and schedule notifications
+            scheduleNotifications(getApplicationContext(), true);
+
+            Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
+            refreshList();
+        });
+
+        snackbar.show();
+        View view = snackbar.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 
     @NonNull
