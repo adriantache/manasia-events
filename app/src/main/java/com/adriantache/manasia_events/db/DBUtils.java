@@ -32,7 +32,6 @@ public final class DBUtils {
      *
      * @param context Context for EventDBHelper
      * @return a List of all the events in the database
-     * todo decide if we impose a limit on how many database entries to fetch
      */
     public static List<Event> readDatabase(Context context) {
         String[] projection =
@@ -40,7 +39,6 @@ public final class DBUtils {
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
 
         //sort events in descending order to have most recent first
-        //todo determine this order after figuring out remote fetching
         String sortOrder = _ID + " ASC";
 
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, sortOrder);

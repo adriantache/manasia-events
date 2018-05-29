@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean notifyOnAllEvents;
     private boolean layout_animated = false;
 
-    //todo test if necessary after DB refactor
     //todo test if necessary after using TaskStackBuilder
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -128,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void populateListView() {
         //populate list
-        //todo replace dummy data with real data, eventually
         //todo set empty list text view and progress bar
         listView.setAdapter(new EventAdapter(this, events));
 
@@ -224,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
             remoteEvents = Utils.updateNotifyInRemote(remoteEvents, DBEvents);
 
-            //then delete ALL events from the local table
+            //then delete ALL events from the local table1
             getContentResolver().delete(CONTENT_URI, null, null);
 
             //then add the remote events to the local database
@@ -242,10 +240,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             //update event notifications for all future events fetched from the remote database
-            if (notifyOnAllEvents) scheduleNotifications(this, remoteEvents);
+            if (notifyOnAllEvents) scheduleNotifications(this, true);
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void minimizeLogo() {

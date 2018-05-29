@@ -2,6 +2,7 @@ package com.adriantache.manasia_events.custom_class;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 public class Event implements Parcelable {
     private String date;
@@ -10,9 +11,17 @@ public class Event implements Parcelable {
     private String photoUrl;
     private int category_image;
     private int notify = 0;
-    private int databaseID;
+    private int databaseID = -1;
 
-    public Event(String date, String title, String description, String photoUrl, int category_image) {
+    /**
+     * Constructor for events fetched from remote data source
+     * @param date Event date, of format dd.MM.yyyy
+     * @param title Event title
+     * @param description Event description
+     * @param photoUrl Event photo URL, can be null
+     * @param category_image Event category, represented by a category image resource ID
+     */
+    public Event(String date, String title, String description, @Nullable String photoUrl, int category_image) {
         this.date = date;
         this.title = title;
         this.description = description;
@@ -20,6 +29,16 @@ public class Event implements Parcelable {
         this.category_image = category_image;
     }
 
+    /**
+     * Constructor for events fetched from the local database
+     * @param databaseID Local database _ID
+     * @param date Event date, of format dd.MM.yyyy
+     * @param title Event title
+     * @param description Event description
+     * @param photoUrl Event photo URL, can be null
+     * @param category_image Event category, represented by a category image resource ID
+     * @param notify Flag to trigger notification for this event; can be 0 or 1
+     */
     public Event(int databaseID, String date, String title, String description, String photoUrl, int category_image, int notify) {
         this.databaseID = databaseID;
         this.date = date;

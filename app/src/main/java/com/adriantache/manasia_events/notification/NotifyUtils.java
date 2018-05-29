@@ -2,6 +2,7 @@ package com.adriantache.manasia_events.notification;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
 
@@ -42,24 +43,11 @@ public class NotifyUtils {
         for (Event event : events) {
             if (addAll && compareDateToToday(event.getDate()) > -1) {
                 addNotification(event.getDatabaseID(), event.getDate());
+                continue;
             }
 
             if (event.getNotify() == 1)
                 addNotification(event.getDatabaseID(), event.getDate());
-        }
-    }
-
-    //creating a similar method for the remote events fetch since we already have that array
-    //this method schedules all future events since that's the only way it will be triggered
-    public static void scheduleNotifications(Context context, ArrayList<Event> events) {
-        if (events == null || events.size() == 0) return;
-
-        resetAllWork(context);
-
-        for (Event event : events) {
-            if (compareDateToToday(event.getDate()) > -1) {
-                addNotification(event.getDatabaseID(), event.getDate());
-            }
         }
     }
 
@@ -79,9 +67,11 @@ public class NotifyUtils {
     private static void addNotification(int DBEventID, String eventDate) {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
         Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
+        Log.i("REMOVE THIS", "addNotification: "+DBEventID);
 
         OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
-                .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
+               //todo  .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
+                .setInitialDelay(5, TimeUnit.SECONDS)
                 .setInputData(inputData)
                 .addTag(workTag)
                 .build();

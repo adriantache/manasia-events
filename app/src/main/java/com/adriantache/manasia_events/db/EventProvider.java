@@ -153,9 +153,6 @@ public class EventProvider extends ContentProvider {
         String date = values.getAsString(COLUMN_EVENT_DATE);
         if (date == null)
             throw new IllegalArgumentException("Event requires a date");
-        //todo determine if we allow past dates after updating data acquisition
-        //else if (compareDateToToday(date)<0)
-        // throw new IllegalArgumentException("Event cannot be in the past");
 
         int gender = values.getAsInteger(COLUMN_EVENT_CATEGORY_IMAGE);
         switch (gender) {

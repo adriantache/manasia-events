@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.adriantache.manasia_events.EventDetail;
 import com.adriantache.manasia_events.R;
@@ -52,12 +52,15 @@ public class NotifyWorker extends Worker {
 
         Event event = null;
 
-        if (DBEventID == ERROR_VALUE)
-            Toast.makeText(getApplicationContext(), "Error retrieving Event ID", Toast.LENGTH_SHORT).show();
+        if (DBEventID == ERROR_VALUE || DBEventID == 0)
+            Log.i(getClass().toString(), "Invalid value for DBEventID!");
         else
             event = DBUtils.getEventFromDatabase(getApplicationContext(), DBEventID);
 
-        if (event == null) return;
+        if (event == null) {
+            Log.i(getClass().toString(), "Cannot fetch event!");
+            return;
+        }
 
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -94,8 +97,9 @@ public class NotifyWorker extends Worker {
 
         //todo figure out TaskStackBuilder, maybe it's better than my solution
         //https://developer.android.com/guide/components/activities/tasks-and-back-stack
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
 //        stackBuilder.addParentStack(MainActivity.class);
+//        //stackBuilder.addParentStack(EventDetail.class);
 //        stackBuilder.addNextIntent(intent);
 //        PendingIntent pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_ONE_SHOT);
 
@@ -130,6 +134,7 @@ public class NotifyWorker extends Worker {
 
         //trigger the notification, using DBEventID as its ID in order to show multiple
         //notifications, if applicable, but no duplicates
+        //todo fix DBEventID autoincrement problem (results in duplicate notifications, requiring clearing notifications)
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(DBEventID, notificationBuilder.build());
     }

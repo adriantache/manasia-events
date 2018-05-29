@@ -16,6 +16,7 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,8 +25,17 @@ import butterknife.ButterKnife;
 import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventAdapter extends ArrayAdapter<Event> {
+    private final List<Event> events = new ArrayList<>();
+
     public EventAdapter(@NonNull Context context, @NonNull List<Event> objects) {
         super(context, 0, objects);
+        this.events.clear();
+        this.events.addAll(objects);
+    }
+
+    @Override
+    public int getCount() {
+        return events.size();
     }
 
     @NonNull
