@@ -3,7 +3,7 @@ package com.adriantache.manasia_events.custom_class;
 import android.support.annotation.Nullable;
 
 public class Event {
-    private String date;
+    private String date; //date of format yyyy-MM-dd
     private String title;
     private String description;
     private String photoUrl;
@@ -14,7 +14,7 @@ public class Event {
     /**
      * Constructor for events fetched from remote data source
      *
-     * @param date           Event date, of format dd.MM.yyyy
+     * @param date           Event date, of format yyyy-MM-dd
      * @param title          Event title
      * @param description    Event description
      * @param photoUrl       Event photo URL, can be null
@@ -32,7 +32,7 @@ public class Event {
      * Constructor for events fetched from the local database
      *
      * @param databaseID     Local database _ID
-     * @param date           Event date, of format dd.MM.yyyy
+     * @param date           Event date, of format yyyy-MM-dd
      * @param title          Event title
      * @param description    Event description
      * @param photoUrl       Event photo URL, can be null

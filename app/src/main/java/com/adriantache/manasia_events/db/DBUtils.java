@@ -38,8 +38,8 @@ public final class DBUtils {
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
 
-        //sort events in descending order to have most recent first
-        String sortOrder = _ID + " ASC";
+        //order by date since FB stores them in a random order
+        String sortOrder = COLUMN_EVENT_DATE + " DESC";
 
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, sortOrder);
 

@@ -105,6 +105,7 @@ public class NotifyWorker extends Worker {
 
         //get event details to show in the notification
         String notificationTitle = "Manasia event: " + event.getTitle();
+        //todo make date more readable (change format)
         String notificationText = "Today, " + event.getDate() + ", at Stelea Spatarul 13, Bucuresti";
 
         //set the event image in the notification

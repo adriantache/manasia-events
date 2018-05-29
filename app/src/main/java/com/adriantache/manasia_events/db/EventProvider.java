@@ -153,6 +153,7 @@ public class EventProvider extends ContentProvider {
         String date = values.getAsString(COLUMN_EVENT_DATE);
         if (date == null)
             throw new IllegalArgumentException("Event requires a date");
+        //todo add test for date format yyyy-MM-dd
 
         int gender = values.getAsInteger(COLUMN_EVENT_CATEGORY_IMAGE);
         switch (gender) {

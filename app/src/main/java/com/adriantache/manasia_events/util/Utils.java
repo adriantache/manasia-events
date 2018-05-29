@@ -2,7 +2,6 @@ package com.adriantache.manasia_events.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +23,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.adriantache.manasia_events.EventDetail.NOTIFY;
@@ -39,11 +37,11 @@ public final class Utils {
     }
 
     public static String extractDate(String s, boolean day) {
-        String[] parts = s.split("\\.");
+        String[] parts = s.split("-");
 
-        if (parts.length == 0) return "ERROR";
+        if (parts.length != 3) return "ERROR";
 
-        if (day) return parts[0];
+        if (day) return parts[2];
         else switch (parts[1]) {
             case "01":
                 return "January";
@@ -108,7 +106,7 @@ public final class Utils {
         Date formattedDate = null;
 
         try {
-            formattedDate = new SimpleDateFormat("dd.MM.yyyy", Locale.US).parse(date);
+            formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -119,8 +117,6 @@ public final class Utils {
             calendar.setTimeZone(TimeZone.getDefault());
             calendar.setTime(formattedDate);
             calendar.set(Calendar.HOUR, +12);
-//            calendar.set(Calendar.MINUTE, 0);
-//            calendar.set(Calendar.SECOND, 0);
             formattedDate = calendar.getTime();
         }
 
@@ -202,18 +198,13 @@ public final class Utils {
         return events;
     }
 
-    //turn a 3 letter month and a day "int" into a date of the format dd.MM.yyyy
+    //turn a 3 letter month and a day "int" into a date of the format yyyy-MM-dd
     private static String buildDate(String month, String day) {
         StringBuilder date = new StringBuilder();
-
-        if (day.length() > 2 || day.length() == 0) return null;
-
-        if (day.length() == 1) date.append("0");
-        date.append(day);
-
-        date.append(".");
-
         int monthNumber;
+
+        //start with input checks
+        if (day.length() > 2 || day.length() == 0) return null;
 
         switch (month) {
             case "JAN":
@@ -256,11 +247,7 @@ public final class Utils {
                 return null;
         }
 
-        if (monthNumber < 10) date.append("0");
-        date.append(monthNumber);
-
-        date.append(".");
-
+        //add current year, checking for edge cases
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getDefault());
@@ -273,6 +260,18 @@ public final class Utils {
             date.append(currentYear + 1);
         else
             date.append(currentYear);
+
+        date.append("-");
+
+        //add month
+        if (monthNumber < 10) date.append("0");
+        date.append(monthNumber);
+
+        date.append("-");
+
+        //add day
+        if (day.length() == 1) date.append("0");
+        date.append(day);
 
         return date.toString();
     }
