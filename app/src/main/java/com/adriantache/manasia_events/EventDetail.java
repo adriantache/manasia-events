@@ -184,8 +184,8 @@ public class EventDetail extends AppCompatActivity {
             thumbnail.setBackgroundResource(R.color.blue_grey100);
         }
         category_image.setImageResource(event.getCategory_image());
-        day.setText(Utils.extractDate(event.getDate(), true));
-        month.setText(Utils.extractDate(event.getDate(), false));
+        day.setText(Utils.extractDayOrMonth(event.getDate(), true));
+        month.setText(Utils.extractDayOrMonth(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
         if (event.getNotify() == 1)

@@ -36,7 +36,8 @@ public final class Utils {
         throw new AssertionError("No Utils Instances are allowed!");
     }
 
-    public static String extractDate(String s, boolean day) {
+    //date related methods
+    public static String extractDayOrMonth(String s, boolean day) {
         String[] parts = s.split("-");
 
         if (parts.length != 3) return "ERROR";
@@ -123,6 +124,19 @@ public final class Utils {
         return formattedDate;
     }
 
+    public static long calculateDelay(String eventDate) {
+        Date event = convertDate(eventDate, true);
+        Date today = getToday(false);
+
+        return event.getTime() - today.getTime();
+    }
+
+    //make date look nicer for display in the notification text
+    public static String prettyDate(String date){
+        return extractDayOrMonth(date,false)+" "+ extractDayOrMonth(date,true);
+    }
+
+    //utility methods
     public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
         if (localEvents == null) return remoteEvents;
 
@@ -154,12 +168,7 @@ public final class Utils {
         return remoteEvents;
     }
 
-    public static long calculateDelay(String eventDate) {
-        Date event = convertDate(eventDate, true);
-        Date today = getToday(false);
 
-        return event.getTime() - today.getTime();
-    }
 
     public static boolean getNotifyAllSetting(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);

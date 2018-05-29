@@ -28,6 +28,7 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.support.v4.app.NotificationCompat.CATEGORY_EVENT;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
+import static com.adriantache.manasia_events.util.Utils.prettyDate;
 
 /**
  * Custom class to trigger scheduled notifications
@@ -105,8 +106,7 @@ public class NotifyWorker extends Worker {
 
         //get event details to show in the notification
         String notificationTitle = "Manasia event: " + event.getTitle();
-        //todo make date more readable (change format)
-        String notificationText = "Today, " + event.getDate() + ", at Stelea Spatarul 13, Bucuresti";
+        String notificationText = "Today, " + prettyDate(event.getDate()) + ", at Stelea Spatarul 13, Bucuresti";
 
         //set the event image in the notification
         Bitmap largeImage = null;

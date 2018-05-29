@@ -67,8 +67,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
             }
 
             holder.category_image.setImageResource(event.getCategory_image());
-            holder.day.setText(Utils.extractDate(event.getDate(), true));
-            holder.month.setText(Utils.extractDate(event.getDate(), false));
+            holder.day.setText(Utils.extractDayOrMonth(event.getDate(), true));
+            holder.month.setText(Utils.extractDayOrMonth(event.getDate(), false));
             holder.title.setText(event.getTitle());
 
             //hide notification group if event is in the past
