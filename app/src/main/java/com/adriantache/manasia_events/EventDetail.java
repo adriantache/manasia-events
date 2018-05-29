@@ -3,8 +3,14 @@ package com.adriantache.manasia_events;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.transition.Fade;
+import android.support.transition.Transition;
+import android.support.transition.TransitionManager;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -62,8 +68,10 @@ public class EventDetail extends AppCompatActivity {
     LinearLayout notify;
     @BindView(R.id.notify_label)
     TextView notify_label;
-    @BindView(R.id.scrollView)
-    ScrollView scrollView;
+    @BindView(R.id.constraint_layout)
+    ConstraintLayout constraint_layout;
+    @BindView(R.id.title_bar)
+    LinearLayout title_bar;
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
     private boolean notifyOnAllEvents;
@@ -123,6 +131,16 @@ public class EventDetail extends AppCompatActivity {
         });
 
         setNotifyOnClickListener();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Transition transition = new Fade();
+            transition.setDuration(1000);
+            transition.setInterpolator(new LinearOutSlowInInterpolator());
+            transition.setStartDelay(500);
+            transition.addTarget(title_bar);
+            TransitionManager.beginDelayedTransition(constraint_layout, transition);
+            title_bar.setVisibility(View.VISIBLE);
+        } else title_bar.setVisibility(View.VISIBLE);
     }
 
     private void setNotifyOnClickListener() {
@@ -218,7 +236,7 @@ public class EventDetail extends AppCompatActivity {
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {
         if (!notifyOnAllEvents) {
-            Snackbar snackbar = Snackbar.make(scrollView,
+            Snackbar snackbar = Snackbar.make(constraint_layout,
                     "You will be notified on the day of the event.\n" +
                             "Would you like to be notified for all events?",
                     Snackbar.LENGTH_LONG);
@@ -242,9 +260,9 @@ public class EventDetail extends AppCompatActivity {
             TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
-            Snackbar snackbar = Snackbar.make(scrollView,
+            Snackbar snackbar = Snackbar.make(constraint_layout,
                     "You are already being notified for all events.\n" +
-                            "You can change this option in the settings.",
+                            "Do you want to change this option?",
                     Snackbar.LENGTH_LONG);
             snackbar.setAction("Settings", v -> {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
