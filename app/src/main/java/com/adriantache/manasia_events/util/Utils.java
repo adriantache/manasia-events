@@ -132,9 +132,10 @@ public final class Utils {
     }
 
     //make date look nicer for display in the notification text
-    public static String prettyDate(String date){
-        return extractDayOrMonth(date,false)+" "+ extractDayOrMonth(date,true);
+    public static String prettyDate(String date) {
+        return extractDayOrMonth(date, false) + " " + extractDayOrMonth(date, true);
     }
+
 
     //utility methods
     public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
@@ -167,7 +168,6 @@ public final class Utils {
 
         return remoteEvents;
     }
-
 
 
     public static boolean getNotifyAllSetting(Context context) {

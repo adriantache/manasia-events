@@ -56,6 +56,8 @@ public class EventDetail extends AppCompatActivity {
     TextView call;
     @BindView(R.id.map)
     TextView map;
+    @BindView(R.id.location)
+    TextView location;
     @BindView(R.id.notify_icon)
     SwitchIconView notify_icon;
     @BindView(R.id.notify)
@@ -117,6 +119,15 @@ public class EventDetail extends AppCompatActivity {
         });
 
         map.setOnClickListener(v -> {
+            String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
+            Intent locationIntent = new Intent(Intent.ACTION_VIEW);
+            locationIntent.setData(Uri.parse(geoLocation));
+            if (locationIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(locationIntent);
+            }
+        });
+
+        location.setOnClickListener(v -> {
             String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
             Intent locationIntent = new Intent(Intent.ACTION_VIEW);
             locationIntent.setData(Uri.parse(geoLocation));
