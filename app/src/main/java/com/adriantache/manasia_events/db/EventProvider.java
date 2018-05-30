@@ -26,7 +26,7 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
  * ContentProvider to keep database access separate from the app and ensure sanity checks on the input data
  **/
 public class EventProvider extends ContentProvider {
-    public static final int ERROR_VALUE = -1;
+    private static final int ERROR_VALUE = -1;
     private static final int EVENTS = 100;
     private static final int SINGLE_EVENT = 101;
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

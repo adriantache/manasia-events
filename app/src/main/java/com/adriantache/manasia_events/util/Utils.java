@@ -32,12 +32,16 @@ import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
  * Class to store general utility functions
  **/
 public final class Utils {
+    private static final int ERROR_VALUE = -1;
+
     private Utils() {
         throw new AssertionError("No Utils Instances are allowed!");
     }
 
     //date related methods
     public static String extractDayOrMonth(String s, boolean day) {
+        if (TextUtils.isEmpty(s)) return "ERROR";
+
         String[] parts = s.split("-");
 
         if (parts.length != 3) return "ERROR";
@@ -74,8 +78,6 @@ public final class Utils {
     }
 
     public static int compareDateToToday(String date) {
-        final int DATE_ERROR = 999999;
-
         Date formattedDate = convertDate(date, false);
         Date today = getToday(true);
 
@@ -83,7 +85,7 @@ public final class Utils {
             return formattedDate.compareTo(today);
 
             //failure will default to show actions and let the user decide
-        else return DATE_ERROR;
+        else return ERROR_VALUE;
     }
 
     private static Date getToday(boolean getMidnight) {

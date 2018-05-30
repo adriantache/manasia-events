@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/constraint_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EventDetail">
@@ -18,8 +18,7 @@
         android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_background"
-        tools:targetApi="lollipop" />
+app:layout_constraintTop_toBottomOf="@id/back_background"        tools:targetApi="lollipop" />
 
     <LinearLayout
         android:id="@+id/title_bar"
@@ -94,12 +93,12 @@
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
-                android:focusable="true"
                 android:clickable="true"
                 android:drawablePadding="4dp"
-                android:layout_marginStart="8dp"
                 android:drawableStart="@drawable/location"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:text="@string/manasia_address"
                 app:layout_constraintStart_toStartOf="@id/title"

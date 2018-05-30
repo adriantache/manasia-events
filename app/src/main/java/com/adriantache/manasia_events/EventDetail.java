@@ -103,9 +103,9 @@ public class EventDetail extends AppCompatActivity {
         else
             Toast.makeText(this, "Error getting event ID.", Toast.LENGTH_SHORT).show();
 
-        if (event != null)
+        if (event != null) {
             populateDetails();
-        else
+        } else
             Toast.makeText(this, "Error getting event from database.", Toast.LENGTH_SHORT).show();
 
         back.setOnClickListener(v -> backToMainActivity());
@@ -136,12 +136,12 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
-        setNotifyOnClickListener();
+        setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
     }
 
-    private void setNotifyOnClickListener() {
+    private void setNotifyOnClickListener(boolean pastEvent) {
         //only add notification for events in the future (or today)
-        if (Utils.compareDateToToday(event.getDate()) < 0) {
+        if (pastEvent) {
             notify_icon.setEnabled(false);
 
             //also hide the notification indicator up top
@@ -219,8 +219,6 @@ public class EventDetail extends AppCompatActivity {
     }
 
     //method that handles clicking the back button to create an artificial back stack to MainActivity
-    //todo test if TaskStackBuilder is usable now
-    //todo [IDEA] scroll list in MainActivity to appropriate event
     private void backToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
@@ -238,6 +236,7 @@ public class EventDetail extends AppCompatActivity {
                     "You will be notified on the day of the event.\n" +
                             "Would you like to be notified for all events?",
                     Snackbar.LENGTH_LONG);
+
             snackbar.setAction("Activate", v -> {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -251,9 +250,12 @@ public class EventDetail extends AppCompatActivity {
 
                 Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
 
-                setNotifyOnClickListener();
+                boolean pastDate = Utils.compareDateToToday(event.getDate()) < 0;
+                setNotifyOnClickListener(pastDate);
             });
+
             snackbar.show();
+
             View view = snackbar.getView();
             TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -262,13 +264,16 @@ public class EventDetail extends AppCompatActivity {
                     "You are already being notified for all events.\n" +
                             "Do you want to change this option?",
                     Snackbar.LENGTH_LONG);
+
             snackbar.setAction("Settings", v -> {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 settingsIntent.putExtra("activity", 2);
                 settingsIntent.putExtra(DBEventIDTag, DBEventID);
                 startActivity(settingsIntent);
             });
+
             snackbar.show();
+
             View view = snackbar.getView();
             TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
