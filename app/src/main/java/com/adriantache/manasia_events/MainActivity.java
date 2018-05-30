@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView filters;
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraint_layout;
+    @BindView(R.id.menu)
+    Button menu;
     private String REMOTE_URL;
     private boolean music;
     private boolean shop;
@@ -169,6 +171,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             } else {
                 startActivity(intent);
             }
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+            startActivity(intent);
         });
     }
 
