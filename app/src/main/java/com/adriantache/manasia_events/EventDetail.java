@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -148,7 +146,7 @@ public class EventDetail extends AppCompatActivity {
             notify_status.setVisibility(View.INVISIBLE);
         } else if (notifyOnAllEvents) {
             notify_icon.setIconEnabled(true);
-            notify_label.setText("Notifying");
+            notify_label.setText(R.string.notifying);
             notify_status.setImageResource(R.drawable.alarm_accent);
 
             notify.setOnClickListener(v -> showSnackbar());
@@ -160,7 +158,7 @@ public class EventDetail extends AppCompatActivity {
                 if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
                     notify_status.setImageResource(R.drawable.alarm);
-                    notify_label.setText("Notify");
+                    notify_label.setText(getString(R.string.notify));
 
                     event.setNotify(0);
                     updateDatabase();
@@ -169,7 +167,7 @@ public class EventDetail extends AppCompatActivity {
                 } else {
                     notify_icon.setIconEnabled(true);
                     notify_status.setImageResource(R.drawable.alarm_accent);
-                    notify_label.setText("Notifying");
+                    notify_label.setText(getString(R.string.notifying));
 
                     event.setNotify(1);
                     updateDatabase();
@@ -185,13 +183,15 @@ public class EventDetail extends AppCompatActivity {
 
     private void populateDetails() {
         //populate fields with details
-        if (!TextUtils.isEmpty(event.getPhotoUrl())) {
-            Picasso.get().load(event.getPhotoUrl()).into(thumbnail);
+        if (event.getPhoto() != null) {
+            thumbnail.setImageBitmap(event.getPhoto());
             thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            thumbnail.setScrollY(-30);
             thumbnail.setBackgroundResource(R.color.colorAccent);
         } else {
             thumbnail.setImageResource(R.drawable.manasia_logo);
             thumbnail.setScaleType(ImageView.ScaleType.CENTER);
+            thumbnail.setScrollY(0);
             thumbnail.setBackgroundResource(R.color.blue_grey100);
         }
         category_image.setImageResource(event.getCategory_image());

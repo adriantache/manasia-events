@@ -3,15 +3,12 @@ package com.adriantache.manasia_events.widget;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
@@ -57,17 +54,7 @@ public class EventWidget extends AppWidgetProvider {
                     extractDayOrMonth(event.getDate(), true)
                             + "\n"
                             + extractDayOrMonth(event.getDate(), false));
-
-            //fetch the image bitmap with picasso and use it
-            Bitmap bitmap = null;
-
-            try {
-                bitmap = Picasso.get().load(event.getPhotoUrl()).get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            views.setImageViewBitmap(R.id.thumbnail, bitmap);
+            views.setImageViewBitmap(R.id.thumbnail, event.getPhoto());
         }
 
         // Construct an Intent object includes web address.
