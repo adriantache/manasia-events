@@ -18,4 +18,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="manasia_events_settings">Manasia Events Settings</string>
+    <string name="next_manasia_event">NEXT MANASIA EVENT</string>
+    <string name="next_event_thumbnail">Next event thumbnail</string>
 </resources>
