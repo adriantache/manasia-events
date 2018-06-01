@@ -72,7 +72,7 @@ public class EventWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
 
-            //set the notification text and image
+            //set the notification text
             if (event != null) {
                 views.setTextViewText(R.id.title, event.getTitle());
                 views.setTextViewText(R.id.date,
@@ -84,9 +84,9 @@ public class EventWidget extends AppWidgetProvider {
             //set intent to open that event's details
             Intent intent = new Intent(context, EventDetail.class);
             intent.putExtra(DBEventIDTag, event.getDatabaseID());
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                    intent, 0);
-            views.setOnClickPendingIntent(R.id.title, pendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -98,7 +98,16 @@ public class EventWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
 
-            //set the notification text and image
+            //set the notification text
+            if (event != null) {
+                views.setTextViewText(R.id.title, event.getTitle());
+                views.setTextViewText(R.id.date,
+                        extractDayOrMonth(event.getDate(), true)
+                                + "\n"
+                                + extractDayOrMonth(event.getDate(), false));
+            }
+
+            //set the notification image
             if (bitmap != null)
                 views.setImageViewBitmap(R.id.thumbnail, bitmap);
 

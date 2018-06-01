@@ -5,7 +5,8 @@
     <string name="notify_status">bookmark_icon</string>
     <string name="back_button">Back button</string>
     <string name="call">CALL</string>
-    <string name="notify">NOTIFY</string>
+    <string name="notify">Notify</string>
+    <string name="notifying">Notifying</string>
     <string name="map">MAP</string>
     <string name="event_thumbnail">Event thumbnail</string>
     <string name="manasia_logo">Manasia logo</string>

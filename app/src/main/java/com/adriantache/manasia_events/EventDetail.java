@@ -105,8 +105,11 @@ public class EventDetail extends AppCompatActivity {
 
         if (event != null) {
             populateDetails();
-        } else
+            setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
+        } else {
             Toast.makeText(this, "Error getting event from database.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         back.setOnClickListener(v -> backToMainActivity());
 
@@ -135,8 +138,6 @@ public class EventDetail extends AppCompatActivity {
                 startActivity(locationIntent);
             }
         });
-
-        setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
     }
 
     private void setNotifyOnClickListener(boolean pastEvent) {
