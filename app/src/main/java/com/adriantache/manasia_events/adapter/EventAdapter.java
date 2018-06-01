@@ -3,6 +3,7 @@ package com.adriantache.manasia_events.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +54,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         if (event != null) {
-            if (event.getPhoto() != null) {
-                holder.thumbnail.setImageBitmap(event.getPhoto());
+            if (!TextUtils.isEmpty(event.getPhotoUrl())) {
+                Picasso.get().load(event.getPhotoUrl()).into(holder.thumbnail);
                 holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 holder.thumbnail.setScrollY(-30);
                 holder.thumbnail.setBackgroundResource(R.color.colorAccent);

@@ -1,23 +1,12 @@
 package com.adriantache.manasia_events.loader;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.content.AsyncTaskLoader;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,58 +25,12 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
         remoteURL = URL;
     }
 
-    private static ArrayList<Event> parseJSON(String JSON, Context context) {
-        if (TextUtils.isEmpty(JSON)) return null;
-
-        ArrayList<Event> events = new ArrayList<>();
-
-        //parse JSON String
-        try {
-            JSONObject root = new JSONObject(JSON);
-            JSONArray event_title = root.getJSONArray("event_title");
-
-            for (int i = 0; i < event_title.length(); i++) {
-                JSONObject child = event_title.getJSONObject(i);
-                String title = child.getString("name");
-                String date = Utils.buildDate(child.getString("month"), child.getString("day"));
-                String description = child.optString("description_long");
-                if (TextUtils.isEmpty(description)) description = child.getString("description");
-
-                String photo_url = child.optString("image_url");
-                Bitmap photo = null;
-
-                if (!TextUtils.isEmpty(photo_url)) {
-                    try {
-                        photo = Picasso.get().load(Utils.getImageUrl(photo_url)).get();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (photo == null) {
-                    photo = BitmapFactory.decodeResource(context.getResources(), R.drawable.manasia_logo);
-                }
-
-                //give the description breathing room
-                if (description != null)
-                    description = description.replace("\n", "\n\n");
-
-                if (date != null && title != null && description != null)
-                    events.add(new Event(date, title, description, photo, R.drawable.hub));
-            }
-        } catch (JSONException e) {
-            Log.e("parseJSON", "Cannot parse JSON", e);
-        }
-
-        return events;
-    }
-
     @Override
     public List<Event> loadInBackground() {
         List<Event> events = null;
 
         try {
-            events = parseJSON(getJSON(remoteURL), getContext());
+            events = Utils.parseJSON(getJSON(remoteURL));
         } catch (IOException e) {
             e.printStackTrace();
         }

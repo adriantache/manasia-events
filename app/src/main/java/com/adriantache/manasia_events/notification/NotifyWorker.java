@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -17,6 +18,9 @@ import com.adriantache.manasia_events.EventDetail;
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 import androidx.work.Worker;
 
@@ -104,6 +108,14 @@ public class NotifyWorker extends Worker {
         String notificationTitle = "Manasia event: " + event.getTitle();
         String notificationText = "Today, " + prettyDate(event.getDate()) + ", at Stelea Spatarul 13, Bucuresti";
 
+        //set the event image in the notification
+        Bitmap largeImage = null;
+        try {
+            largeImage = Picasso.get().load(event.getPhotoUrl()).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //build the notification
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(getApplicationContext(), manasia_notification_channel)
@@ -112,7 +124,7 @@ public class NotifyWorker extends Worker {
                         .setContentText(notificationText)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
-                        .setLargeIcon(event.getPhoto())
+                        .setLargeIcon(largeImage)
                         .setCategory(CATEGORY_EVENT)
                         .setColor(0xFF4081)
                         .setVisibility(VISIBILITY_PUBLIC)
