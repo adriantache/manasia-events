@@ -2,17 +2,15 @@ package com.adriantache.manasia_events.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -275,5 +273,34 @@ public final class Utils {
         }
 
         return image_tag;
+    }
+
+    //get sample JSON string from file
+    public static String getSampleJSON(Context context) {
+        String file = null;
+
+        try {
+            InputStream inputStream = context.getResources().openRawResource(
+                    context.getResources().getIdentifier("sample_json",
+                            "raw", context.getPackageName()));
+
+            if (inputStream != null) {
+                int ch;
+                StringBuilder sb = new StringBuilder();
+                try {
+                    while ((ch = inputStream.read()) != -1) {
+                        sb.append((char) ch);
+                    }
+                } catch (IOException e) {
+                    Log.e("GetSampleJSON", "Cannot read API key InputStream.", e);
+                }
+
+                if (sb.length() != 0) file = sb.toString();
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("GetSampleJSON", "Cannot open API key file.", e);
+        }
+
+        return file;
     }
 }

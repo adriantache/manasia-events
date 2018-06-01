@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
-import com.adriantache.manasia_events.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,45 +33,6 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     public EventLoader(Context context, String URL) {
         super(context);
         remoteURL = URL;
-    }
-
-    @Override
-    public List<Event> loadInBackground() {
-        List<Event> events = null;
-
-        try {
-            events = parseJSON(getJSON(remoteURL));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return events;
-    }
-
-    //OKHTTP implementation
-    private String getJSON(String url) throws IOException, NullPointerException {
-        //override timeouts to ensure receiving full JSON
-        OkHttpClient.Builder b = new OkHttpClient.Builder();
-        b.connectTimeout(15, TimeUnit.SECONDS);
-        b.readTimeout(15, TimeUnit.SECONDS);
-        b.writeTimeout(15, TimeUnit.SECONDS);
-        OkHttpClient client = b.build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response = client.newCall(request).execute();
-
-        String JSON = null;
-
-        try {
-            JSON = response.body().string();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        return JSON;
     }
 
     private static ArrayList<Event> parseJSON(String JSON) {
@@ -106,5 +66,47 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
         }
 
         return events;
+    }
+
+    @Override
+    public List<Event> loadInBackground() {
+        List<Event> events = null;
+
+        try {
+            if (remoteURL.length() > 100) {
+                events = parseJSON(remoteURL);
+            } else
+                events = parseJSON(getJSON(remoteURL));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return events;
+    }
+
+    //OKHTTP implementation
+    private String getJSON(String url) throws IOException, NullPointerException {
+        //override timeouts to ensure receiving full JSON
+        OkHttpClient.Builder b = new OkHttpClient.Builder();
+        b.connectTimeout(15, TimeUnit.SECONDS);
+        b.readTimeout(15, TimeUnit.SECONDS);
+        b.writeTimeout(15, TimeUnit.SECONDS);
+        OkHttpClient client = b.build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String JSON = null;
+
+        try {
+            JSON = response.body().string();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return JSON;
     }
 }
