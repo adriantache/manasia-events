@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
@@ -40,11 +39,17 @@ public class EventWidget extends AppWidgetProvider {
         this.appWidgetManager = appWidgetManager;
         this.appWidgetIds = appWidgetIds;
 
-        event = getEvent();
+        event = getEvent(context);
+
+        if (event != null) {
+            updateWidgetContents(context, appWidgetManager, appWidgetIds);
+
+            new BitmapAsyncTask().execute(event.getPhotoUrl());
+        }
     }
 
     @Nullable
-    private Event getEvent() {
+    private Event getEvent(Context context) {
         //fetch the events array from the database
         ArrayList<Event> events = (ArrayList<Event>) DBUtils.readDatabase(context);
 
@@ -62,7 +67,7 @@ public class EventWidget extends AppWidgetProvider {
         return event;
     }
 
-    private void updateWidgetContents() {
+    private void updateWidgetContents(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
@@ -74,16 +79,6 @@ public class EventWidget extends AppWidgetProvider {
                         extractDayOrMonth(event.getDate(), true)
                                 + "\n"
                                 + extractDayOrMonth(event.getDate(), false));
-
-                //fetch the image bitmap with picasso and use it
-                new BitmapAsyncTask().execute(event.getPhotoUrl());
-
-                if (bitmap != null)
-                    views.setImageViewBitmap(R.id.thumbnail, bitmap);
-                else
-                    views.setImageViewBitmap(R.id.thumbnail,
-                            BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.manasia_logo));
             }
 
             //set intent to open that event's details
@@ -92,6 +87,20 @@ public class EventWidget extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                     intent, 0);
             views.setOnClickPendingIntent(R.id.title, pendingIntent);
+
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+    }
+
+    private void updateWidgetImages() {
+        for (int appWidgetId : appWidgetIds) {
+            // Construct the RemoteViews object
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
+
+            //set the notification text and image
+            if (bitmap != null)
+                views.setImageViewBitmap(R.id.thumbnail, bitmap);
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -119,7 +128,7 @@ public class EventWidget extends AppWidgetProvider {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            updateWidgetContents();
+            updateWidgetImages();
         }
     }
 }

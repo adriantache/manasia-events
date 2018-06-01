@@ -741,3 +741,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //todo figure out data storage (firebase? facebook api?)
 //todo create method to keep database clean (<100 entries?)
 //todo [low] translate app (modify class, ensure input of event translations)
+//todo implement splash screen while fetching remote data
