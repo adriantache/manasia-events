@@ -171,47 +171,13 @@ public final class Utils {
         return remoteEvents;
     }
 
-
     public static boolean getNotifyAllSetting(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
         return sharedPref.getBoolean(NOTIFY, false);
     }
 
-    public static ArrayList<Event> parseJSON(String JSON) {
-        if (TextUtils.isEmpty(JSON)) return null;
-
-        ArrayList<Event> events = new ArrayList<>();
-
-        //parse JSON String
-        try {
-            JSONObject root = new JSONObject(JSON);
-            JSONArray event_title = root.getJSONArray("event_title");
-
-            for (int i = 0; i < event_title.length(); i++) {
-                JSONObject child = event_title.getJSONObject(i);
-                String title = child.getString("name");
-                String date = buildDate(child.getString("month"), child.getString("day"));
-                String description = child.optString("description_long");
-                if (TextUtils.isEmpty(description)) description = child.getString("description");
-                String image_url = child.optString("image_url");
-                if (!TextUtils.isEmpty(image_url)) image_url = getImageUrl(image_url);
-
-                //give the description breathing room
-                if (description != null)
-                    description = description.replace("\n", "\n\n");
-
-                if (date != null && title != null && description != null)
-                    events.add(new Event(date, title, description, image_url, R.drawable.hub));
-            }
-        } catch (JSONException e) {
-            Log.e("parseJSON", "Cannot parse JSON", e);
-        }
-
-        return events;
-    }
-
     //turn a 3 letter month and a day "int" into a date of the format yyyy-MM-dd
-    private static String buildDate(String month, String day) {
+    public static String buildDate(String month, String day) {
         StringBuilder date = new StringBuilder();
         int monthNumber;
 
@@ -288,7 +254,7 @@ public final class Utils {
         return date.toString();
     }
 
-    private static String getImageUrl(String image_tag) {
+    public static String getImageUrl(String image_tag) {
         image_tag = image_tag
                 .replace("scontent-yyz1-1.xx.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
                 .replace("&amp;", "&")

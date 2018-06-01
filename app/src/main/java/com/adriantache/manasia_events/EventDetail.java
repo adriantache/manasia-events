@@ -149,7 +149,7 @@ public class EventDetail extends AppCompatActivity {
             notify_status.setVisibility(View.INVISIBLE);
         } else if (notifyOnAllEvents) {
             notify_icon.setIconEnabled(true);
-            notify_label.setText("Notifying");
+            notify_label.setText(getString(R.string.notifying));
             notify_status.setImageResource(R.drawable.alarm_accent);
 
             notify.setOnClickListener(v -> showSnackbar());
@@ -161,7 +161,7 @@ public class EventDetail extends AppCompatActivity {
                 if (event.getNotify() == 1) {
                     notify_icon.setIconEnabled(false);
                     notify_status.setImageResource(R.drawable.alarm);
-                    notify_label.setText("Notify");
+                    notify_label.setText(getString(R.string.notify));
 
                     event.setNotify(0);
                     updateDatabase();
@@ -170,7 +170,7 @@ public class EventDetail extends AppCompatActivity {
                 } else {
                     notify_icon.setIconEnabled(true);
                     notify_status.setImageResource(R.drawable.alarm_accent);
-                    notify_label.setText("Notifying");
+                    notify_label.setText(getString(R.string.notifying));
 
                     event.setNotify(1);
                     updateDatabase();
