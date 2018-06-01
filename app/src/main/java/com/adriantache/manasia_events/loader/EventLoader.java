@@ -58,7 +58,9 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
 
                 if (!TextUtils.isEmpty(photo_url)) {
                     try {
-                        photo = Picasso.get().load(Utils.getImageUrl(photo_url)).get();
+                        photo = Picasso.get().load(Utils.getImageUrl(photo_url))
+                                .resize(600, 280).onlyScaleDown()
+                                .centerCrop().get();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

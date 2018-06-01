@@ -1,16 +1,20 @@
 package com.adriantache.manasia_events.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.adriantache.manasia_events.EventDetail;
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 
 import java.util.ArrayList;
 
+import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
 import static com.adriantache.manasia_events.util.Utils.extractDayOrMonth;
 
@@ -55,14 +59,14 @@ public class EventWidget extends AppWidgetProvider {
                             + "\n"
                             + extractDayOrMonth(event.getDate(), false));
             views.setImageViewBitmap(R.id.thumbnail, event.getPhoto());
+
+            //set intent to open that event's details
+            Intent intent = new Intent(context, EventDetail.class);
+            intent.putExtra(DBEventIDTag, event.getDatabaseID());
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            views.setOnClickPendingIntent(R.id.title, pendingIntent);
         }
 
-        // Construct an Intent object includes web address.
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://erenutku.com"));
-//        // In widget we are not allowing to use intents as usually. We have to use PendingIntent instead of 'startActivity'
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//        // Here the basic operations the remote view can do.
-//        views.setOnClickPendingIntent(R.id.title, pendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
