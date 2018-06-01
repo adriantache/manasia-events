@@ -28,7 +28,8 @@
         android:background="#eeeeeeee"
         android:gravity="center_vertical"
         android:textColor="#000"
-        tools:text="EVENT TITLE" />
+        tools:text="EVENT TITLE"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/date"

@@ -55,9 +55,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         if (event != null) {
             if (!TextUtils.isEmpty(event.getPhotoUrl())) {
-                Picasso.get().load(event.getPhotoUrl()).into(holder.thumbnail);
+                Picasso.get().load(event.getPhotoUrl()).fit().centerCrop().into(holder.thumbnail);
                 holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                holder.thumbnail.setScrollY(-30);
+//                holder.thumbnail.setScrollY(-30);
                 holder.thumbnail.setBackgroundResource(R.color.colorAccent);
             } else {
                 holder.thumbnail.setImageResource(R.drawable.manasia_logo);

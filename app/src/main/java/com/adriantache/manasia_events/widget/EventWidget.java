@@ -4,6 +4,9 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
 import com.adriantache.manasia_events.R;
@@ -21,20 +24,23 @@ import static com.adriantache.manasia_events.util.Utils.extractDayOrMonth;
  * Widget for displaying next Manasia event
  **/
 public class EventWidget extends AppWidgetProvider {
+    private static Bitmap bitmap;
+    private Context context;
+    private Event event;
+    private AppWidgetManager appWidgetManager;
+    private int[] appWidgetIds;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
+        this.context = context;
+        this.appWidgetManager = appWidgetManager;
+        this.appWidgetIds = appWidgetIds;
+
+        event = getEvent();
     }
 
-    private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                 int appWidgetId) {
-
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
-
+    @Nullable
+    private Event getEvent() {
         //fetch the events array from the database
         ArrayList<Event> events = (ArrayList<Event>) DBUtils.readDatabase(context);
 
@@ -49,34 +55,66 @@ public class EventWidget extends AppWidgetProvider {
             //should look better than if we just display placeholder text
             if (event == null) event = events.get(0);
         }
+        return event;
+    }
 
-        //set the notification text and image
-        if (event != null) {
-            views.setTextViewText(R.id.title, event.getTitle());
-            views.setTextViewText(R.id.date,
-                    extractDayOrMonth(event.getDate(), true)
-                            + "\n"
-                            + extractDayOrMonth(event.getDate(), false));
+    private void updateWidgetContents() {
+        for (int appWidgetId : appWidgetIds) {
+            // Construct the RemoteViews object
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
 
-            //fetch the image bitmap with picasso and use it
-            Bitmap bitmap = null;
+            //set the notification text and image
+            if (event != null) {
+                views.setTextViewText(R.id.title, event.getTitle());
+                views.setTextViewText(R.id.date,
+                        extractDayOrMonth(event.getDate(), true)
+                                + "\n"
+                                + extractDayOrMonth(event.getDate(), false));
 
-            try {
-                bitmap = Picasso.get().load(event.getPhotoUrl()).get();
-            } catch (IOException e) {
-                e.printStackTrace();
+                //fetch the image bitmap with picasso and use it
+                new BitmapAsyncTask().execute(event.getPhotoUrl());
+
+                if (bitmap != null)
+                    views.setImageViewBitmap(R.id.thumbnail, bitmap);
+                else
+                    views.setImageViewBitmap(R.id.thumbnail,
+                            BitmapFactory.decodeResource(context.getResources(), R.drawable.manasia_logo));
             }
 
-            views.setImageViewBitmap(R.id.thumbnail, bitmap);
-        }
-
-        // Construct an Intent object includes web address.
+            // Construct an Intent object includes web address.
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://erenutku.com"));
 //        // In widget we are not allowing to use intents as usually. We have to use PendingIntent instead of 'startActivity'
 //        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 //        // Here the basic operations the remote view can do.
 //        views.setOnClickPendingIntent(R.id.title, pendingIntent);
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+    }
+
+    private class BitmapAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url;
+
+            if (strings != null && strings.length != 0) {
+                url = strings[0];
+
+                try {
+                    bitmap = Picasso.get().load(url).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            updateWidgetContents();
+        }
     }
 }

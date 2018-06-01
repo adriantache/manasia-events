@@ -13,7 +13,6 @@
         android:background="@color/colorAccent"
         android:contentDescription="@string/event_thumbnail"
         android:scaleType="centerCrop"
-        android:scrollY="-30dp"
         android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
