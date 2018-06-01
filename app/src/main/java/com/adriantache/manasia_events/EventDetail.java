@@ -2,7 +2,6 @@ package com.adriantache.manasia_events;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -184,8 +183,7 @@ public class EventDetail extends AppCompatActivity {
 
     private void populateDetails() {
         //populate fields with details
-        //todo fix this, default photo is not null
-        if (event.getPhoto() != BitmapFactory.decodeResource(getResources(),R.drawable.manasia_logo)) {
+        if (event.getPhoto() != null) {
             thumbnail.setImageBitmap(event.getPhoto());
             thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
             thumbnail.setScrollY(-30);
