@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     //filter posts by category
-    //todo [IDEA] allow multiple categories
+    //todo remove filters
     private List<Event> filter(List<Event> list) {
         if (list == null) return null;
 

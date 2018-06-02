@@ -25,10 +25,11 @@
         android:layout_height="50dp"
         android:layout_below="@id/thumbnail"
         android:layout_marginBottom="8dp"
-        android:paddingStart="16dp"
+        android:paddingStart="4dp"
         android:layout_toEndOf="@id/date"
         android:background="#eeeeeeee"
         android:gravity="center_vertical"
+        android:textStyle="bold"
         android:textColor="#000"
         tools:text="EVENT TITLE"
         tools:ignore="RtlSymmetry" />
