@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="220dp"
-        android:layout_height="130dp"
+        android:layout_width="@dimen/widget_width"
+        android:layout_height="@dimen/widget_image_height"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"

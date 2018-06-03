@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="widget_height">180dp</dimen>
+    <dimen name="widget_width">220dp</dimen>
+    <dimen name="widget_image_height">130dp</dimen>
+</resources>

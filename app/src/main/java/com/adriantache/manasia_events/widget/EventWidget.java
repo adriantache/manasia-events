@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -126,7 +127,15 @@ public class EventWidget extends AppWidgetProvider {
                 url = strings[0];
 
                 try {
-                    bitmap = Picasso.get().load(url).resize(880,520).centerCrop().get();
+                    //get screen density as a multiplier to the widget dimens
+                    int multiplier = (int) context.getResources().getDisplayMetrics().density;
+                    //get the image and resize it for the widget size to prevent wasting memory
+                    bitmap = Picasso.get()
+                            .load(url)
+                            .resize((int)context.getResources().getDimension(R.dimen.widget_width)*multiplier,
+                                    (int)context.getResources().getDimension(R.dimen.widget_image_height)*multiplier)
+                            .centerCrop()
+                            .get();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
