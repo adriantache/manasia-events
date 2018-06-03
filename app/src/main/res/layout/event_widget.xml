@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="220dp"
+        android:layout_height="130dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="152dp"
+        android:layout_width="171dp"
         android:layout_height="50dp"
         android:layout_below="@id/thumbnail"
         android:layout_marginBottom="8dp"

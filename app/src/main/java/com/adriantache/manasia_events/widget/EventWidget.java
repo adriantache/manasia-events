@@ -126,7 +126,7 @@ public class EventWidget extends AppWidgetProvider {
                 url = strings[0];
 
                 try {
-                    bitmap = Picasso.get().load(url).get();
+                    bitmap = Picasso.get().load(url).resize(880,520).centerCrop().get();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
