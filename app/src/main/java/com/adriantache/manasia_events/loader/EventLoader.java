@@ -46,11 +46,11 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
             JSONArray event_title = root.getJSONArray("event_title");
 
             for (int i = 0; i < event_title.length(); i++) {
-                JSONObject child = event_title.getJSONObject(i);
-                String title = child.getString("name");
-                String date = buildDate(child.getString("month"), child.getString("day"));
+                JSONObject child = event_title.optJSONObject(i);
+                String title = child.optString("name");
+                String date = buildDate(child.getString("month"), child.optString("day"));
                 String description = child.optString("description_long");
-                if (TextUtils.isEmpty(description)) description = child.getString("description");
+                if (TextUtils.isEmpty(description)) description = child.optString("description");
                 String image_url = child.optString("image_url");
                 if (!TextUtils.isEmpty(image_url)) image_url = getImageUrl(image_url);
 
