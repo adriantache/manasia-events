@@ -187,7 +187,7 @@ public class EventDetail extends AppCompatActivity {
     private void populateDetails() {
         //populate fields with details
         if (!TextUtils.isEmpty(event.getPhotoUrl())) {
-            Picasso.get().load(event.getPhotoUrl()).fit().into(thumbnail);
+            Picasso.get().load(event.getPhotoUrl()).centerCrop().fit().into(thumbnail);
             thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
             thumbnail.setBackgroundResource(R.color.colorAccent);
         } else {
