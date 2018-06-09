@@ -40,6 +40,8 @@ public class EventWidget extends AppWidgetProvider {
         this.appWidgetManager = appWidgetManager;
         this.appWidgetIds = appWidgetIds;
 
+        //todo fetch remote events before updating widget
+
         event = getEvent(context);
 
         if (event != null) {
@@ -111,6 +113,13 @@ public class EventWidget extends AppWidgetProvider {
             //set the notification image
             if (bitmap != null)
                 views.setImageViewBitmap(R.id.thumbnail, bitmap);
+
+            //set intent to open that event's details (also setting the intent here otherwise it gets destroyed)
+            Intent intent = new Intent(context, EventDetail.class);
+            intent.putExtra(DBEventIDTag, event.getDatabaseID());
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
