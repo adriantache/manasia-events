@@ -21,4 +21,5 @@
     <string name="manasia_events_settings">Manasia Events Settings</string>
     <string name="next_manasia_event">NEXT MANASIA EVENT</string>
     <string name="next_event_thumbnail">Next event thumbnail</string>
+    <string name="manasia_menu">manasia menu</string>
 </resources>

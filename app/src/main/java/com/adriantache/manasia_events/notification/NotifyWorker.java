@@ -96,14 +96,6 @@ public class NotifyWorker extends Worker {
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(getApplicationContext(), 1, intent, FLAG_UPDATE_CURRENT);
 
-        //todo figure out TaskStackBuilder, maybe it's better than my solution
-        //https://developer.android.com/guide/components/activities/tasks-and-back-stack
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-//        stackBuilder.addParentStack(MainActivity.class);
-//        //stackBuilder.addParentStack(EventDetail.class);
-//        stackBuilder.addNextIntent(intent);
-//        PendingIntent pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_ONE_SHOT);
-
         //get event details to show in the notification
         String notificationTitle = "Manasia event: " + event.getTitle();
         String notificationText = "Today, " + prettyDate(event.getDate()) + ", at Stelea Spatarul 13, Bucuresti";
