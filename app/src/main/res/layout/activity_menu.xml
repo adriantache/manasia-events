@@ -75,8 +75,9 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent=".68" />
 
-    <!--todo build the rest of the menu items-->
+    <!--menu item categories-->
     <android.support.v7.widget.CardView
+        android:id="@+id/nonAlcoholic"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -95,19 +96,299 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imageViewNA"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="9"
                 app:srcCompat="@drawable/manasia_logo" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/textViewNA"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Soft Drinks"
+                android:text="Non-Alcoholic"
                 android:textAlignment="center" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/beer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/verticalThird"
+        app:layout_constraintEnd_toStartOf="@+id/twoThirds"
+        app:layout_constraintStart_toStartOf="@id/third"
+        app:layout_constraintTop_toBottomOf="@+id/back_background" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewBeer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewBeer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Beer"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cocktails"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/verticalThird"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/twoThirds"
+        app:layout_constraintTop_toBottomOf="@+id/back_background" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewCocktails"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewCocktails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cocktails"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/longDrinks"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/verticalTwoThirds"
+        app:layout_constraintEnd_toStartOf="@+id/third"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/verticalThird" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewLD"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewLD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Long Drinks"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/shots"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/verticalTwoThirds"
+        app:layout_constraintEnd_toStartOf="@+id/twoThirds"
+        app:layout_constraintStart_toStartOf="@id/third"
+        app:layout_constraintTop_toBottomOf="@+id/verticalThird" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewShots"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewShots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Shots"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/spirits"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/verticalTwoThirds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/twoThirds"
+        app:layout_constraintTop_toBottomOf="@+id/verticalThird" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewSpirits"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewSpirits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Spirits"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/wine"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/third"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/verticalTwoThirds" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewWine"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewWine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wine"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/spritz"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/twoThirds"
+        app:layout_constraintStart_toStartOf="@id/third"
+        app:layout_constraintTop_toBottomOf="@+id/verticalTwoThirds" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewSpritz"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                app:srcCompat="@drawable/manasia_logo" />
+
+            <TextView
+                android:id="@+id/textViewSpritz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Spritz"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    
+    <android.support.v7.widget.CardView
+    android:id="@+id/cider"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="@id/twoThirds"
+    app:layout_constraintTop_toBottomOf="@+id/verticalTwoThirds" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/imageViewCider"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            app:srcCompat="@drawable/manasia_logo" />
+
+        <TextView
+            android:id="@+id/textViewCider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cider"
+            android:textAlignment="center" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>
