@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean shop;
     private boolean hub;
     private boolean notifyOnAllEvents;
-    private boolean layout_animated = false;
+    private boolean layoutAnimated = false;
 
     //todo test if necessary after using TaskStackBuilder
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
@@ -252,12 +252,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         initialConstraintSet.clone(getApplicationContext(), R.layout.activity_main);
         ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
         TransitionManager.beginDelayedTransition(mConstraintLayout);
-        if (!layout_animated) {
+        if (!layoutAnimated) {
             constraintSet.applyTo(mConstraintLayout);
-            layout_animated = true;
+            layoutAnimated = true;
         } else {
             initialConstraintSet.applyTo(mConstraintLayout);
-            layout_animated = false;
+            layoutAnimated = false;
         }
     }
 
