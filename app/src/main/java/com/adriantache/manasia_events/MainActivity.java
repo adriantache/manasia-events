@@ -1,6 +1,8 @@
 package com.adriantache.manasia_events;
 
 import android.app.ActivityOptions;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +35,7 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.loader.EventLoader;
 import com.adriantache.manasia_events.util.Utils;
+import com.adriantache.manasia_events.widget.EventWidget;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -117,11 +120,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //get remote URL or use local data
         REMOTE_URL = getRemoteURL();
 
+        //todo prevent unnecessary database updates
         //populate the global ArrayList of events by updating database and...
         getSupportLoaderManager().initLoader(1, null, this).forceLoad();
         //...then reading that database (this also populates the ArrayList with the very important
         //DBEventID value to pass along throughout the app
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
+        //and since we're at it also update the widget(s) with the new event data
+        Intent intent = new Intent(this, EventWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+        // since it seems the onUpdate() is only fired on that:
+        int[] ids = AppWidgetManager.getInstance(getApplication())
+                .getAppWidgetIds(new ComponentName(getApplication(), EventWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
 
         if (events != null) {
             populateListView();
