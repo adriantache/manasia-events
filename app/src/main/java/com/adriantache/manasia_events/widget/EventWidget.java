@@ -70,7 +70,7 @@ public class EventWidget extends AppWidgetProvider {
         return closestEvent;
     }
 
-    private void updateWidgetContents(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    private static void updateWidgetContents(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
@@ -133,7 +133,7 @@ public class EventWidget extends AppWidgetProvider {
             updateWidgetImages();
         }
 
-        private void updateWidgetImages() {
+        private static void updateWidgetImages() {
             for (int appWidgetId : appWidgetIds) {
                 // Construct the RemoteViews object
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
