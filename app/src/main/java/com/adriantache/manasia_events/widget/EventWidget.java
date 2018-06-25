@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
 import static com.adriantache.manasia_events.util.Utils.extractDayOrMonth;
+import static com.adriantache.manasia_events.util.Utils.isEventToday;
 
 /**
  * Widget for displaying next Manasia event
@@ -77,19 +77,24 @@ public class EventWidget extends AppWidgetProvider {
 
             //set the notification text
             if (event != null) {
-                views.setTextViewText(R.id.title, event.getTitle());
-                views.setTextViewText(R.id.date,
-                        extractDayOrMonth(event.getDate(), true)
-                                + "\n"
-                                + extractDayOrMonth(event.getDate(), false));
-            }
+                if (isEventToday(event.getDate())) {
+                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.date, "TODAY");
+                } else {
+                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.date,
+                            extractDayOrMonth(event.getDate(), true)
+                                    + "\n"
+                                    + extractDayOrMonth(event.getDate(), false));
+                }
 
-            //set intent to open that event's details
-            Intent intent = new Intent(context, EventDetail.class);
-            intent.putExtra(DBEventIDTag, event.getDatabaseID());
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
-                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
+                //set intent to open that event's details
+                Intent intent = new Intent(context, EventDetail.class);
+                intent.putExtra(DBEventIDTag, event.getDatabaseID());
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
+            }
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -103,23 +108,28 @@ public class EventWidget extends AppWidgetProvider {
 
             //set the notification text
             if (event != null) {
-                views.setTextViewText(R.id.title, event.getTitle());
-                views.setTextViewText(R.id.date,
-                        extractDayOrMonth(event.getDate(), true)
-                                + "\n"
-                                + extractDayOrMonth(event.getDate(), false));
+                if (isEventToday(event.getDate())) {
+                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.date, "TODAY");
+                } else {
+                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.date,
+                            extractDayOrMonth(event.getDate(), true)
+                                    + "\n"
+                                    + extractDayOrMonth(event.getDate(), false));
+                }
+
+                //set intent to open that event's details
+                Intent intent = new Intent(context, EventDetail.class);
+                intent.putExtra(DBEventIDTag, event.getDatabaseID());
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
             }
 
             //set the notification image
             if (bitmap != null)
                 views.setImageViewBitmap(R.id.thumbnail, bitmap);
-
-            //set intent to open that event's details (also setting the intent here otherwise it gets destroyed)
-            Intent intent = new Intent(context, EventDetail.class);
-            intent.putExtra(DBEventIDTag, event.getDatabaseID());
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
-                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -141,8 +151,8 @@ public class EventWidget extends AppWidgetProvider {
                     //get the image and resize it for the widget size to prevent wasting memory
                     bitmap = Picasso.get()
                             .load(url)
-                            .resize((int)context.getResources().getDimension(R.dimen.widget_width)*multiplier,
-                                    (int)context.getResources().getDimension(R.dimen.widget_image_height)*multiplier)
+                            .resize((int) context.getResources().getDimension(R.dimen.widget_width) * multiplier,
+                                    (int) context.getResources().getDimension(R.dimen.widget_image_height) * multiplier)
                             .centerCrop()
                             .get();
                 } catch (IOException e) {

@@ -136,6 +136,18 @@ public final class Utils {
         return extractDayOrMonth(date, false) + " " + extractDayOrMonth(date, true);
     }
 
+    public static boolean isEventToday(String date) {
+        Calendar today = Calendar.getInstance();
+        int day = today.get(Calendar.DAY_OF_MONTH);
+        int month = today.get(Calendar.MONTH);
+
+        String[] parts = date.split("-");
+        int eventDay = Integer.parseInt(parts[0]);
+        int eventMonth = Integer.parseInt(parts[1]);
+
+        return day == eventDay && month == eventMonth;
+    }
+
 
     //utility methods
     public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
