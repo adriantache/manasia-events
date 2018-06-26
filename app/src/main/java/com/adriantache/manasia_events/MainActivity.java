@@ -63,12 +63,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
-    @BindView(R.id.music_toggle)
-    Button music_toggle;
-    @BindView(R.id.shop_toggle)
-    Button shop_toggle;
-    @BindView(R.id.hub_toggle)
-    Button hub_toggle;
     @BindView(R.id.logo)
     ImageView logo;
     @BindView(R.id.busy_level)
@@ -100,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList(false);
+        refreshList();
     }
 
     @Override
@@ -113,9 +107,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getPreferences();
 
         if (!notifyOnAllEvents) showSnackbar();
-
-        //add visual indicators that filters are set
-        checkFiltersSet();
 
         //get remote URL or use local data
         REMOTE_URL = getRemoteURL();
@@ -298,115 +289,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    //todo enable functionality to toggle all notifications
     private void getPreferences() {
         SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
-        music = sharedPrefs.getBoolean("music", true);
-        shop = sharedPrefs.getBoolean("shop", true);
-        hub = sharedPrefs.getBoolean("hub", true);
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY, false);
-
-        setFilterColor();
     }
 
-    private void setPreferences() {
-        SharedPreferences sharedPref = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("music", music);
-        editor.putBoolean("shop", shop);
-        editor.putBoolean("hub", hub);
-        editor.apply();
-    }
-
-    //filter posts by category
-    //todo remove filters
-    private List<Event> filter(List<Event> list) {
-        if (list == null) return null;
-
-        ArrayList<Event> temp = new ArrayList<>();
-
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getCategory_image() == R.drawable.music && music) temp.add(list.get(i));
-            else if (list.get(i).getCategory_image() == R.drawable.shop && shop)
-                temp.add(list.get(i));
-            else if (list.get(i).getCategory_image() == R.drawable.hub && hub)
-                temp.add(list.get(i));
-        }
-
-        return temp;
-    }
-
-    public void musicToggle(View v) {
-        if (music && (shop || hub)) {
-            music = false;
-        } else if (!music) {
-            music = true;
-        } else {
-            music = true;
-            shopToggle(null);
-            hubToggle(null);
-        }
-
-        setFilterColor();
-        refreshList(true);
-        setPreferences();
-    }
-
-    public void shopToggle(View v) {
-        if (shop && (music || hub)) {
-            shop = false;
-        } else if (!shop) {
-            shop = true;
-        } else {
-            shop = true;
-            musicToggle(null);
-            hubToggle(null);
-        }
-
-        setFilterColor();
-        refreshList(true);
-        setPreferences();
-    }
-
-    public void hubToggle(View v) {
-        if (hub && (music || shop)) {
-            hub = false;
-        } else if (!hub) {
-            hub = true;
-        } else {
-            hub = true;
-            musicToggle(null);
-            shopToggle(null);
-        }
-
-        setFilterColor();
-        refreshList(true);
-        setPreferences();
-    }
-
-    private void setFilterColor() {
-        if (music) music_toggle.setBackgroundColor(0xffFF4081);
-        else music_toggle.setBackgroundColor(0xff9E9E9E);
-        if (shop) shop_toggle.setBackgroundColor(0xffFF4081);
-        else shop_toggle.setBackgroundColor(0xff9E9E9E);
-        if (hub) hub_toggle.setBackgroundColor(0xffFF4081);
-        else hub_toggle.setBackgroundColor(0xff9E9E9E);
-
-        checkFiltersSet();
-    }
-
-    private void checkFiltersSet() {
-        if (music && shop && hub) filters.setText("Filters");
-        else filters.setText("Filters [set]");
-    }
 
     //todo refactor this when we change the way we get event data
-    private void refreshList(boolean onlyUpdateFilters) {
-        if (!onlyUpdateFilters)
-            events = (ArrayList<Event>) DBUtils.readDatabase(this);
+    private void refreshList() {
+        events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null)
-            listView.setAdapter(new EventAdapter(this, filter(events)));
+            listView.setAdapter(new EventAdapter(this, events));
     }
 
     public void showSnackbar() {
@@ -425,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             scheduleNotifications(getApplicationContext(), true);
 
             Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
-            refreshList(false);
+            refreshList();
         });
 
         snackbar.show();
