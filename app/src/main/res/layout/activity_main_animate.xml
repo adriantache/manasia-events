@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/constraint_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -19,128 +19,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/manasia_logo" />
 
-    <!-- EXPANSION PANEL START-->
-    <LinearLayout
-        android:id="@+id/expansionLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:elevation="8dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/logo"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:targetApi="lollipop">
-
-        <com.github.florent37.expansionpanel.ExpansionHeader
-            android:id="@+id/expansionHeader"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:background="#fff"
-            app:expansion_headerIndicator="@id/headerIndicator"
-            app:expansion_layout="@id/expansionLayout"
-            app:expansion_toggleOnClick="true">
-
-            <!-- HEADER -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:text="@string/filters"
-                android:textAllCaps="true" />
-
-            <!-- HEADER INDICATOR -->
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/headerIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="16dp"
-                android:adjustViewBounds="true"
-                app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
-
-
-        </com.github.florent37.expansionpanel.ExpansionHeader>
-
-        <com.github.florent37.expansionpanel.ExpansionLayout
-            android:id="@+id/expansionLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            app:expansion_expanded="false">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/music_toggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:background="@color/colorAccent"
-                    android:drawablePadding="8dp"
-                    android:drawableTop="@drawable/music"
-                    android:onClick="musicToggle"
-                    android:padding="8dp"
-                    android:text="@string/music"
-                    android:textColor="#fff" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/shop_toggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorAccent"
-                    android:drawablePadding="8dp"
-                    android:drawableTop="@drawable/shop"
-                    android:onClick="shopToggle"
-                    android:padding="8dp"
-                    android:text="@string/shops"
-                    android:textColor="#fff" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/hub_toggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/colorAccent"
-                    android:drawablePadding="8dp"
-                    android:drawableTop="@drawable/hub"
-                    android:onClick="hubToggle"
-                    android:padding="8dp"
-                    android:text="@string/hub"
-                    android:textColor="#fff" />
-
-            </LinearLayout>
-        </com.github.florent37.expansionpanel.ExpansionLayout>
-    </LinearLayout>
-    <!-- EXPANSION PANEL END-->
-
     <ListView
         android:id="@+id/list_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_margin="8dp"
         android:drawablePadding="8dp"
-app:layout_constraintBottom_toTopOf="@id/linearLayout"        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/expansionLinearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

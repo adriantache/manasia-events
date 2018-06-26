@@ -67,16 +67,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ImageView logo;
     @BindView(R.id.busy_level)
     TextView busy_level;
-    @BindView(R.id.filters)
-    TextView filters;
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraint_layout;
     @BindView(R.id.menu)
     Button menu;
     private String REMOTE_URL;
-    private boolean music;
-    private boolean shop;
-    private boolean hub;
     private boolean notifyOnAllEvents;
     private boolean layoutAnimated = false;
 
