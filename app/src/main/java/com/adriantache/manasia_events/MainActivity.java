@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean notifyOnAllEvents;
     private boolean layoutAnimated = false;
 
-    //todo test if necessary after using TaskStackBuilder
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
@@ -124,12 +123,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (events != null) {
             populateListView();
-        }
-
-        //code to minimize and maximize logo on click (maybe not terribly useful, but it looks neat)
-        //todo modify code to show some useful info instead of just minimizing logo (figure out available size)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            logo.setOnClickListener(v -> minimizeLogo());
         }
 
         //todo figure out how to fetch this (ideally same place we store the JSON or database)
@@ -240,23 +233,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             //update event notifications for all future events fetched from the remote database
             if (notifyOnAllEvents) scheduleNotifications(this, true);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void minimizeLogo() {
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(getApplicationContext(), R.layout.activity_main_animate);
-        ConstraintSet initialConstraintSet = new ConstraintSet();
-        initialConstraintSet.clone(getApplicationContext(), R.layout.activity_main);
-        ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
-        TransitionManager.beginDelayedTransition(mConstraintLayout);
-        if (!layoutAnimated) {
-            constraintSet.applyTo(mConstraintLayout);
-            layoutAnimated = true;
-        } else {
-            initialConstraintSet.applyTo(mConstraintLayout);
-            layoutAnimated = false;
         }
     }
 
