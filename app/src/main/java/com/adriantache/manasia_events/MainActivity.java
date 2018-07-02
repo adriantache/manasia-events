@@ -25,6 +25,7 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraint_layout;
     @BindView(R.id.menu)
-    Button menu;
+    ImageButton menu;
     private String REMOTE_URL;
     private boolean notifyOnAllEvents;
     private boolean layoutAnimated = false;

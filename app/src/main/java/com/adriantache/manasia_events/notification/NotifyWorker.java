@@ -40,10 +40,10 @@ public class NotifyWorker extends Worker {
 
     @NonNull
     @Override
-    public WorkerResult doWork() {
+    public Worker.Result doWork() {
         triggerNotification();
 
-        return WorkerResult.SUCCESS;
+        return Worker.Result.SUCCESS;
         // (Returning RETRY tells WorkManager to try this task again
         // later; FAILURE says not to try again.)
     }

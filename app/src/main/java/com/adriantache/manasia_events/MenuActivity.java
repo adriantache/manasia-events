@@ -40,6 +40,8 @@ public class MenuActivity extends AppCompatActivity {
     ListView listView;
     private boolean layoutAnimated = false;
 
+    //todo create snackbar on list detail to link to manasia food
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,13 +71,13 @@ public class MenuActivity extends AppCompatActivity {
             constraintSet.clone(getApplicationContext(), R.layout.activity_menu_animate);
             ConstraintSet initialConstraintSet = new ConstraintSet();
             initialConstraintSet.clone(getApplicationContext(), R.layout.activity_menu);
-            ConstraintLayout mConstraintLayout = findViewById(R.id.constraint_layout);
-            TransitionManager.beginDelayedTransition(mConstraintLayout);
+            ConstraintLayout constraintLayout = findViewById(R.id.constraint_layout);
+            TransitionManager.beginDelayedTransition(constraintLayout);
             if (!layoutAnimated) {
-                constraintSet.applyTo(mConstraintLayout);
+                constraintSet.applyTo(constraintLayout);
                 layoutAnimated = true;
             } else {
-                initialConstraintSet.applyTo(mConstraintLayout);
+                initialConstraintSet.applyTo(constraintLayout);
                 layoutAnimated = false;
             }
         }
