@@ -24,12 +24,6 @@ public final class EventContract {
         public static final String COLUMN_EVENT_DESCRIPTION = "description";
         public static final String COLUMN_EVENT_DATE = "date";
         public static final String COLUMN_EVENT_PHOTO_URL = "photo_url";
-        public static final String COLUMN_EVENT_CATEGORY_IMAGE = "category_image";
         public static final String COLUMN_EVENT_NOTIFY = "notify";
-
-        //possible values for category image column
-        static final int CATEGORY_HUB = R.drawable.hub;
-        static final int CATEGORY_MUSIC = R.drawable.music;
-        static final int CATEGORY_SHOP = R.drawable.shop;
     }
 }

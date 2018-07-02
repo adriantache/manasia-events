@@ -11,10 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_AUTHORITY;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.CATEGORY_HUB;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.CATEGORY_MUSIC;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.CATEGORY_SHOP;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
@@ -154,16 +150,6 @@ public class EventProvider extends ContentProvider {
         if (date == null)
             throw new IllegalArgumentException("Event requires a date");
         //todo add test for date format yyyy-MM-dd
-
-        int gender = values.getAsInteger(COLUMN_EVENT_CATEGORY_IMAGE);
-        switch (gender) {
-            case CATEGORY_HUB:
-            case CATEGORY_MUSIC:
-            case CATEGORY_SHOP:
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal category");
-        }
 
         Integer notify = values.getAsInteger(COLUMN_EVENT_NOTIFY);
         if (notify != null && notify != 0 && notify != 1)

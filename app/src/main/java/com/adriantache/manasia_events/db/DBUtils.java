@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
@@ -36,7 +35,7 @@ public final class DBUtils {
     public static List<Event> readDatabase(Context context) {
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
-                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
+                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY};
 
         //order by date since FB stores them in a random order
         String sortOrder = COLUMN_EVENT_DATE + " DESC";
@@ -61,10 +60,9 @@ public final class DBUtils {
                 String description = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DESCRIPTION));
                 String date = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DATE));
                 String photoUrl = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_PHOTO_URL));
-                int categoryImage = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_CATEGORY_IMAGE));
                 int notify = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_NOTIFY));
 
-                DBEvents.add(new Event(id, date, title, description, photoUrl, categoryImage, notify));
+                DBEvents.add(new Event(id, date, title, description, photoUrl, notify));
             }
         } finally {
             cursor.close();
@@ -83,7 +81,7 @@ public final class DBUtils {
     public static Event getEventFromDatabase(Context context, int DBEventID) {
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
-                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_CATEGORY_IMAGE, COLUMN_EVENT_NOTIFY};
+                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY};
         String selection = _ID + " == ?";
         String selectionArgs[] = {String.valueOf(DBEventID)};
 
@@ -105,10 +103,9 @@ public final class DBUtils {
                 String description = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DESCRIPTION));
                 String date = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DATE));
                 String photoUrl = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_PHOTO_URL));
-                int categoryImage = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_CATEGORY_IMAGE));
                 int notify = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_NOTIFY));
 
-                event = new Event(id, date, title, description, photoUrl, categoryImage, notify);
+                event = new Event(id, date, title, description, photoUrl, notify);
             }
         } finally {
             cursor.close();
@@ -132,7 +129,6 @@ public final class DBUtils {
         values.put(COLUMN_EVENT_DATE, event.getDate());
         if (!TextUtils.isEmpty(event.getPhotoUrl()))
             values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
-        values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
         values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
 
         String selection = _ID + " == ?";

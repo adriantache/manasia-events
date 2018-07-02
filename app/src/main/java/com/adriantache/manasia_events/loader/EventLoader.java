@@ -59,7 +59,7 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
                     description = description.replace("\n", "\n\n");
 
                 if (date != null && title != null && description != null)
-                    events.add(new Event(date, title, description, image_url, R.drawable.hub));
+                    events.add(new Event(date, title, description, image_url));
             }
         } catch (JSONException e) {
             Log.e("parseJSON", "Cannot parse JSON", e);

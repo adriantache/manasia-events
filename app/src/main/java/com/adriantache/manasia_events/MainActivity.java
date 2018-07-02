@@ -46,7 +46,6 @@ import butterknife.ButterKnife;
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
@@ -220,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 values.put(COLUMN_EVENT_DATE, event.getDate());
                 if (!TextUtils.isEmpty(event.getPhotoUrl()))
                     values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
-                values.put(COLUMN_EVENT_CATEGORY_IMAGE, event.getCategory_image());
                 values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
 
                 getContentResolver().insert(CONTENT_URI, values);

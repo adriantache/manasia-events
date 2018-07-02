@@ -7,45 +7,40 @@ public class Event {
     private String title;
     private String description;
     private String photoUrl;
-    private int category_image;
     private int notify = 0;
     private int databaseID = -1;
 
     /**
      * Constructor for events fetched from remote data source
      *
-     * @param date           Event date, of format yyyy-MM-dd
-     * @param title          Event title
-     * @param description    Event description
-     * @param photoUrl       Event photo URL, can be null
-     * @param category_image Event category, represented by a category image resource ID
+     * @param date        Event date, of format yyyy-MM-dd
+     * @param title       Event title
+     * @param description Event description
+     * @param photoUrl    Event photo URL, can be null
      */
-    public Event(String date, String title, String description, @Nullable String photoUrl, int category_image) {
+    public Event(String date, String title, String description, @Nullable String photoUrl) {
         this.date = date;
         this.title = title;
         this.description = description;
         this.photoUrl = photoUrl;
-        this.category_image = category_image;
     }
 
     /**
      * Constructor for events fetched from the local database
      *
-     * @param databaseID     Local database _ID
-     * @param date           Event date, of format yyyy-MM-dd
-     * @param title          Event title
-     * @param description    Event description
-     * @param photoUrl       Event photo URL, can be null
-     * @param category_image Event category, represented by a category image resource ID
-     * @param notify         Flag to trigger notification for this event; can be 0 or 1
+     * @param databaseID  Local database _ID
+     * @param date        Event date, of format yyyy-MM-dd
+     * @param title       Event title
+     * @param description Event description
+     * @param photoUrl    Event photo URL, can be null
+     * @param notify      Flag to trigger notification for this event; can be 0 or 1
      */
-    public Event(int databaseID, String date, String title, String description, String photoUrl, int category_image, int notify) {
+    public Event(int databaseID, String date, String title, String description, String photoUrl, int notify) {
         this.databaseID = databaseID;
         this.date = date;
         this.title = title;
         this.description = description;
         this.photoUrl = photoUrl;
-        this.category_image = category_image;
         this.notify = notify;
     }
 
@@ -56,10 +51,6 @@ public class Event {
 
     public String getDate() {
         return date;
-    }
-
-    public int getCategory_image() {
-        return category_image;
     }
 
     public String getDescription() {
