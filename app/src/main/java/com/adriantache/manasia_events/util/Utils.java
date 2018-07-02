@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.adriantache.manasia_events.EventDetail.NOTIFY;
+import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 
 /**
@@ -183,7 +183,7 @@ public final class Utils {
 
     public static boolean getNotifyAllSetting(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        return sharedPref.getBoolean(NOTIFY, false);
+        return sharedPref.getBoolean(NOTIFY_SETTING, false);
     }
 
     //turn a 3 letter month and a day "int" into a date of the format yyyy-MM-dd

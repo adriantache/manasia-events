@@ -57,7 +57,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
             if (!TextUtils.isEmpty(event.getPhotoUrl())) {
                 Picasso.get().load(event.getPhotoUrl()).fit().centerCrop().into(holder.thumbnail);
                 holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                holder.thumbnail.setScrollY(-30);
                 holder.thumbnail.setBackgroundResource(R.color.colorAccent);
             } else {
                 holder.thumbnail.setImageResource(R.drawable.manasia_logo);
@@ -66,7 +65,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 holder.thumbnail.setBackgroundResource(R.color.blue_grey100);
             }
 
-            holder.category_image.setImageResource(event.getCategory_image());
             holder.day.setText(Utils.extractDayOrMonth(event.getDate(), true));
             holder.month.setText(Utils.extractDayOrMonth(event.getDate(), false));
             holder.title.setText(event.getTitle());
@@ -96,8 +94,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView month;
         @BindView(R.id.title)
         TextView title;
-        @BindView(R.id.category_image)
-        ImageView category_image;
         @BindView(R.id.notify_status)
         ImageView notify_status;
 

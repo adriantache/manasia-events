@@ -11,20 +11,16 @@ import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,7 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.adriantache.manasia_events.EventDetail.NOTIFY;
+import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_CATEGORY_IMAGE;
@@ -148,15 +144,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (Utils.compareDateToToday(event.getDate()) < 0)
                     options = ActivityOptions
                             .makeSceneTransitionAnimation(this,
-                                    Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                    Pair.create(view.findViewById(R.id.category_image), "category_image")
+                                    Pair.create(view.findViewById(R.id.thumbnail), "thumbnail")
                             );
                 else
                     options = ActivityOptions
                             .makeSceneTransitionAnimation(this,
                                     Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                    Pair.create(view.findViewById(R.id.notify_status), "notify_status"),
-                                    Pair.create(view.findViewById(R.id.category_image), "category_image")
+                                    Pair.create(view.findViewById(R.id.notify_status), "notify_status")
                             );
             }
 
@@ -263,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void getPreferences() {
         SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
-        notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY, false);
+        notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
     }
 
 
@@ -282,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         snackbar.setAction("Activate", v -> {
             SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(NOTIFY, true);
+            editor.putBoolean(NOTIFY_SETTING, true);
             editor.apply();
 
             notifyOnAllEvents = true;

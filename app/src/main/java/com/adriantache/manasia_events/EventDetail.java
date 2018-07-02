@@ -33,13 +33,11 @@ import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventDetail extends AppCompatActivity {
     public static final String SHARED_PREFERENCES_TAG = "preferences";
-    public static final String NOTIFY = "notify";
+    public static final String NOTIFY_SETTING = "notify";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
     @BindView(R.id.thumbnail)
     ImageView thumbnail;
-    @BindView(R.id.category_image)
-    ImageView category_image;
     @BindView(R.id.day)
     TextView day;
     @BindView(R.id.month)
@@ -195,7 +193,6 @@ public class EventDetail extends AppCompatActivity {
             thumbnail.setScaleType(ImageView.ScaleType.CENTER);
             thumbnail.setBackgroundResource(R.color.blue_grey100);
         }
-        category_image.setImageResource(event.getCategory_image());
         day.setText(Utils.extractDayOrMonth(event.getDate(), true));
         month.setText(Utils.extractDayOrMonth(event.getDate(), false));
         title.setText(event.getTitle());
@@ -241,7 +238,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.setAction("Activate", v -> {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(NOTIFY, true);
+                editor.putBoolean(NOTIFY_SETTING, true);
                 editor.apply();
 
                 notifyOnAllEvents = true;

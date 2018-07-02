@@ -107,21 +107,6 @@ app:layout_constraintTop_toBottomOf="@id/back_background"        tools:targetApi
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/category_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginTop="4dp"
-        android:background="#aa607D8B"
-        android:contentDescription="@string/category_image"
-        android:padding="4dp"
-        android:transitionName="category_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_background"
-        app:srcCompat="@drawable/shop"
-        tools:targetApi="lollipop" />
-
-    <ImageView
         android:id="@+id/notify_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
