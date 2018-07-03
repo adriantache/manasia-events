@@ -264,27 +264,27 @@ public final class Utils {
         return date.toString();
     }
 
-    public static String getImageUrl(String image_tag) {
-        image_tag = image_tag
-                .replace("scontent-yyz1-1.xx.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
+    public static String getImageUrl(String imageTag) {
+        imageTag = imageTag
+                .replace("scontent-*.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
                 .replace("&amp;", "&")
                 .replace("\\\"", "\"");
 
         Pattern pattern = Pattern.compile("data-plsi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
-        Matcher matcher = pattern.matcher(image_tag);
+        Matcher matcher = pattern.matcher(imageTag);
 
         if (matcher.find()) {
-            image_tag = matcher.group(1);
+            imageTag = matcher.group(1);
         } else {
             Pattern pattern2 = Pattern.compile("data-ploi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
-            Matcher matcher2 = pattern2.matcher(image_tag);
+            Matcher matcher2 = pattern2.matcher(imageTag);
 
             if (matcher2.find()) {
-                image_tag = matcher2.group(1);
+                imageTag = matcher2.group(1);
             }
         }
 
-        return image_tag;
+        return imageTag;
     }
 
     //get sample JSON string from file

@@ -8,16 +8,19 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MenuActivity extends AppCompatActivity {
-    @BindView(R.id.back)
-    ImageView back;
+    //    @BindView(R.id.back)
+//    ImageView back;
     @BindView(R.id.nonAlcoholic)
     CardView nonAlcoholic;
     @BindView(R.id.beer)
@@ -48,6 +51,14 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         ButterKnife.bind(this);
 
+        //test the list
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1);
+        adapter.add("1");
+        adapter.add("1");
+        adapter.add("1");
+        adapter.add("1");
+        listView.setAdapter(adapter);
+
         //todo create transition for API<19
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             nonAlcoholic.setOnClickListener(new MenuClickListener());
@@ -66,6 +77,8 @@ public class MenuActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onClick(View v) {
+            Log.i("ONCLICK", "onClick: " + v.getId());
+
             //hide categories and show list
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(getApplicationContext(), R.layout.activity_menu_animate);
