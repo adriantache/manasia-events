@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.adriantache.manasia_events.EventDetail;
@@ -135,14 +136,17 @@ public class EventWidget extends AppWidgetProvider {
                     views.setImageViewBitmap(R.id.thumbnail, bitmap);
                 else {
                     //get screen size multiplier
+                    Log.i("DENSITY", "updateWidgetImages: "+context.getResources().getDisplayMetrics().density);
                     int multiplier = (int) context.getResources().getDisplayMetrics().density;
-                    int width = (int) (context.getResources().getDimension(R.dimen.widget_width) - 50) * multiplier;
+                    int width = (int) (context.getResources().getDimension(R.dimen.widget_width))*multiplier;
                     int height = (int) (width * 0.3477011494252874);
+                    Log.i("IMAGE_SIZE", "updateWidgetImages: "+width + " "+height);
                     //get the manasia logo as default image
                     Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
-                            R.drawable.manasia_logo);
+                            R.drawable.manasia_logo_white);
                     //resize the image to the widget size
                     logo = Bitmap.createScaledBitmap(logo, width, height, true);
+                    //recolor logo white
 
                     views.setImageViewBitmap(R.id.thumbnail, logo);
                 }

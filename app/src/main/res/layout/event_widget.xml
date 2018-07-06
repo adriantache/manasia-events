@@ -16,7 +16,7 @@
         android:layout_marginTop="8dp"
         android:background="@color/colorAccent"
         android:contentDescription="@string/next_event_thumbnail"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/manasia_logo" />
 
     <TextView
