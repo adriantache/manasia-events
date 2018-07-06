@@ -73,26 +73,31 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void animateLayout(View v){
+        Log.i("ONCLICK", "onClick: " + v.getId());
+
+        //hide categories and show list
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(getApplicationContext(), R.layout.activity_menu_animate);
+        ConstraintSet initialConstraintSet = new ConstraintSet();
+        initialConstraintSet.clone(getApplicationContext(), R.layout.activity_menu);
+        ConstraintLayout constraintLayout = findViewById(R.id.constraint_layout);
+        TransitionManager.beginDelayedTransition(constraintLayout);
+        if (!layoutAnimated) {
+            constraintSet.applyTo(constraintLayout);
+            layoutAnimated = true;
+        } else {
+            initialConstraintSet.applyTo(constraintLayout);
+            layoutAnimated = false;
+        }
+    }
+
     private class MenuClickListener implements View.OnClickListener {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onClick(View v) {
-            Log.i("ONCLICK", "onClick: " + v.getId());
-
-            //hide categories and show list
-            ConstraintSet constraintSet = new ConstraintSet();
-            constraintSet.clone(getApplicationContext(), R.layout.activity_menu_animate);
-            ConstraintSet initialConstraintSet = new ConstraintSet();
-            initialConstraintSet.clone(getApplicationContext(), R.layout.activity_menu);
-            ConstraintLayout constraintLayout = findViewById(R.id.constraint_layout);
-            TransitionManager.beginDelayedTransition(constraintLayout);
-            if (!layoutAnimated) {
-                constraintSet.applyTo(constraintLayout);
-                layoutAnimated = true;
-            } else {
-                initialConstraintSet.applyTo(constraintLayout);
-                layoutAnimated = false;
-            }
+            animateLayout(v);
         }
     }
 }

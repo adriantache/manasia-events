@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
@@ -33,6 +34,37 @@ public class EventWidget extends AppWidgetProvider {
     private static Event event;
     private static AppWidgetManager appWidgetManager;
     private static int[] appWidgetIds;
+
+    private static void updateWidgetContents(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            // Construct the RemoteViews object
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
+
+            //set the notification text
+            if (event != null) {
+                if (isEventToday(event.getDate())) {
+                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.date, "TODAY");
+                } else {
+                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.date,
+                            extractDayOrMonth(event.getDate(), true)
+                                    + "\n"
+                                    + extractDayOrMonth(event.getDate(), false));
+                }
+
+                //set intent to open that event's details
+                Intent intent = new Intent(context, EventDetail.class);
+                intent.putExtra(DBEventIDTag, event.getDatabaseID());
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
+            }
+
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -70,68 +102,7 @@ public class EventWidget extends AppWidgetProvider {
         return closestEvent;
     }
 
-    private static void updateWidgetContents(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            // Construct the RemoteViews object
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_widget);
-
-            //set the notification text
-            if (event != null) {
-                if (isEventToday(event.getDate())) {
-                    views.setTextViewText(R.id.title, event.getTitle());
-                    views.setTextViewText(R.id.date, "TODAY");
-                } else {
-                    views.setTextViewText(R.id.title, event.getTitle());
-                    views.setTextViewText(R.id.date,
-                            extractDayOrMonth(event.getDate(), true)
-                                    + "\n"
-                                    + extractDayOrMonth(event.getDate(), false));
-                }
-
-                //set intent to open that event's details
-                Intent intent = new Intent(context, EventDetail.class);
-                intent.putExtra(DBEventIDTag, event.getDatabaseID());
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
-            }
-
-            // Instruct the widget manager to update the widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-        }
-    }
-
     private static class BitmapAsyncTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            String url;
-
-            if (strings != null && strings.length != 0) {
-                url = strings[0];
-
-                try {
-                    //get screen density as a multiplier to the widget dimens
-                    int multiplier = (int) context.getResources().getDisplayMetrics().density;
-                    //get the image and resize it for the widget size to prevent wasting memory
-                    bitmap = Picasso.get()
-                            .load(url)
-                            .resize((int) context.getResources().getDimension(R.dimen.widget_width) * multiplier,
-                                    (int) context.getResources().getDimension(R.dimen.widget_image_height) * multiplier)
-                            .centerCrop()
-                            .get();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            updateWidgetImages();
-        }
 
         private static void updateWidgetImages() {
             for (int appWidgetId : appWidgetIds) {
@@ -162,10 +133,53 @@ public class EventWidget extends AppWidgetProvider {
                 //set the notification image
                 if (bitmap != null)
                     views.setImageViewBitmap(R.id.thumbnail, bitmap);
+                else {
+                    //get screen size multiplier
+                    int multiplier = (int) context.getResources().getDisplayMetrics().density;
+                    int width = (int) (context.getResources().getDimension(R.dimen.widget_width) - 50) * multiplier;
+                    int height = (int) (width * 0.3477011494252874);
+                    //get the manasia logo as default image
+                    Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.manasia_logo);
+                    //resize the image to the widget size
+                    logo = Bitmap.createScaledBitmap(logo, width, height, true);
+
+                    views.setImageViewBitmap(R.id.thumbnail, logo);
+                }
 
                 // Instruct the widget manager to update the widget
                 appWidgetManager.updateAppWidget(appWidgetId, views);
             }
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url;
+
+            if (strings != null && strings.length != 0) {
+                url = strings[0];
+
+                try {
+                    //get screen density as a multiplier to the widget dimens
+                    int multiplier = (int) context.getResources().getDisplayMetrics().density;
+                    //get the image and resize it for the widget size to prevent wasting memory
+                    bitmap = Picasso.get()
+                            .load(url)
+                            .resize((int) context.getResources().getDimension(R.dimen.widget_width) * multiplier,
+                                    (int) context.getResources().getDimension(R.dimen.widget_image_height) * multiplier)
+                            .centerCrop()
+                            .get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            updateWidgetImages();
         }
     }
 }
