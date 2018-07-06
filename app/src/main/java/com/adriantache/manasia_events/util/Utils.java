@@ -139,12 +139,12 @@ public final class Utils {
     public static boolean isEventToday(String date) {
         Calendar today = Calendar.getInstance();
         int day = today.get(Calendar.DAY_OF_MONTH);
-        int month = today.get(Calendar.MONTH);
+        int month = today.get(Calendar.MONTH) + 1; //adding 1 because months start at 0 for some reason
 
         String[] parts = date.split("-");
-        int eventDay = Integer.parseInt(parts[0]);
+        int eventDay = Integer.parseInt(parts[2]);
         int eventMonth = Integer.parseInt(parts[1]);
-
+        
         return day == eventDay && month == eventMonth;
     }
 
