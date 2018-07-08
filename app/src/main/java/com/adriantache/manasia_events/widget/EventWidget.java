@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.adriantache.manasia_events.EventDetail;
@@ -43,11 +42,19 @@ public class EventWidget extends AppWidgetProvider {
 
             //set the notification text
             if (event != null) {
+                String title = event.getTitle();
+
+                //shorten title if it's >50 chars
+                if (title.length() > 50) {
+                    title = title.substring(0, 50);
+                    title += "...";
+                }
+
                 if (isEventToday(event.getDate())) {
-                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.title, title);
                     views.setTextViewText(R.id.date, "TODAY");
                 } else {
-                    views.setTextViewText(R.id.title, event.getTitle());
+                    views.setTextViewText(R.id.title, title);
                     views.setTextViewText(R.id.date,
                             extractDayOrMonth(event.getDate(), true)
                                     + "\n"
@@ -112,11 +119,19 @@ public class EventWidget extends AppWidgetProvider {
 
                 //set the notification text
                 if (event != null) {
+                    String title = event.getTitle();
+
+                    //shorten title if it's >50 chars
+                    if (title.length() > 50) {
+                        title = title.substring(0, 50);
+                        title += "...";
+                    }
+
                     if (isEventToday(event.getDate())) {
-                        views.setTextViewText(R.id.title, event.getTitle());
+                        views.setTextViewText(R.id.title, title);
                         views.setTextViewText(R.id.date, "TODAY");
                     } else {
-                        views.setTextViewText(R.id.title, event.getTitle());
+                        views.setTextViewText(R.id.title, title);
                         views.setTextViewText(R.id.date,
                                 extractDayOrMonth(event.getDate(), true)
                                         + "\n"
@@ -137,7 +152,7 @@ public class EventWidget extends AppWidgetProvider {
                 else {
                     //get screen size multiplier
                     int multiplier = (int) context.getResources().getDisplayMetrics().density;
-                    int width = (int) (context.getResources().getDimension(R.dimen.widget_width))*multiplier;
+                    int width = (int) (context.getResources().getDimension(R.dimen.widget_width)) * multiplier;
                     int height = (int) (width * 0.3477); //using the image aspect ratio
                     //get the manasia logo as default image
                     Bitmap logo = BitmapFactory.decodeResource(context.getResources(),

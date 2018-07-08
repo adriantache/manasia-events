@@ -144,7 +144,7 @@ public final class Utils {
         String[] parts = date.split("-");
         int eventDay = Integer.parseInt(parts[2]);
         int eventMonth = Integer.parseInt(parts[1]);
-        
+
         return day == eventDay && month == eventMonth;
     }
 
