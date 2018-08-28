@@ -64,13 +64,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ListView listView;
     @BindView(R.id.logo)
     ImageView logo;
-    @BindView(R.id.busy_level)
-    TextView busyLevel;
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
     @BindView(R.id.menu)
     ImageButton menu;
 
+    //todo replace busy level with wifi password steleaspataru13
+    //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -121,9 +121,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (events != null) {
             populateListView();
         }
-
-        //todo figure out how to fetch this (ideally same place we store the JSON or database)
-        updateBusyLevel();
     }
 
     private void populateListView() {
@@ -227,30 +224,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             //update event notifications for all future events fetched from the remote database
             if (notifyOnAllEvents) scheduleNotifications(this, true);
-        }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void updateBusyLevel() {
-        //todo implement actual code
-        String busyLevel = "Prietenos";
-        this.busyLevel.setText(busyLevel);
-        switch (busyLevel) {
-            case "Lejer":
-                this.busyLevel.setTextColor(0xff2196F3);
-                break;
-            case "Prietenos":
-                this.busyLevel.setTextColor(0xff4CAF50);
-                break;
-            case "Optim":
-                this.busyLevel.setTextColor(0xffE91E63);
-                break;
-            case "Full":
-                this.busyLevel.setTextColor(0xfff44336);
-                break;
-            default:
-                this.busyLevel.setTextColor(0xff000000);
-                break;
         }
     }
 

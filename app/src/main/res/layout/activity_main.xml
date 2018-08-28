@@ -27,54 +27,40 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:drawablePadding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/busy_level"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <TextView
+        android:id="@+id/busy_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
         android:background="#fff"
+        android:gravity="center_vertical"
         android:padding="8dp"
+        android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/busy_level_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:gravity="center_vertical"
-            android:text="@string/level_of_crowdedness" />
-
-        <TextView
-            android:id="@+id/busy_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:gravity="center_vertical"
-            android:textAllCaps="true"
-            android:textColor="#000"
-            tools:text="Friendly" />
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="WiFi key: steleaspataru13"
+        android:drawableStart="@drawable/baseline_wifi_black_18dp"
+        android:drawablePadding="8dp"/>
 
     <!--todo replace button or make it nicer-->
     <ImageButton
         android:id="@+id/menu"
         android:layout_width="100dp"
         android:layout_height="0dp"
-        android:src="@drawable/menu"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:tooltipText="@string/menu"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/menu"
         android:scaleType="centerInside"
+        android:src="@drawable/menu"
+        android:tooltipText="@string/menu"
         app:layout_constraintBottom_toTopOf="@+id/list_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/menu"
         tools:targetApi="o" />
 </android.support.constraint.ConstraintLayout>
