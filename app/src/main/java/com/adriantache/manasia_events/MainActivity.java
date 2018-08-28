@@ -57,19 +57,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
     public ArrayList<Event> events;
+    private String REMOTE_URL;
+    private boolean notifyOnAllEvents;
+
     @BindView(R.id.list_view)
     ListView listView;
     @BindView(R.id.logo)
     ImageView logo;
     @BindView(R.id.busy_level)
-    TextView busy_level;
+    TextView busyLevel;
     @BindView(R.id.constraint_layout)
-    ConstraintLayout constraint_layout;
+    ConstraintLayout constraintLayout;
     @BindView(R.id.menu)
     ImageButton menu;
-    private String REMOTE_URL;
-    private boolean notifyOnAllEvents;
-    private boolean layoutAnimated = false;
+
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -233,22 +234,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void updateBusyLevel() {
         //todo implement actual code
         String busyLevel = "Prietenos";
-        busy_level.setText(busyLevel);
+        this.busyLevel.setText(busyLevel);
         switch (busyLevel) {
             case "Lejer":
-                busy_level.setTextColor(0xff2196F3);
+                this.busyLevel.setTextColor(0xff2196F3);
                 break;
             case "Prietenos":
-                busy_level.setTextColor(0xff4CAF50);
+                this.busyLevel.setTextColor(0xff4CAF50);
                 break;
             case "Optim":
-                busy_level.setTextColor(0xffE91E63);
+                this.busyLevel.setTextColor(0xffE91E63);
                 break;
             case "Full":
-                busy_level.setTextColor(0xfff44336);
+                this.busyLevel.setTextColor(0xfff44336);
                 break;
             default:
-                busy_level.setTextColor(0xff000000);
+                this.busyLevel.setTextColor(0xff000000);
                 break;
         }
     }
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void showSnackbar() {
-        Snackbar snackbar = Snackbar.make(constraint_layout,
+        Snackbar snackbar = Snackbar.make(constraintLayout,
                 "Would you like to be notified for all events?",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Activate", v -> {
