@@ -311,8 +311,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     //snackbar on list detail to link to manasia food
-    //todo dismiss this if user navigates back from drinks detail
-    public void showSnackbar() {
+    private void showSnackbar() {
         snackbar = Snackbar.make(constraintLayout,
                 "Hungry? Visit our friends at:",
                 Snackbar.LENGTH_INDEFINITE);
