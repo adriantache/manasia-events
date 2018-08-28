@@ -48,6 +48,7 @@ public class MenuActivity extends AppCompatActivity {
     TextView title;
 
     boolean menuItemsHidden = false;
+    Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class MenuActivity extends AppCompatActivity {
             drinksDetail.setText(null);
             toggleMenuItemVisibility();
             title.setText("manasia menu");
+            snackbar.dismiss();
         } else {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -281,7 +283,7 @@ public class MenuActivity extends AppCompatActivity {
             showSnackbar();
         }
     }
-    
+
     private void toggleMenuItemVisibility() {
         if (!menuItemsHidden) {
             nonAlcoholic.setVisibility(View.GONE);
@@ -311,7 +313,7 @@ public class MenuActivity extends AppCompatActivity {
     //snackbar on list detail to link to manasia food
     //todo dismiss this if user navigates back from drinks detail
     public void showSnackbar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout,
+        snackbar = Snackbar.make(constraintLayout,
                 "Hungry? Visit our friends at:",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Manasia Food", v -> {
