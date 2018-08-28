@@ -46,6 +46,8 @@ public class MenuActivity extends AppCompatActivity {
     ConstraintLayout constraintLayout;
     @BindView(R.id.title)
     TextView title;
+    @BindView(R.id.categoryImageView)
+    ImageView categoryImageView;
 
     boolean menuItemsHidden = false;
     Snackbar snackbar;
@@ -88,7 +90,6 @@ public class MenuActivity extends AppCompatActivity {
         back();
     }
 
-    //todo set category image as offset background for each category and display it with the details
     private void animateLayout(View v) {
         Log.i("ONCLICK", "onClick: " + v.getId());
 
@@ -96,6 +97,7 @@ public class MenuActivity extends AppCompatActivity {
         if (v.getId() == nonAlcoholic.getId()) {
             toggleMenuItemVisibility();
             title.setText("non-alcoholic drinks");
+            categoryImageView.setImageResource(R.drawable.non_alcoholic);
             drinksDetail.setText(Html.fromHtml("<h2>CAFEA/BAUTURI CALDE</h2><b><p>Espresso scurt/lung</p>" +
                     "<p>Cappuccino</p><p>Cappuccino Vienez</p> <p>Caffe Latte</p> <p>Iced coffee</b><i>" +
                     "<small> (30ml of either irish cream/amaretto/whiskey)" +
@@ -129,6 +131,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == beer.getId()) {
             toggleMenuItemVisibility();
             title.setText("beer");
+            categoryImageView.setImageResource(R.drawable.beer);
             drinksDetail.setText(Html.fromHtml("<h2>BERE DRAUGHT</h2><b>" +
                     "<p>Ciuc Premium</b><i><small> (5.0% alc) 500 ml</small></i><b></p>" +
                     "<p>Primator Weizenbier</b><i><small> (5.0% alc) 500 ml</small></i><b></p>" +
@@ -155,6 +158,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == cocktails.getId()) {
             toggleMenuItemVisibility();
             title.setText("cocktails");
+            categoryImageView.setImageResource(R.drawable.cocktails);
             drinksDetail.setText(Html.fromHtml("<h2>COCKTAILS FARA ALCOOL</h2><b>" +
                     "<p>Virgin Pina Colada</b><i><small> (pineapple juice, coconut syrup, cream)</small></i><b></p>" +
                     "<p>Manasia Summer</b><i><small> (puree passion fruit, pineapple juice, orange juice, grenadine, lemon fresh, mint)</small></i><b></p>" +
@@ -182,6 +186,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == longDrinks.getId()) {
             toggleMenuItemVisibility();
             title.setText("long drinks");
+            categoryImageView.setImageResource(R.drawable.long_drinks);
             drinksDetail.setText(Html.fromHtml("<h2>LONG DRINKS /270ml</h2><b>" +
                     "<p>Cuba Libre</b><i><small> (40ml rom Havana 3yo, lime, Coca-Cola)</small></i><b></p>" +
                     "<p>Gin Tonic</b><i><small> (40ml gin Beefeater, lime, grapefruit, apa tonica)</small></i><b></p>" +
@@ -194,6 +199,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == shots.getId()) {
             toggleMenuItemVisibility();
             title.setText("shots");
+            categoryImageView.setImageResource(R.drawable.shots);
             drinksDetail.setText(Html.fromHtml("<h2>SHOTS /30ml</h2><b>" +
                     "<p>Tequila</p>" +
                     "<p>Jagermeister</p>" +
@@ -209,6 +215,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == spirits.getId()) {
             toggleMenuItemVisibility();
             title.setText("spirits");
+            categoryImageView.setImageResource(R.drawable.spirits);
             drinksDetail.setText(Html.fromHtml("<h2>SPIRITS /50ml</h2><b>" +
                     "<p>Wyborowa</p>" +
                     "<p>Absolut</p>" +
@@ -231,6 +238,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == wine.getId()) {
             toggleMenuItemVisibility();
             title.setText("wine");
+            categoryImageView.setImageResource(R.drawable.wine);
             drinksDetail.setText(Html.fromHtml("<h2>VIN ALB (150ml /750ml)</h2><b>" +
                     "<p>Prahova Valley</b><i><small> (dry, sauvignon blanc)</small></i><b></p>" +
                     "<p>La Origine Sauvignon Blanc</b><i><small> (dry)</small></i><b></p>" +
@@ -257,6 +265,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == spritz.getId()) {
             toggleMenuItemVisibility();
             title.setText("spritz");
+            categoryImageView.setImageResource(R.drawable.spritz);
             drinksDetail.setText(Html.fromHtml("<h2>SPRITZ</h2><b>" +
                     "<p>Aperol Spritz</b><i><small> (150ml prosecco, 40ml aperol, apa minerala)</small></i><b></p>" +
                     "<p>Hugo</b><i><small> (150ml prosecco, sirop soc, lime, menta, apa minerala)</small></i><b></p>" +
@@ -269,6 +278,7 @@ public class MenuActivity extends AppCompatActivity {
         } else if (v.getId() == cider.getId()) {
             toggleMenuItemVisibility();
             title.setText("cider");
+            categoryImageView.setImageResource(R.drawable.cider);
             drinksDetail.setText(Html.fromHtml("<h2>CIDRU (4.5% alc.)</h2><b>" +
                     "<p>Strongbow Gold Apple</b><i><small> /330 ml</small></i><b></p>" +
                     "<p>Strongbow Red Berries</b><i><small> /330 ml</small></i><b></p>" +
