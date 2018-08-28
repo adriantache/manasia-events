@@ -91,7 +91,6 @@ public class MenuActivity extends AppCompatActivity {
         Log.i("ONCLICK", "onClick: " + v.getId());
 
         //workaround because IDs are apparently no longer final
-        //todo fill in all categories
         if (v.getId() == nonAlcoholic.getId()) {
             toggleMenuItemVisibility();
             title.setText("non-alcoholic drinks");
@@ -282,11 +281,7 @@ public class MenuActivity extends AppCompatActivity {
             showSnackbar();
         }
     }
-
-    //todo set back button functionality to show menu items if menuItemsHidden is true instead of going to MainActivity
-    //todo override back click to trigger back method instead
-    //todo reset title on back button press from detail
-
+    
     private void toggleMenuItemVisibility() {
         if (!menuItemsHidden) {
             nonAlcoholic.setVisibility(View.GONE);
