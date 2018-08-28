@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     //todo replace busy level with wifi password steleaspataru13
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
+    //todo replace loader with WorkManager
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override

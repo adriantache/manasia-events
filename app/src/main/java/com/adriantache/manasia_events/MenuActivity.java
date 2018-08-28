@@ -13,14 +13,15 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MenuActivity extends AppCompatActivity {
-    //    @BindView(R.id.back)
-//    ImageView back;
+    @BindView(R.id.back)
+    ImageView back;
     @BindView(R.id.nonAlcoholic)
     CardView nonAlcoholic;
     @BindView(R.id.beer)
@@ -54,17 +55,35 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            nonAlcoholic.setOnClickListener(new MenuClickListener());
-            beer.setOnClickListener(new MenuClickListener());
-            cocktails.setOnClickListener(new MenuClickListener());
-            longDrinks.setOnClickListener(new MenuClickListener());
-            shots.setOnClickListener(new MenuClickListener());
-            spirits.setOnClickListener(new MenuClickListener());
-            wine.setOnClickListener(new MenuClickListener());
-            spritz.setOnClickListener(new MenuClickListener());
-            cider.setOnClickListener(new MenuClickListener());
+        nonAlcoholic.setOnClickListener(new MenuClickListener());
+        beer.setOnClickListener(new MenuClickListener());
+        cocktails.setOnClickListener(new MenuClickListener());
+        longDrinks.setOnClickListener(new MenuClickListener());
+        shots.setOnClickListener(new MenuClickListener());
+        spirits.setOnClickListener(new MenuClickListener());
+        wine.setOnClickListener(new MenuClickListener());
+        spritz.setOnClickListener(new MenuClickListener());
+        cider.setOnClickListener(new MenuClickListener());
+
+        back.setOnClickListener(v -> {
+            back();
+        });
+    }
+
+    private void back() {
+        if (menuItemsHidden) {
+            drinksDetail.setText(null);
+            toggleMenuItemVisibility();
+            title.setText("manasia menu");
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        back();
     }
 
     //todo set category image as offset background for each category and display it with the details
@@ -279,6 +298,7 @@ public class MenuActivity extends AppCompatActivity {
             wine.setVisibility(View.GONE);
             spritz.setVisibility(View.GONE);
             cider.setVisibility(View.GONE);
+            menuItemsHidden = true;
         } else {
             nonAlcoholic.setVisibility(View.VISIBLE);
             beer.setVisibility(View.VISIBLE);
@@ -289,6 +309,7 @@ public class MenuActivity extends AppCompatActivity {
             wine.setVisibility(View.VISIBLE);
             spritz.setVisibility(View.VISIBLE);
             cider.setVisibility(View.VISIBLE);
+            menuItemsHidden = false;
         }
     }
 
