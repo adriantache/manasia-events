@@ -75,7 +75,7 @@ public class MenuActivity extends AppCompatActivity {
         //todo fill in all categories
         if (v.getId() == nonAlcoholic.getId()) {
             toggleMenuItemVisibility();
-            title.setText("m: non-alcoholic drinks");
+            title.setText("non-alcoholic drinks");
             drinksDetail.setText(Html.fromHtml("<h2>CAFEA/BAUTURI CALDE</h2><b><p>Espresso scurt/lung</p>" +
                     "<p>Cappuccino</p><p>Cappuccino Vienez</p> <p>Caffe Latte</p> <p>Iced coffee</b><i>" +
                     "<small> (30ml of either irish cream/amaretto/whiskey)" +
