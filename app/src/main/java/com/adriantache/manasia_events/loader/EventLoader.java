@@ -49,7 +49,8 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
                 String title = child.optString("name");
                 String date = buildDate(child.optString("month"), child.optString("day"));
                 String description = child.optString("description_long");
-                if (TextUtils.isEmpty(description)) description = child.optString("description");
+                if (TextUtils.isEmpty(description))
+                    description = child.optString("description");
                 String imageUrl = child.optString("image_url");
                 if (!TextUtils.isEmpty(imageUrl)) imageUrl = getImageUrl(imageUrl);
 

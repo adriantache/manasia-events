@@ -68,9 +68,7 @@ public class MenuActivity extends AppCompatActivity {
         spritz.setOnClickListener(new MenuClickListener());
         cider.setOnClickListener(new MenuClickListener());
 
-        back.setOnClickListener(v -> {
-            back();
-        });
+        back.setOnClickListener(v -> back());
     }
 
     private void back() {
@@ -90,7 +88,7 @@ public class MenuActivity extends AppCompatActivity {
         back();
     }
 
-    private void animateLayout(View v) {
+    private void openDetailView(View v) {
         Log.i("ONCLICK", "onClick: " + v.getId());
 
         //workaround because IDs are apparently no longer final
@@ -343,7 +341,7 @@ public class MenuActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onClick(View v) {
-            animateLayout(v);
+            openDetailView(v);
         }
     }
 }
