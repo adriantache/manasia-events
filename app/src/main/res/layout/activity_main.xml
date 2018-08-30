@@ -39,14 +39,14 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="8dp"
         android:background="#fff"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/baseline_wifi_black_18dp"
         android:gravity="center_vertical"
         android:padding="8dp"
+        android:text="@string/wifi_key"
         android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="WiFi key: steleaspataru13"
-        android:drawableStart="@drawable/baseline_wifi_black_18dp"
-        android:drawablePadding="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!--todo replace button or make it nicer-->
     <ImageButton
@@ -59,8 +59,21 @@
         android:scaleType="centerInside"
         android:src="@drawable/menu"
         android:tooltipText="@string/menu"
-        app:layout_constraintBottom_toTopOf="@+id/list_view"
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:targetApi="o" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/error_robot"
+        android:gravity="center"
+        android:text="@string/no_events_found"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/list_view"
+        app:layout_constraintLeft_toLeftOf="@id/list_view"
+        app:layout_constraintRight_toRightOf="@id/list_view"
+        app:layout_constraintTop_toTopOf="@id/list_view" />
 </android.support.constraint.ConstraintLayout>

@@ -45,7 +45,7 @@ public class EventDetail extends AppCompatActivity {
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.notify_status)
-    ImageView notify_status;
+    ImageView notifyStatus;
     @BindView(R.id.description)
     TextView description;
     @BindView(R.id.back)
@@ -57,15 +57,15 @@ public class EventDetail extends AppCompatActivity {
     @BindView(R.id.location)
     TextView location;
     @BindView(R.id.notify_icon)
-    SwitchIconView notify_icon;
+    SwitchIconView notifyIcon;
     @BindView(R.id.notify)
     LinearLayout notify;
     @BindView(R.id.notify_label)
-    TextView notify_label;
+    TextView notifyLabel;
     @BindView(R.id.constraint_layout)
-    ConstraintLayout constraint_layout;
+    ConstraintLayout constraintLayout;
     @BindView(R.id.title_bar)
-    LinearLayout title_bar;
+    LinearLayout titleBar;
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
     private boolean notifyOnAllEvents;
@@ -141,14 +141,14 @@ public class EventDetail extends AppCompatActivity {
     private void setNotifyOnClickListener(boolean pastEvent) {
         //only add notification for events in the future (or today)
         if (pastEvent) {
-            notify_icon.setEnabled(false);
+            notifyIcon.setEnabled(false);
 
             //also hide the notification indicator up top
-            notify_status.setVisibility(View.INVISIBLE);
+            notifyStatus.setVisibility(View.INVISIBLE);
         } else if (notifyOnAllEvents) {
-            notify_icon.setIconEnabled(true);
-            notify_label.setText(getString(R.string.notifying));
-            notify_status.setImageResource(R.drawable.alarm_accent);
+            notifyIcon.setIconEnabled(true);
+            notifyLabel.setText(getString(R.string.notifying));
+            notifyStatus.setImageResource(R.drawable.alarm_accent);
 
             notify.setOnClickListener(v -> showSnackbar());
         } else {
@@ -157,18 +157,18 @@ public class EventDetail extends AppCompatActivity {
                 notifyOnAllEvents = getNotifyAllSetting(this);
 
                 if (event.getNotify() == 1) {
-                    notify_icon.setIconEnabled(false);
-                    notify_status.setImageResource(R.drawable.alarm);
-                    notify_label.setText(getString(R.string.notify));
+                    notifyIcon.setIconEnabled(false);
+                    notifyStatus.setImageResource(R.drawable.alarm);
+                    notifyLabel.setText(getString(R.string.notify));
 
                     event.setNotify(0);
                     updateDatabase();
 
                     Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
                 } else {
-                    notify_icon.setIconEnabled(true);
-                    notify_status.setImageResource(R.drawable.alarm_accent);
-                    notify_label.setText(getString(R.string.notifying));
+                    notifyIcon.setIconEnabled(true);
+                    notifyStatus.setImageResource(R.drawable.alarm_accent);
+                    notifyLabel.setText(getString(R.string.notifying));
 
                     event.setNotify(1);
                     updateDatabase();
@@ -198,12 +198,12 @@ public class EventDetail extends AppCompatActivity {
         title.setText(event.getTitle());
         description.setText(event.getDescription());
         if (event.getNotify() == 1)
-            notify_status.setImageResource(R.drawable.alarm_accent);
+            notifyStatus.setImageResource(R.drawable.alarm_accent);
         else
-            notify_status.setImageResource(R.drawable.alarm);
+            notifyStatus.setImageResource(R.drawable.alarm);
 
         //set notify button state depending on notify state
-        notify_icon.setIconEnabled(event.getNotify() == 1);
+        notifyIcon.setIconEnabled(event.getNotify() == 1);
     }
 
     //method to update event in the local database
@@ -230,7 +230,7 @@ public class EventDetail extends AppCompatActivity {
         notifyOnAllEvents = getNotifyAllSetting(this);
 
         if (!notifyOnAllEvents) {
-            Snackbar snackbar = Snackbar.make(constraint_layout,
+            Snackbar snackbar = Snackbar.make(constraintLayout,
                     "You will be notified on the day of the event.\n" +
                             "Would you like to be notified for all events?",
                     Snackbar.LENGTH_LONG);
@@ -258,7 +258,7 @@ public class EventDetail extends AppCompatActivity {
             TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
-            Snackbar snackbar = Snackbar.make(constraint_layout,
+            Snackbar snackbar = Snackbar.make(constraintLayout,
                     "You are already being notified for all events.\n" +
                             "Do you want to change this option?",
                     Snackbar.LENGTH_LONG);

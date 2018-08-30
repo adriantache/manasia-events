@@ -22,6 +22,8 @@
     <string name="next_manasia_event">NEXT MANASIA EVENT</string>
     <string name="next_event_thumbnail">Next event thumbnail</string>
     <string name="manasia_menu">manasia menu</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="menu">MENU</string>
+    <string name="wifi_key">WiFi key: steleaspataru13</string>
+    <string name="no_events_found">No events found. That\'s not right.</string>
 </resources>

@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
     public ArrayList<Event> events;
-    private String REMOTE_URL;
-    private boolean notifyOnAllEvents;
-
     @BindView(R.id.list_view)
     ListView listView;
     @BindView(R.id.logo)
@@ -68,10 +65,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ConstraintLayout constraintLayout;
     @BindView(R.id.menu)
     ImageButton menu;
+    @BindView(R.id.error)
+    TextView error;
+    private String REMOTE_URL;
+    private boolean notifyOnAllEvents;
 
-    //todo replace busy level with wifi password steleaspataru13
+    //todo prevent database refresh if not connected to Internet
+
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
     //todo replace loader with WorkManager
+    //todo replace ListView with RecyclerView
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -126,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void populateListView() {
         //populate list
-        //todo set empty list text view and progress bar
         listView.setAdapter(new EventAdapter(this, events));
+        listView.setEmptyView(error);
 
         //set click listener and transition animation
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -148,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     options = ActivityOptions
                             .makeSceneTransitionAnimation(this,
                                     Pair.create(view.findViewById(R.id.thumbnail), "thumbnail"),
-                                    Pair.create(view.findViewById(R.id.notify_status), "notify_status")
+                                    Pair.create(view.findViewById(R.id.notify_status), "notifyStatus")
                             );
             }
 
@@ -233,8 +236,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
     }
 
-
-    //todo refactor this when we change the way we get event data
     private void refreshList() {
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
