@@ -25,5 +25,5 @@
     <string name="loading">Loading…</string>
     <string name="menu">MENU</string>
     <string name="wifi_key">WiFi key: steleaspataru13</string>
-    <string name="no_events_found">No events found. That\'s not right.</string>
+    <string name="no_events_found">No events found. \nThat\'s not right.</string>
 </resources>
