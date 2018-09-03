@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.adriantache.manasia_events.custom_class.Event;
 
@@ -148,6 +149,33 @@ public final class Utils {
         return day == eventDay && month == eventMonth;
     }
 
+    //set the message that informs people when/until when the bar is open
+    public static void getOpenHours(TextView openHours) {
+        TimeZone bucharest = TimeZone.getTimeZone("Europe/Bucharest");
+        Calendar calendar = Calendar.getInstance(bucharest);
+
+        int hour = calendar.get(Calendar.HOUR);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        Log.i("SOMETHING_WITNESS_MEEEE", "getOpenHours: " + day);
+
+        //todo add colors
+        if (hour > 2 && hour < 12) {
+            openHours.setText("CLOSED. Opens at noon.");
+        } else if (hour >= 12 && hour < 24) {
+            if (day == 1) {
+                openHours.setText("OPEN until midnight.");
+            } else openHours.setText("OPEN until 2am.");
+
+            //set color
+        } else {
+            if (day == 1) {
+                openHours.setText("CLOSED. Opens at noon.");
+            } else {
+                openHours.setText("OPEN until midnight.");
+            }
+        }
+    }
 
     //utility methods
     public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
