@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 
 import java.io.IOException;
@@ -159,20 +160,26 @@ public final class Utils {
 
         Log.i("SOMETHING_WITNESS_MEEEE", "getOpenHours: " + day);
 
-        //todo add colors
+        //add colors
+        final int openColor = 0xff33691E;
+        final int closedColor = 0xffBF360C;
+
         if (hour > 2 && hour < 12) {
-            openHours.setText("CLOSED. Opens at noon.");
+            openHours.setText(R.string.closed_noon);
+            openHours.setTextColor(closedColor);
         } else if (hour >= 12 && hour < 24) {
             if (day == 1) {
-                openHours.setText("OPEN until midnight.");
-            } else openHours.setText("OPEN until 2am.");
-
+                openHours.setText(R.string.open_midnight);
+            } else openHours.setText(R.string.open_2am);
             //set color
-        } else {
+            openHours.setTextColor(openColor);
+        } else if (hour >= 0 && hour <= 2) {
             if (day == 1) {
-                openHours.setText("CLOSED. Opens at noon.");
+                openHours.setText(R.string.closed_noon);
+                openHours.setTextColor(closedColor);
             } else {
-                openHours.setText("OPEN until midnight.");
+                openHours.setText(R.string.open_2am);
+                openHours.setTextColor(openColor);
             }
         }
     }
