@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean notifyOnAllEvents;
 
     //todo prevent database refresh if not connected to Internet
+    //todo use WorkManager to schedule database refresh
+    //todo add open hours to app [today open until ...]
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
     //todo replace loader with WorkManager
