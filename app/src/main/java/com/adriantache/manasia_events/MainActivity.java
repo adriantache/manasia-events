@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView error;
     @BindView(R.id.open_hours)
     TextView openHours;
+    @BindView(R.id.open_or_closed)
+    ImageView openOrClosed;
     private String REMOTE_URL;
     private boolean notifyOnAllEvents;
 
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         //update open hours TextView
-        Utils.getOpenHours(openHours);
+        Utils.getOpenHours(openHours,openOrClosed);
     }
 
     private void populateListView() {

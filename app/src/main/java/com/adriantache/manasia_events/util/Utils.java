@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adriantache.manasia_events.R;
@@ -151,14 +152,12 @@ public final class Utils {
     }
 
     //set the message that informs people when/until when the bar is open
-    public static void getOpenHours(TextView openHours) {
+    public static void getOpenHours(TextView openHours, ImageView openOrClosed) {
         TimeZone bucharest = TimeZone.getTimeZone("Europe/Bucharest");
         Calendar calendar = Calendar.getInstance(bucharest);
 
-        int hour = calendar.get(Calendar.HOUR);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        Log.i("SOMETHING_WITNESS_MEEEE", "getOpenHours: " + day);
 
         //add colors
         final int openColor = 0xff33691E;
@@ -167,19 +166,24 @@ public final class Utils {
         if (hour > 2 && hour < 12) {
             openHours.setText(R.string.closed_noon);
             openHours.setTextColor(closedColor);
+            openOrClosed.setImageResource(R.drawable.closed);
         } else if (hour >= 12 && hour < 24) {
             if (day == 1) {
                 openHours.setText(R.string.open_midnight);
+                openOrClosed.setImageResource(R.drawable.open);
             } else openHours.setText(R.string.open_2am);
             //set color
             openHours.setTextColor(openColor);
+            openOrClosed.setImageResource(R.drawable.open);
         } else if (hour >= 0 && hour <= 2) {
             if (day == 1) {
                 openHours.setText(R.string.closed_noon);
                 openHours.setTextColor(closedColor);
+                openOrClosed.setImageResource(R.drawable.closed);
             } else {
                 openHours.setText(R.string.open_2am);
                 openHours.setTextColor(openColor);
+                openOrClosed.setImageResource(R.drawable.open);
             }
         }
     }

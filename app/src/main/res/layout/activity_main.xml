@@ -91,4 +91,16 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Opens at 12 am." />
 
+    <ImageView
+        android:id="@+id/open_or_closed"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="3dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toTopOf="@+id/logo"
+        app:srcCompat="@drawable/closed" />
+
 </android.support.constraint.ConstraintLayout>
