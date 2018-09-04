@@ -166,6 +166,7 @@ public final class Utils {
         if (hour > 2 && hour < 12) {
             openHours.setText(R.string.closed_noon);
             openHours.setTextColor(closedColor);
+            //todo make images nicer
             openOrClosed.setImageResource(R.drawable.closed);
         } else if (hour >= 12 && hour < 24) {
             if (day == 1) {
