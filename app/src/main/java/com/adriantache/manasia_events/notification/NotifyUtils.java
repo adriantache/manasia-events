@@ -63,12 +63,18 @@ public class NotifyUtils {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
         Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
 
-        OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
-                .setInitialDelay(calculateDelay(eventDate), TimeUnit.MILLISECONDS)
-                .setInputData(inputData)
-                .addTag(workTag)
-                .build();
+        //get delay until notification triggers
+        long delay = calculateDelay(eventDate);
 
-        WorkManager.getInstance().enqueue(notificationWork);
+        //only trigger notification if notification for the event is in the future
+        if (delay > 0) {
+            OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
+                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                    .setInputData(inputData)
+                    .addTag(workTag)
+                    .build();
+
+            WorkManager.getInstance().enqueue(notificationWork);
+        }
     }
 }
