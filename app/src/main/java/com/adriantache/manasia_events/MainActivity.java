@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,6 +59,7 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Event>> {
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
+    private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
     public ArrayList<Event> events;
     @BindView(R.id.list_view)
     ListView listView;
@@ -71,11 +75,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView openHours;
     @BindView(R.id.open_or_closed)
     ImageView openOrClosed;
-    private String REMOTE_URL;
+    long lastUpdateTime;
+    private String remoteUrl;
     private boolean notifyOnAllEvents;
 
-    //todo prevent database refresh if not connected to Internet
-    //todo only refresh database based on last fetched date, stored in database or sharedprefs, or if events are seriously outdated
+    //todo refresh database if events are seriously outdated
     //todo use WorkManager to schedule database refresh
     //todo add open hours to app [today open until ...] and open/closed blob
 
@@ -108,17 +112,46 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
 
+        //show snackbar if user hasn't chosen to be notified for all events
         if (!notifyOnAllEvents) showSnackbar();
 
         //get remote URL or use local data
-        REMOTE_URL = getRemoteURL();
+        remoteUrl = getRemoteURL();
 
-        //todo prevent unnecessary database updates
-        //populate the global ArrayList of events by updating database and...
-        getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+        //update events and display them, if available
+        fetchEvents();
+
+        //update open hours TextView
+        Utils.getOpenHours(openHours, openOrClosed);
+    }
+
+    private void fetchEvents() {
+        //we read when the database was last fetched from remote, and if time is more than
+        // one hour we refresh the remote source
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
+            //test network connectivity
+            ConnectivityManager cm = (ConnectivityManager)
+                    getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = null;
+            try {
+                if (cm != null) {
+                    activeNetwork = cm.getActiveNetworkInfo();
+                }
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Cannot get network info.", e);
+            }
+            if (activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting()) {
+                //populate the global ArrayList of events by updating database and...
+                getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+            }
+        }
+
         //...then reading that database (this also populates the ArrayList with the very important
-        //DBEventID value to pass along throughout the app
+        // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
+
         //and since we're at it also update the widget(s) with the new event data
         Intent intent = new Intent(this, EventWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
@@ -132,9 +165,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (events != null) {
             populateListView();
         }
-
-        //update open hours TextView
-        Utils.getOpenHours(openHours,openOrClosed);
     }
 
     private void populateListView() {
@@ -244,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void getPreferences() {
         SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
+        lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_LABEL, 0);
     }
 
     private void refreshList() {
@@ -281,17 +312,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<List<Event>> onCreateLoader(int id, Bundle args) {
-        if (TextUtils.isEmpty(REMOTE_URL))
+        if (TextUtils.isEmpty(remoteUrl))
             return new EventLoader(this, Utils.getSampleJSON(this));
         else
-            return new EventLoader(this, REMOTE_URL);
+            return new EventLoader(this, remoteUrl);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Event>> loader, List<Event> data) {
+        //add events into the database
         inputRemoteEventsIntoDatabase((ArrayList<Event>) data);
-        events = (ArrayList<Event>) DBUtils.readDatabase(this);
-        populateListView();
+
+        //write fetch date into SharedPrefs
+        Calendar calendar = Calendar.getInstance();
+        lastUpdateTime = calendar.getTimeInMillis();
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
+        editor.apply();
     }
 
     @Override

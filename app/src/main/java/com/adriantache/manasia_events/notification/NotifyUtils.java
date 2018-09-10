@@ -2,9 +2,9 @@ package com.adriantache.manasia_events.notification;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.worker.NotifyWorker;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;

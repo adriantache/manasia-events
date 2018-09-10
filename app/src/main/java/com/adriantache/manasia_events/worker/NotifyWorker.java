@@ -1,4 +1,4 @@
-package com.adriantache.manasia_events.notification;
+package com.adriantache.manasia_events.worker;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -35,8 +35,8 @@ import static com.adriantache.manasia_events.util.Utils.prettyDate;
  **/
 public class NotifyWorker extends Worker {
     private static final int ERROR_VALUE = -1;
-    private static final String manasia_notification_channel = "Manasia Event Reminder";
-    private static final String manasia_notification_channel_group = "Manasia Events";
+    private static final String MANASIA_NOTIFICATION_CHANNEL = "Manasia Event Reminder";
+    private static final String MANASIA_NOTIFICATION_CHANNEL_GROUP = "Manasia Events";
 
     @NonNull
     @Override
@@ -71,7 +71,7 @@ public class NotifyWorker extends Worker {
 
             //build the actual notification channel, giving it a unique ID and name
             NotificationChannel channel =
-                    new NotificationChannel(manasia_notification_channel, manasia_notification_channel, importance);
+                    new NotificationChannel(MANASIA_NOTIFICATION_CHANNEL, MANASIA_NOTIFICATION_CHANNEL, importance);
 
             //set a description for the channel
             String description = "A channel which shows notifications about events at Manasia";
@@ -110,7 +110,7 @@ public class NotifyWorker extends Worker {
 
         //build the notification
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(getApplicationContext(), manasia_notification_channel)
+                new NotificationCompat.Builder(getApplicationContext(), MANASIA_NOTIFICATION_CHANNEL)
                         .setSmallIcon(R.drawable.ic_manasia_small)
                         .setContentTitle(notificationTitle)
                         .setContentText(notificationText)
@@ -120,7 +120,7 @@ public class NotifyWorker extends Worker {
                         .setCategory(CATEGORY_EVENT)
                         .setColor(0xFF4081)
                         .setVisibility(VISIBILITY_PUBLIC)
-                        .setGroup(manasia_notification_channel_group)
+                        .setGroup(MANASIA_NOTIFICATION_CHANNEL_GROUP)
 //                        .setStyle(new NotificationCompat.BigTextStyle()
 //                                .bigText(event.getDescription()))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -139,7 +139,7 @@ public class NotifyWorker extends Worker {
         NotificationChannel channel = null;
 
         if (manager != null)
-            channel = manager.getNotificationChannel(manasia_notification_channel);
+            channel = manager.getNotificationChannel(MANASIA_NOTIFICATION_CHANNEL);
 
         return channel != null && channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
     }
