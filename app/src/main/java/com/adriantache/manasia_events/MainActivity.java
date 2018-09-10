@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     //todo replace loader with WorkManager
     //todo replace ListView with RecyclerView
 
+    //todo add food menu to app
+    //todo redesign event details screen to move image to under nav and allow image resizing on click
+
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
@@ -125,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Utils.getOpenHours(openHours, openOrClosed);
     }
 
+    //todo reschedule notifications on remote events fetch
+    //todo schedule remote events fetch before 12 pm to prevent notifications fix deleting notifications
     private void fetchEvents() {
         //we read when the database was last fetched from remote, and if time is more than
         // one hour we refresh the remote source
