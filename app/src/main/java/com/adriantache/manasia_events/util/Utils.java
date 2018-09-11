@@ -12,6 +12,10 @@ import android.widget.TextView;
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -40,6 +44,7 @@ public final class Utils {
     }
 
     //date related methods
+    //todo shorten months
     public static String extractDayOrMonth(String s, boolean day) {
         if (TextUtils.isEmpty(s)) return "ERROR";
 
@@ -227,7 +232,7 @@ public final class Utils {
     }
 
     //turn a 3 letter month and a day "int" into a date of the format yyyy-MM-dd
-    public static String buildDate(String month, String day) {
+    private static String buildDate(String month, String day) {
         StringBuilder date = new StringBuilder();
         int monthNumber;
 
@@ -304,7 +309,7 @@ public final class Utils {
         return date.toString();
     }
 
-    public static String getImageUrl(String imageTag) {
+    private static String getImageUrl(String imageTag) {
         imageTag = imageTag
                 .replace("scontent-*.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
                 .replace("&amp;", "&")
@@ -327,32 +332,38 @@ public final class Utils {
         return imageTag;
     }
 
-    //get sample JSON string from file
-    public static String getSampleJSON(Context context) {
-        String file = null;
+    public static ArrayList<Event> parseJSON(String JSON) {
+        if (TextUtils.isEmpty(JSON) || JSON.length() < 50) return new ArrayList<>();
 
+        ArrayList<Event> events = new ArrayList<>();
+
+        //parse JSON String
         try {
-            InputStream inputStream = context.getResources().openRawResource(
-                    context.getResources().getIdentifier("sample_json",
-                            "raw", context.getPackageName()));
+            JSONObject root = new JSONObject(JSON);
+            JSONArray eventTitle = root.optJSONArray("event_title");
 
-            if (inputStream != null) {
-                int ch;
-                StringBuilder sb = new StringBuilder();
-                try {
-                    while ((ch = inputStream.read()) != -1) {
-                        sb.append((char) ch);
-                    }
-                } catch (IOException e) {
-                    Log.e("GetSampleJSON", "Cannot read API key InputStream.", e);
-                }
+            for (int i = 0; i < eventTitle.length(); i++) {
+                JSONObject child = eventTitle.optJSONObject(i);
+                String title = child.optString("name");
+                String date = buildDate(child.optString("month"), child.optString("day"));
+                String description = child.optString("description_long");
+                if (TextUtils.isEmpty(description))
+                    description = child.optString("description");
+                String imageUrl = child.optString("image_url");
+                if (!TextUtils.isEmpty(imageUrl)) imageUrl = getImageUrl(imageUrl);
 
-                if (sb.length() != 0) file = sb.toString();
+                //give the description breathing room
+                if (description != null)
+                    description = description.replace("\n", "\n\n");
+
+                if (date != null && title != null && description != null)
+                    events.add(new Event(date, title, description, imageUrl));
             }
-        } catch (Resources.NotFoundException e) {
-            Log.e("GetSampleJSON", "Cannot open API key file.", e);
+        } catch (JSONException e) {
+            Log.e("parseJSON", "Cannot parse JSON", e);
+            events = new ArrayList<>();
         }
 
-        return file;
+        return events;
     }
 }

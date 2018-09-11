@@ -12,11 +12,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,17 +29,22 @@ import android.widget.Toast;
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
-import com.adriantache.manasia_events.loader.EventLoader;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
+import com.adriantache.manasia_events.worker.UpdateEventsWorker;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.State;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -56,11 +58,13 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Event>> {
+public class MainActivity extends AppCompatActivity {
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
     private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
-    public ArrayList<Event> events;
+    private static final String REMOTE_URL = "REMOTE_URL";
+    private static final String JSON_RESULT = "JSON_STRING";
+    private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     @BindView(R.id.list_view)
     ListView listView;
     @BindView(R.id.logo)
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.open_or_closed)
     ImageView openOrClosed;
     long lastUpdateTime;
-    private String remoteUrl;
+    private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
 
     //todo refresh database if events are seriously outdated
@@ -84,11 +88,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     //todo add open hours to app [today open until ...] and open/closed blob
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
-    //todo replace loader with WorkManager
     //todo replace ListView with RecyclerView
 
     //todo add food menu to app
     //todo redesign event details screen to move image to under nav and allow image resizing on click
+
+    //todo add progress indicator circle while fetching/decoding events
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -115,14 +120,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
 
-        //show snackbar if user hasn't chosen to be notified for all events
-        if (!notifyOnAllEvents) showSnackbar();
-
-        //get remote URL or use local data
-        remoteUrl = getRemoteURL();
-
         //update events and display them, if available
         fetchEvents();
+
+        //show snackbar if user hasn't chosen to be notified for all events
+        if (!notifyOnAllEvents) showSnackbar();
 
         //update open hours TextView
         Utils.getOpenHours(openHours, openOrClosed);
@@ -133,9 +135,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void fetchEvents() {
         //we read when the database was last fetched from remote, and if time is more than
         // one hour we refresh the remote source
+        //todo rethink time interval since events are only refreshed daily at ~4am
+        //todo trigger immediate events fetch if last update is >24h-4am, otherwise schedule update for 5am EEST/EET
         Calendar calendar = Calendar.getInstance();
         if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
-            //test network connectivity
+            //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetwork = null;
@@ -148,26 +152,88 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             if (activeNetwork != null &&
                     activeNetwork.isConnectedOrConnecting()) {
-                //populate the global ArrayList of events by updating database and...
-                getSupportLoaderManager().initLoader(1, null, this).forceLoad();
-            }
-        }
+                //populate the global ArrayList of events by adding a work request to fetch JSON...
+                Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+                OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
+                        .Builder(UpdateEventsWorker.class)
+                        .setInputData(remoteUrl)
+                        .addTag(EVENTS_JSON_WORK_TAG)
+                        .build();
+                WorkManager.getInstance().enqueue(getEventJson);
 
+                //...then get the result...
+                WorkManager.getInstance()
+                        .getStatusById(getEventJson.getId())
+                        .observe(MainActivity.this, workStatus -> {
+                            if (workStatus != null && workStatus.getState().equals(State.SUCCEEDED)) {
+                                //get results JSON
+                                StringBuilder jsonResult = null;
+
+                                try (BufferedReader bufferedReader =
+                                             new BufferedReader(
+                                                     new InputStreamReader(
+                                                             getApplicationContext().openFileInput(JSON_RESULT)))) {
+
+                                    jsonResult = new StringBuilder();
+                                    int i;
+                                    while ((i = bufferedReader.read()) != -1) {
+                                        jsonResult.append((char) i);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                //decode the JSON into events ArrayList
+                                ArrayList<Event> eventsTemp = null;
+                                if (jsonResult != null && jsonResult.length() != 0) {
+                                    eventsTemp = Utils.parseJSON(jsonResult.toString());
+                                }
+
+                                //if remote fetch is successful...
+                                if (eventsTemp != null) {
+                                    Log.i(TAG, "fetchEvents: Successfully fetched and decoded remote JSON.");
+
+                                    // send events to the database...
+                                    inputRemoteEventsIntoDatabase(eventsTemp);
+
+                                    // and write fetch date into SharedPrefs
+                                    lastUpdateTime = calendar.getTimeInMillis();
+                                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
+                                    editor.apply();
+
+                                    //todo trigger notifications scheduling update here
+                                }
+
+                                //...finally run tasks post database update
+                                afterDatabaseUpdate();
+                            }
+                        });
+            }
+        } else {
+            //otherwise just run after update tasks as if we already fetched remote data
+            afterDatabaseUpdate();
+        }
+    }
+
+    //tasks which run on remote events refresh or in case that refresh is not possible
+    private void afterDatabaseUpdate() {
         //...then reading that database (this also populates the ArrayList with the very important
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        //and since we're at it also update the widget(s) with the new event data
-        Intent intent = new Intent(this, EventWidget.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
-        // since it seems the onUpdate() is only fired on that:
-        int[] ids = AppWidgetManager.getInstance(getApplication())
-                .getAppWidgetIds(new ComponentName(getApplication(), EventWidget.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        sendBroadcast(intent);
-
         if (events != null) {
+            //and since we're at it also update the widget(s) with the new event data
+            Intent intent = new Intent(this, EventWidget.class);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+            // since it seems the onUpdate() is only fired on that:
+            int[] ids = AppWidgetManager.getInstance(getApplication())
+                    .getAppWidgetIds(new ComponentName(getApplication(), EventWidget.class));
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            sendBroadcast(intent);
+
             populateListView();
         }
     }
@@ -278,7 +344,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void getPreferences() {
         SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        //set notify on every future event flag
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
+        //set time of last remote update
         lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_LABEL, 0);
     }
 
@@ -312,34 +380,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         View view = snackbar.getView();
         TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
-    }
-
-    @NonNull
-    @Override
-    public Loader<List<Event>> onCreateLoader(int id, Bundle args) {
-        if (TextUtils.isEmpty(remoteUrl))
-            return new EventLoader(this, Utils.getSampleJSON(this));
-        else
-            return new EventLoader(this, remoteUrl);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<Event>> loader, List<Event> data) {
-        //add events into the database
-        inputRemoteEventsIntoDatabase((ArrayList<Event>) data);
-
-        //write fetch date into SharedPrefs
-        Calendar calendar = Calendar.getInstance();
-        lastUpdateTime = calendar.getTimeInMillis();
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
-        editor.apply();
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<Event>> loader) {
-        listView.setAdapter(new EventAdapter(this, new ArrayList<>()));
     }
 }
 
