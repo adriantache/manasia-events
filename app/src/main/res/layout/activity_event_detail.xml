@@ -18,7 +18,8 @@
         android:transitionName="thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toBottomOf="@id/back_background"        tools:targetApi="lollipop" />
+        app:layout_constraintTop_toBottomOf="@id/back_background"
+        tools:targetApi="lollipop" />
 
     <LinearLayout
         android:id="@+id/title_bar"
@@ -58,9 +59,10 @@ app:layout_constraintTop_toBottomOf="@id/back_background"        tools:targetApi
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingBottom="8dp"
+                android:textSize="18sp"
                 android:transitionName="month"
                 tools:targetApi="lollipop"
-                tools:text="APRIL" />
+                tools:text="APR" />
 
         </LinearLayout>
 

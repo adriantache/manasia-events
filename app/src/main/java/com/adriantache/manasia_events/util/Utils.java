@@ -44,7 +44,6 @@ public final class Utils {
     }
 
     //date related methods
-    //todo shorten months
     public static String extractDayOrMonth(String s, boolean day) {
         if (TextUtils.isEmpty(s)) return "ERROR";
 
@@ -55,29 +54,29 @@ public final class Utils {
         if (day) return parts[2];
         else switch (parts[1]) {
             case "01":
-                return "January";
+                return "JAN";
             case "02":
-                return "February";
+                return "FEB";
             case "03":
-                return "March";
+                return "MAR";
             case "04":
-                return "April";
+                return "APR";
             case "05":
-                return "May";
+                return "MAY";
             case "06":
-                return "June";
+                return "JUN";
             case "07":
-                return "July";
+                return "JUL";
             case "08":
-                return "August";
+                return "AUG";
             case "09":
-                return "September";
+                return "SEP";
             case "10":
-                return "October";
+                return "OCT";
             case "11":
-                return "November";
+                return "NOV";
             case "12":
-                return "December";
+                return "DEC";
             default:
                 return "ERROR";
         }
