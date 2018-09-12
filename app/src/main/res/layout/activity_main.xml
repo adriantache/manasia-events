@@ -49,17 +49,18 @@
         app:layout_constraintTop_toBottomOf="@id/list_view" />
 
     <!--todo replace button or make it nicer-->
-    <ImageButton
+    <Button
         android:id="@+id/menu"
         android:layout_width="100dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="16dp"
-        android:background="@color/colorAccent"
         android:contentDescription="@string/menu"
         android:scaleType="centerInside"
-        android:src="@drawable/menu"
+        android:drawableStart="@drawable/menu"
+        android:drawablePadding="8dp"
         android:tooltipText="@string/menu"
+        android:text="@string/menu"
         app:layout_constraintBottom_toBottomOf="@+id/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
