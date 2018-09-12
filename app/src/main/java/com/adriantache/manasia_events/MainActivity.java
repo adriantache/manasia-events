@@ -32,6 +32,8 @@ import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
+import com.instabug.library.Instabug;
+import com.instabug.library.invocation.InstabugInvocationEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -128,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
 
         //update open hours TextView
         Utils.getOpenHours(openHours, openOrClosed);
+
+        //init Instabug
+        new Instabug.Builder(getApplication(), "1b00e3fb39ec6b77601b85205e89f0d6")
+                .setInvocationEvents(InstabugInvocationEvent.SHAKE, InstabugInvocationEvent.SCREENSHOT)
+                .build();
     }
 
     //todo reschedule notifications on remote events fetch

@@ -42,4 +42,5 @@ dependencies {
     implementation "android.arch.work:work-runtime:$work_version"
     implementation "android.arch.work:work-firebase:$work_version"
     implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.instabug.library:instabug:8.0.7'
 }
