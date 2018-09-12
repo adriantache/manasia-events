@@ -20,7 +20,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
     @BindView(R.id.menu)
-    ImageButton menu;
+    Button menu;
     @BindView(R.id.error)
     TextView error;
     @BindView(R.id.open_hours)
