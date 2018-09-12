@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     activeNetwork.isConnectedOrConnecting()) {
                 //populate the global ArrayList of events by adding a work request to fetch JSON...
                 Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+                //todo replace with periodic work request with initial delay until 5am and check that it doesn't already exist
                 OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
                         .Builder(UpdateEventsWorker.class)
                         .setInputData(remoteUrl)
@@ -179,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
                                     while ((i = bufferedReader.read()) != -1) {
                                         jsonResult.append((char) i);
                                     }
+
+                                    //delete file after reading it to prevent caching in case of errors
+                                    deleteFile(JSON_RESULT);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -287,22 +291,13 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (Arrays.asList(getResources().getAssets().list("")).contains("dataURL.txt")) {
                 AssetManager am = getApplicationContext().getAssets();
-                InputStream inputStream = null;
-                try {
-                    inputStream = am.open("dataURL.txt");
-                } catch (IOException e) {
-                    Log.e(TAG, "Cannot read API key from file.", e);
-                }
+                InputStream inputStream = am.open("dataURL.txt");
 
                 if (inputStream != null) {
                     int ch;
                     StringBuilder sb = new StringBuilder();
-                    try {
-                        while ((ch = inputStream.read()) != -1) {
-                            sb.append((char) ch);
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG, "Cannot read API key InputStream.", e);
+                    while ((ch = inputStream.read()) != -1) {
+                        sb.append((char) ch);
                     }
 
                     if (sb.length() != 0) remoteURL = sb.toString();

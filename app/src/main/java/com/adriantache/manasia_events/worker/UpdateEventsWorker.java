@@ -1,21 +1,13 @@
 package com.adriantache.manasia_events.worker;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
-import androidx.work.Data;
 import androidx.work.Worker;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,8 +23,7 @@ public class UpdateEventsWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Data input = getInputData();
-        final String remoteUrl = input.getString(REMOTE_URL);
+        final String remoteUrl = getInputData().getString(REMOTE_URL);
 
         String jsonString = null;
         try {
@@ -42,7 +33,8 @@ public class UpdateEventsWorker extends Worker {
         }
 
         if (!TextUtils.isEmpty(jsonString) && jsonString.length() > 50) {
-            try(PrintWriter printWriter = new PrintWriter(new File(getApplicationContext().getFilesDir(), JSON_RESULT), "UTF-8")){
+            try (PrintWriter printWriter = new PrintWriter(new File(
+                    getApplicationContext().getFilesDir(), JSON_RESULT), "UTF-8")) {
                 printWriter.write(jsonString);
             } catch (IOException e) {
                 e.printStackTrace();
