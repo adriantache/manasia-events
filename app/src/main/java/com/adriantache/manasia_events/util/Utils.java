@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;
@@ -156,7 +157,7 @@ public final class Utils {
     }
 
     //set the message that informs people when/until when the bar is open
-    public static void getOpenHours(TextView openHours, ImageView openOrClosed) {
+    public static void getOpenHours(TextView openHours, Context context) {
         TimeZone bucharest = TimeZone.getTimeZone("Europe/Bucharest");
         Calendar calendar = Calendar.getInstance(bucharest);
 
@@ -170,25 +171,21 @@ public final class Utils {
         if (hour > 2 && hour < 12) {
             openHours.setText(R.string.closed_noon);
             openHours.setTextColor(closedColor);
-            //todo make images nicer
-            openOrClosed.setImageResource(R.drawable.closed);
+            Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
         } else if (hour >= 12 && hour < 24) {
             if (day == 1) {
                 openHours.setText(R.string.open_midnight);
-                openOrClosed.setImageResource(R.drawable.open);
             } else openHours.setText(R.string.open_2am);
             //set color
             openHours.setTextColor(openColor);
-            openOrClosed.setImageResource(R.drawable.open);
         } else if (hour >= 0 && hour <= 2) {
             if (day == 1) {
                 openHours.setText(R.string.closed_noon);
                 openHours.setTextColor(closedColor);
-                openOrClosed.setImageResource(R.drawable.closed);
+                Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
             } else {
                 openHours.setText(R.string.open_2am);
                 openHours.setTextColor(openColor);
-                openOrClosed.setImageResource(R.drawable.open);
             }
         }
     }

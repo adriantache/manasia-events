@@ -79,15 +79,12 @@ public class MainActivity extends AppCompatActivity {
     TextView error;
     @BindView(R.id.open_hours)
     TextView openHours;
-    @BindView(R.id.open_or_closed)
-    ImageView openOrClosed;
     long lastUpdateTime;
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
 
     //todo refresh database if events are seriously outdated
     //todo use WorkManager to schedule database refresh
-    //todo add open hours to app [today open until ...] and open/closed blob
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
     //todo replace ListView with RecyclerView
@@ -96,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     //todo redesign event details screen to move image to under nav and allow image resizing on click
 
     //todo add progress indicator circle while fetching/decoding events
+    //todo add hub details on logo click
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -119,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        //update open hours TextView
+        Utils.getOpenHours(openHours, this);
+
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
 
@@ -127,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
 
         //show snackbar if user hasn't chosen to be notified for all events
         if (!notifyOnAllEvents) showSnackbar();
-
-        //update open hours TextView
-        Utils.getOpenHours(openHours, openOrClosed);
 
         //init Instabug
         new Instabug.Builder(getApplication(), "1b00e3fb39ec6b77601b85205e89f0d6")
