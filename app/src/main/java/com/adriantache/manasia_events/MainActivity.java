@@ -95,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
     //todo add progress indicator circle while fetching/decoding events
     //todo add hub details on logo click
 
+    //todo add indication in layout that click leads to details
+    //todo prevent triggering closed Toast every time you visit MainActivity
+
+    //todo add VLJ auto-generating event https://www.facebook.com/events/526194581137224/?acontext=%7B%22source%22%3A5%2C%22action_history%22%3A[%7B%22surface%22%3A%22page%22%2C%22mechanism%22%3A%22main_list%22%2C%22extra_data%22%3A%22%5C%22[]%5C%22%22%7D]%2C%22has_source%22%3Atrue%7D
+
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
