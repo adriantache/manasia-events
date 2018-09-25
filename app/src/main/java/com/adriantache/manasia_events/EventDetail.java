@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -255,7 +255,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.show();
 
             View view = snackbar.getView();
-            TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
             Snackbar snackbar = Snackbar.make(constraintLayout,
@@ -273,7 +273,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.show();
 
             View view = snackbar.getView();
-            TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         }
     }
