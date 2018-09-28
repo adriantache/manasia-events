@@ -29,7 +29,6 @@ import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
-import com.adriantache.manasia_events.worker.UpdateEventsWorker;
 import com.google.android.material.snackbar.Snackbar;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
@@ -47,7 +46,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.State;
 import androidx.work.WorkManager;
 import butterknife.BindView;
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 //schedule the periodic work request for 5am, which will trigger the actual work request
                 OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
                         .Builder(TriggerUpdateEventsWorker.class)
-                        .setInitialDelay(calculateDelay(getRefreshDate()),TimeUnit.MILLISECONDS)
+                        .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
                         .setInputData(remoteUrl)
                         .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
                         .build();
