@@ -2,11 +2,8 @@ package com.adriantache.manasia_events.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +24,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
@@ -97,6 +94,7 @@ public final class Utils {
     private static Date getToday(boolean getMidnight) {
         Date today = new Date();
 
+        //todo figure this thing out, we shouldn't be using a fix like this
         if (getMidnight) {
             //fix to set time to midnight -1 second, to ensure events from today are shown
             Calendar calendar = Calendar.getInstance();
@@ -104,11 +102,28 @@ public final class Utils {
             calendar.setTime(today);
             calendar.set(Calendar.HOUR, -12);
             calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, -1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.add(Calendar.SECOND, -1);
             today = calendar.getTime();
         }
 
         return today;
+    }
+
+    //get the date at which the remote file containing the events is refreshed
+    private static long getRefreshDate() {
+        Calendar c = Calendar.getInstance();
+
+        //set the timezone of Bucharest since that's when the update time is set
+        c.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
+
+        //we add a day and set time to 5 am
+        c.add(Calendar.DATE, 1);
+        c.set(Calendar.HOUR_OF_DAY, 5);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+
+        return c.getTimeInMillis();
     }
 
     private static Date convertDate(String date, boolean getNoon) {
@@ -137,6 +152,12 @@ public final class Utils {
         Date today = getToday(false);
 
         return event.getTime() - today.getTime();
+    }
+
+    public static long calculateDelay(long targetDate) {
+        Date today = getToday(false);
+
+        return targetDate - today.getTime();
     }
 
     //make date look nicer for display in the notification text
