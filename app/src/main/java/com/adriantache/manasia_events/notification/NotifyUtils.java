@@ -25,6 +25,10 @@ public class NotifyUtils {
     //set a tag in order to be able to disable all work if needed
     private static final String workTag = "notificationWork";
 
+    public NotifyUtils() {
+        throw new AssertionError("Cannot instantiate utility class.");
+    }
+
     /**
      * Method to read all events from the database and set notifications for the ones that
      * the user selected to be notified for.

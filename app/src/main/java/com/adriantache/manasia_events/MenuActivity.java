@@ -4,11 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,37 +11,27 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class MenuActivity extends AppCompatActivity {
-    @BindView(R.id.back)
     ImageView back;
-    @BindView(R.id.nonAlcoholic)
     CardView nonAlcoholic;
-    @BindView(R.id.beer)
     CardView beer;
-    @BindView(R.id.cocktails)
     CardView cocktails;
-    @BindView(R.id.longDrinks)
     CardView longDrinks;
-    @BindView(R.id.shots)
     CardView shots;
-    @BindView(R.id.spirits)
     CardView spirits;
-    @BindView(R.id.wine)
     CardView wine;
-    @BindView(R.id.spritz)
     CardView spritz;
-    @BindView(R.id.cider)
     CardView cider;
-    @BindView(R.id.drinksDetail)
     TextView drinksDetail;
-    @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
-    @BindView(R.id.title)
     TextView title;
-    @BindView(R.id.categoryImageView)
     ImageView categoryImageView;
 
     boolean menuItemsHidden = false;
@@ -56,7 +41,21 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        ButterKnife.bind(this);
+
+        back = findViewById(R.id.back);
+        nonAlcoholic = findViewById(R.id.nonAlcoholic);
+        beer = findViewById(R.id.beer);
+        cocktails = findViewById(R.id.cocktails);
+        longDrinks = findViewById(R.id.longDrinks);
+        shots = findViewById(R.id.shots);
+        spirits = findViewById(R.id.spirits);
+        wine = findViewById(R.id.wine);
+        spritz = findViewById(R.id.spritz);
+        cider = findViewById(R.id.cider);
+        drinksDetail = findViewById(R.id.drinksDetail);
+        constraintLayout = findViewById(R.id.constraint_layout);
+        title = findViewById(R.id.title);
+        categoryImageView = findViewById(R.id.categoryImageView);
 
         nonAlcoholic.setOnClickListener(new MenuClickListener());
         beer.setOnClickListener(new MenuClickListener());

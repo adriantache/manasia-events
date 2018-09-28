@@ -19,8 +19,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
@@ -30,7 +28,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
     public EventAdapter(@NonNull Context context, @NonNull List<Event> objects) {
         super(context, 0, objects);
         this.events.clear();
-        this.events.addAll(objects);
+        if (objects != null && events != null) this.events.addAll(objects);
     }
 
     @Override
@@ -38,14 +36,21 @@ public class EventAdapter extends ArrayAdapter<Event> {
         return events.size();
     }
 
-    @NonNull
     @Override
+    @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
-            holder = new ViewHolder(convertView);
+            holder = new ViewHolder();
+
+            holder.thumbnail = convertView.findViewById(R.id.thumbnail);
+            holder.day = convertView.findViewById(R.id.day);
+            holder.month = convertView.findViewById(R.id.month);
+            holder.title = convertView.findViewById(R.id.title);
+            holder.notifyStatus = convertView.findViewById(R.id.notify_status);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -71,14 +76,14 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             //hide notification group if event is in the past
             if (Utils.compareDateToToday(event.getDate()) < 0)
-                holder.notify_status.setVisibility(View.INVISIBLE);
-            else holder.notify_status.setVisibility(View.VISIBLE);
+                holder.notifyStatus.setVisibility(View.INVISIBLE);
+            else holder.notifyStatus.setVisibility(View.VISIBLE);
 
             //change notification image depending on whether the user has set it to notify them
-            if (holder.notify_status.getVisibility() == View.VISIBLE) {
+            if (holder.notifyStatus.getVisibility() == View.VISIBLE) {
                 if (event.getNotify() == 1 || getNotifyAllSetting(getContext()))
-                    holder.notify_status.setImageResource(R.drawable.alarm_accent);
-                else holder.notify_status.setImageResource(R.drawable.alarm);
+                    holder.notifyStatus.setImageResource(R.drawable.alarm_accent);
+                else holder.notifyStatus.setImageResource(R.drawable.alarm);
             }
         }
 
@@ -86,19 +91,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
     }
 
     static class ViewHolder {
-        @BindView(R.id.thumbnail)
         ImageView thumbnail;
-        @BindView(R.id.day)
         TextView day;
-        @BindView(R.id.month)
         TextView month;
-        @BindView(R.id.title)
         TextView title;
-        @BindView(R.id.notify_status)
-        ImageView notify_status;
-
-        private ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
+        ImageView notifyStatus;
     }
 }

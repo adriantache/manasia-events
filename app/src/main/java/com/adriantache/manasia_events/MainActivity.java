@@ -48,8 +48,6 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.State;
 import androidx.work.WorkManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
@@ -71,17 +69,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String JSON_RESULT = "JSON_STRING";
     private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
-    @BindView(R.id.list_view)
     ListView listView;
-    @BindView(R.id.logo)
     ImageView logo;
-    @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
-    @BindView(R.id.menu)
     Button menu;
-    @BindView(R.id.error)
     TextView error;
-    @BindView(R.id.open_hours)
     TextView openHours;
     long lastUpdateTime;
     private ArrayList<Event> events;
@@ -124,13 +116,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+
+        listView = findViewById(R.id.list_view);
+        logo = findViewById(R.id.logo);
+        constraintLayout = findViewById(R.id.constraint_layout);
+        menu = findViewById(R.id.menu);
+        error = findViewById(R.id.error);
+        openHours = findViewById(R.id.open_hours);
 
         //update open hours TextView
         Utils.getOpenHours(openHours, this);
 
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
+
+        //todo remove this fix for the onClickListeners
+        populateListView();
 
         //update events and display them, if available
         fetchEvents();

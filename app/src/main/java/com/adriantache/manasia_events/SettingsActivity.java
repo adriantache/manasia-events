@@ -2,12 +2,10 @@ package com.adriantache.manasia_events;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceFragmentCompat;
 import android.widget.ImageView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceFragmentCompat;
 
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
@@ -15,14 +13,14 @@ import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 public class SettingsActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 1;
     private static final int EVENT_ACTIVITY = 2;
-    @BindView(R.id.back)
     ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        ButterKnife.bind(this);
+
+        back = findViewById(R.id.back);
 
         final int activity = getIntent().getExtras().getInt("activity");
         final int DBEventID = getIntent().getExtras().getInt(DBEventIDTag);

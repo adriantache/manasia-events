@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,12 +17,13 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
@@ -36,35 +34,20 @@ public class EventDetail extends AppCompatActivity {
     public static final String NOTIFY_SETTING = "notify";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
-    @BindView(R.id.thumbnail)
     ImageView thumbnail;
-    @BindView(R.id.day)
     TextView day;
-    @BindView(R.id.month)
     TextView month;
-    @BindView(R.id.title)
     TextView title;
-    @BindView(R.id.notify_status)
     ImageView notifyStatus;
-    @BindView(R.id.description)
     TextView description;
-    @BindView(R.id.back)
     ImageView back;
-    @BindView(R.id.call)
     TextView call;
-    @BindView(R.id.map)
     TextView map;
-    @BindView(R.id.location)
     TextView location;
-    @BindView(R.id.notify_icon)
     SwitchIconView notifyIcon;
-    @BindView(R.id.notify)
     LinearLayout notify;
-    @BindView(R.id.notify_label)
     TextView notifyLabel;
-    @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
-    @BindView(R.id.title_bar)
     LinearLayout titleBar;
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
@@ -87,7 +70,22 @@ public class EventDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
-        ButterKnife.bind(this);
+
+        thumbnail = findViewById(R.id.thumbnail);
+        day = findViewById(R.id.day);
+        month = findViewById(R.id.month);
+        title = findViewById(R.id.title);
+        notifyStatus = findViewById(R.id.notify_status);
+        description = findViewById(R.id.description);
+        back = findViewById(R.id.back);
+        call = findViewById(R.id.call);
+        map = findViewById(R.id.map);
+        location = findViewById(R.id.location);
+        notifyIcon = findViewById(R.id.notify_icon);
+        notify = findViewById(R.id.notify);
+        notifyLabel = findViewById(R.id.notify_label);
+        constraintLayout = findViewById(R.id.constraint_layout);
+        titleBar = findViewById(R.id.title_bar);
 
         //read notify setting
         notifyOnAllEvents = getNotifyAllSetting(this);
