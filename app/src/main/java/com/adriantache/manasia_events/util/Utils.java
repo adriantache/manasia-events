@@ -111,7 +111,7 @@ public final class Utils {
     }
 
     //get the date at which the remote file containing the events is refreshed
-    private static long getRefreshDate() {
+    public static long getRefreshDate() {
         Calendar c = Calendar.getInstance();
 
         //set the timezone of Bucharest since that's when the update time is set

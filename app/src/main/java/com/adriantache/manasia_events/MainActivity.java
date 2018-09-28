@@ -12,9 +12,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -31,7 +28,9 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
+import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
+import com.google.android.material.snackbar.Snackbar;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
 
@@ -42,9 +41,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.State;
 import androidx.work.WorkManager;
 import butterknife.BindView;
@@ -59,6 +62,8 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
+import static com.adriantache.manasia_events.util.Utils.calculateDelay;
+import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 
 public class MainActivity extends AppCompatActivity {
     public static final String DBEventIDTag = "DBEventID";
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String REMOTE_URL = "REMOTE_URL";
     private static final String JSON_RESULT = "JSON_STRING";
     private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
+    private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     @BindView(R.id.list_view)
     ListView listView;
     @BindView(R.id.logo)
@@ -164,14 +170,17 @@ public class MainActivity extends AppCompatActivity {
                     activeNetwork.isConnectedOrConnecting()) {
                 //populate the global ArrayList of events by adding a work request to fetch JSON...
                 Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
-                //todo replace with periodic work request with initial delay until 5am and check that it doesn't already exist
+
+                //schedule the periodic work request for 5am, which will trigger the actual work request
                 OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
-                        .Builder(UpdateEventsWorker.class)
+                        .Builder(TriggerUpdateEventsWorker.class)
+                        .setInitialDelay(calculateDelay(getRefreshDate()),TimeUnit.MILLISECONDS)
                         .setInputData(remoteUrl)
-                        .addTag(EVENTS_JSON_WORK_TAG)
+                        .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
                         .build();
                 WorkManager.getInstance().enqueue(getEventJson);
 
+                //todo [IMPORTANT] rethink this part since we moved the work
                 //...then get the result...
                 WorkManager.getInstance()
                         .getStatusById(getEventJson.getId())
@@ -232,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //tasks which run on remote events refresh or in case that refresh is not possible
-    private void afterDatabaseUpdate() {
+    public void afterDatabaseUpdate() {
         //...then reading that database (this also populates the ArrayList with the very important
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);

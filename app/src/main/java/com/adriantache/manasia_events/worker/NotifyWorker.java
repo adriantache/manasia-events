@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static androidx.core.app.NotificationCompat.CATEGORY_EVENT;
@@ -37,6 +38,10 @@ public class NotifyWorker extends Worker {
     private static final int ERROR_VALUE = -1;
     private static final String MANASIA_NOTIFICATION_CHANNEL = "Manasia Event Reminder";
     private static final String MANASIA_NOTIFICATION_CHANNEL_GROUP = "Manasia Events";
+
+    public NotifyWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+        super(context, params);
+    }
 
     @NonNull
     @Override
