@@ -1,6 +1,6 @@
 package com.adriantache.manasia_events.custom_class;
 
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 public class Event {
     private String date; //date of format yyyy-MM-dd

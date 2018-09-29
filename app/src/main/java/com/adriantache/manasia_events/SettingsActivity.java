@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceFragmentCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;

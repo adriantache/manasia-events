@@ -17,13 +17,13 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
-import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
@@ -253,7 +253,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.show();
 
             View view = snackbar.getView();
-            TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
+            TextView textView = view.findViewById(R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
             Snackbar snackbar = Snackbar.make(constraintLayout,
@@ -271,7 +271,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.show();
 
             View view = snackbar.getView();
-            TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
+            TextView textView = view.findViewById(R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         }
     }

@@ -29,7 +29,6 @@ import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
-import com.google.android.material.snackbar.Snackbar;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
 
@@ -42,8 +41,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.State;
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
 
         snackbar.show();
         View view = snackbar.getView();
-        TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
+        TextView textView = view.findViewById(R.id.snackbar_text);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 }

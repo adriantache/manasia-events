@@ -7,8 +7,8 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_AUTHORITY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;

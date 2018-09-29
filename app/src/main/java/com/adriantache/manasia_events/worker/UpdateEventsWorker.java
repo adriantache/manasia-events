@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import okhttp3.OkHttpClient;

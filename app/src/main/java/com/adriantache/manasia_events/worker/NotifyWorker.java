@@ -8,10 +8,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.adriantache.manasia_events.EventDetail;
@@ -26,8 +27,8 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static androidx.core.app.NotificationCompat.CATEGORY_EVENT;
-import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
+import static android.support.v4.app.NotificationCompat.CATEGORY_EVENT;
+import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.util.Utils.prettyDate;
 

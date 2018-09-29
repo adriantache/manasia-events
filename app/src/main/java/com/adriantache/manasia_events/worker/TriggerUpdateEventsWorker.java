@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;

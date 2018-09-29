@@ -25,7 +25,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
