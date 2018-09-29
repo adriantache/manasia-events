@@ -30,8 +30,6 @@ import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
-import com.instabug.library.Instabug;
-import com.instabug.library.invocation.InstabugInvocationEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -125,11 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
         //show snackbar if user hasn't chosen to be notified for all events
         if (!notifyOnAllEvents) showSnackbar();
-
-        //init Instabug
-        new Instabug.Builder(getApplication(), "1b00e3fb39ec6b77601b85205e89f0d6")
-                .setInvocationEvents(InstabugInvocationEvent.SHAKE, InstabugInvocationEvent.SCREENSHOT)
-                .build();
     }
 
     //todo reschedule notifications on remote events fetch
@@ -142,11 +135,12 @@ public class MainActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         //todo rethink this so that an outdated fetch triggers immediate work and
         // processes the output, otherwise we just start up TriggerUpdateEventsWorker.class
-        if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {}
+        if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
+        }
 
         //normally just schedule a periodic work request to fetch events daily
         //todo figure out if above doesn't negate the need for this (i.e. this should only exist if lastUpdateTime is undefined)
-        else{
+        else {
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
