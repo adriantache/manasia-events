@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         //retrieve SharedPrefs before binding the ArrayAdapter
         getPreferences();
 
-        //todo remove this fix for the onClickListeners
+        //populate the list initially since theoretically the latest events are already in the DB
         populateListView();
 
         //update events and display them, if available
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 WorkManager.getInstance().enqueue(getEventJson);
 
-                //todo [IMPORTANT] rethink this part since we moved the work
+                //todo [IMPORTANT] rethink this part since we moved the work (technically this doesn't need to be here)
                 //...then get the result...
                 WorkManager.getInstance()
                         .getStatusById(getEventJson.getId())
@@ -228,14 +228,11 @@ public class MainActivity extends AppCompatActivity {
                                     //todo trigger notifications scheduling update here
                                 }
 
-                                //...finally run tasks post database update
+                                //...finally run tasks post database update since we refreshed it
                                 afterDatabaseUpdate();
                             }
                         });
             }
-        } else {
-            //otherwise just run after update tasks as if we already fetched remote data
-            afterDatabaseUpdate();
         }
     }
 
