@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,11 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.support.annotation.RequiresApi;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+import static android.text.Html.FROM_HTML_SEPARATOR_LINE_BREAK_HEADING;
 
 public class MenuActivity extends AppCompatActivity {
     ImageView back;
@@ -122,7 +123,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Virgin Pina Colada</b><i><small> (pineapple juice, coconut syrup, cream)</small></i><b></p>" +
                     "<p>Manasia Summer</b><i><small> (puree passion fruit, pineapple juice, orange juice, grenadine, lemon fresh, mint)</small></i><b></p>" +
                     "<p>Green Apple</b><i><small> (lime, apple juice, brown sugar)</small></i><b></p>" +
-                    "</b>"));
+                    "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == beer.getId()) {
             toggleMenuItemVisibility();
@@ -149,7 +150,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Ciuc Natur Radler Lemon</b><i><small> (0.0% alc) 500 ml</small></i><b></p>" +
                     "<p>Ciuc Natur Radler Lemon</b><i><small> (1.9% alc) 500 ml</small></i><b></p>" +
                     "<p>Heineken</b><i><small> (0.0% alc) 500 ml</small></i><b></p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == cocktails.getId()) {
             toggleMenuItemVisibility();
@@ -177,7 +178,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Linchburg Lemonade</b><i><small> (40ml Jack Daniels, 20ml triplu sec, sweet&sour, sprite)</small></i><b></p>" +
                     "<p>Ciresica</b><i><small> (30ml vodka, 30ml amaretto, sour, suc cirese)</small></i><b></p>" +
                     "<p>Orgasm</b><i><small> (20ml kahlua, 20ml amaretto, 20ml bailey's, cream)</small></i><b></p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == longDrinks.getId()) {
             toggleMenuItemVisibility();
@@ -190,7 +191,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Whiskey Cola</b><i><small> (40ml whiskey Jameson, Coca-Cola)</small></i><b></p>" +
                     "<p>Whiskey/Vodka Energy</b><i><small> (40ml vodka/whiskey, Red Bull)</small></i><b></p>" +
                     "<p>Bloody Mary</b><i><small> (40ml vodka Wyborowa, suc de rosii, Santal, sare, piper, Tabasco, telina)</small></i><b></p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == shots.getId()) {
             toggleMenuItemVisibility();
@@ -206,7 +207,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Cozonac</p>" +
                     "<p>Tatratea</p>" +
                     "<p>Kamikaze (3 shots)</p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == spirits.getId()) {
             toggleMenuItemVisibility();
@@ -229,7 +230,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Jagermeister</p>" +
                     "<p>Disaronno</p>" +
                     "<p>Baileys Irish Cream</p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == wine.getId()) {
             toggleMenuItemVisibility();
@@ -256,7 +257,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Byzantium</b><i><small> (dry, cupaj feteasca neagra, shiraz, cabernet franc)</small></i><b></p>" +
                     "<p>Colina</b><i><small> (cabernet sauvignon)</small></i><b></p>" +
                     "<p>Floarea Soarelui</b><i><small> (medium dry, feteasca neagra)</small></i><b></p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == spritz.getId()) {
             toggleMenuItemVisibility();
@@ -269,7 +270,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Prosecco 750ml</p>" +
                     "<br><p>Frizza roze/alb 150ml</b><i><small> (Vinca)</small></i><b></p>" +
                     "<p>Frizza roze/alb 750ml</b><i><small> (Vinca)</small></i><b></p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         } else if (v.getId() == cider.getId()) {
             toggleMenuItemVisibility();
@@ -285,7 +286,7 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Old Mout Kiwi&Lime</b><i><small> /500 ml</small></i><b></p>" +
                     "<p>Old Mout Passion Fruit&Apple</b><i><small> /500 ml</small></i><b></p>" +
                     "<p>Old Mout Summer Berries</b><i><small> /500 ml</small></i><b></p>" +
-                    "</b>"));
+                    "</b>",FROM_HTML_SEPARATOR_LINE_BREAK_HEADING,null,null));
             showSnackbar();
         }
     }

@@ -21,6 +21,11 @@ allprojects {
         maven { url "https://jitpack.io" }
         mavenCentral()
     }
+
+    //code used to debug deprecated APIs error
+//    tasks.withType(JavaCompile) {
+//        options.compilerArgs << "-Xlint:deprecation"
+//    }
 }
 
 task clean(type: Delete) {
