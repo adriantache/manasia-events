@@ -3,7 +3,6 @@ package com.adriantache.manasia_events;
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +11,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -32,31 +33,19 @@ import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.State;
 import androidx.work.WorkManager;
 
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
-import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
-import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
@@ -66,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
     private static final String REMOTE_URL = "REMOTE_URL";
-    private static final String JSON_RESULT = "JSON_STRING";
-    private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     ListView listView;
     ImageView logo;
@@ -92,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     //todo add hub details on logo click
 
     //todo add indication in layout that click leads to details
-    //todo prevent triggering closed Toast every time you visit MainActivity
+    //todo prevent triggering closed Toast every time you visit MainActivity (maybe use StartActivityForResult instead and only show if no result?)
 
     //todo add VLJ auto-generating event https://www.facebook.com/events/526194581137224/?acontext=%7B%22source%22%3A5%2C%22action_history%22%3A[%7B%22surface%22%3A%22page%22%2C%22mechanism%22%3A%22main_list%22%2C%22extra_data%22%3A%22%5C%22[]%5C%22%22%7D]%2C%22has_source%22%3Atrue%7D
 
@@ -131,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         getPreferences();
 
         //populate the list initially since theoretically the latest events are already in the DB
-        populateListView();
+        afterDatabaseUpdate();
 
         //update events and display them, if available
         fetchEvents();
@@ -153,7 +140,13 @@ public class MainActivity extends AppCompatActivity {
         //todo rethink time interval since events are only refreshed daily at ~4am
         //todo trigger immediate events fetch if last update is >24h-4am, otherwise schedule update for 5am EEST/EET
         Calendar calendar = Calendar.getInstance();
-        if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
+        //todo rethink this so that an outdated fetch triggers immediate work and
+        // processes the output, otherwise we just start up TriggerUpdateEventsWorker.class
+        if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {}
+
+        //normally just schedule a periodic work request to fetch events daily
+        //todo figure out if above doesn't negate the need for this (i.e. this should only exist if lastUpdateTime is undefined)
+        else{
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -179,59 +172,7 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 WorkManager.getInstance().enqueue(getEventJson);
 
-                //todo [IMPORTANT] rethink this part since we moved the work (technically this doesn't need to be here)
-                //...then get the result...
-                WorkManager.getInstance()
-                        .getStatusById(getEventJson.getId())
-                        .observe(MainActivity.this, workStatus -> {
-                            if (workStatus != null && workStatus.getState().equals(State.SUCCEEDED)) {
-                                //get results JSON
-                                StringBuilder jsonResult = null;
 
-                                try (BufferedReader bufferedReader =
-                                             new BufferedReader(
-                                                     new InputStreamReader(
-                                                             getApplicationContext().openFileInput(JSON_RESULT)))) {
-
-                                    jsonResult = new StringBuilder();
-                                    int i;
-                                    while ((i = bufferedReader.read()) != -1) {
-                                        jsonResult.append((char) i);
-                                    }
-
-                                    //delete file after reading it to prevent caching in case of errors
-                                    deleteFile(JSON_RESULT);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                //decode the JSON into events ArrayList
-                                ArrayList<Event> eventsTemp = null;
-                                if (jsonResult != null && jsonResult.length() != 0) {
-                                    eventsTemp = Utils.parseJSON(jsonResult.toString());
-                                }
-
-                                //if remote fetch is successful...
-                                if (eventsTemp != null) {
-                                    Log.i(TAG, "fetchEvents: Successfully fetched and decoded remote JSON.");
-
-                                    // send events to the database...
-                                    inputRemoteEventsIntoDatabase(eventsTemp);
-
-                                    // and write fetch date into SharedPrefs
-                                    lastUpdateTime = calendar.getTimeInMillis();
-                                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPref.edit();
-                                    editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
-                                    editor.apply();
-
-                                    //todo trigger notifications scheduling update here
-                                }
-
-                                //...finally run tasks post database update since we refreshed it
-                                afterDatabaseUpdate();
-                            }
-                        });
             }
         }
     }
@@ -304,52 +245,24 @@ public class MainActivity extends AppCompatActivity {
 
         //get API key from file
         try {
-            if (Arrays.asList(getResources().getAssets().list("")).contains("dataURL.txt")) {
+            if (getResources().getAssets().list("") != null &&
+                    Arrays.asList(getResources().getAssets().list("")).contains("dataURL.txt")) {
                 AssetManager am = getApplicationContext().getAssets();
                 InputStream inputStream = am.open("dataURL.txt");
 
-                if (inputStream != null) {
-                    int ch;
-                    StringBuilder sb = new StringBuilder();
-                    while ((ch = inputStream.read()) != -1) {
-                        sb.append((char) ch);
-                    }
-
-                    if (sb.length() != 0) remoteURL = sb.toString();
+                int ch;
+                StringBuilder sb = new StringBuilder();
+                while ((ch = inputStream.read()) != -1) {
+                    sb.append((char) ch);
                 }
+
+                if (sb.length() != 0) remoteURL = sb.toString();
             }
         } catch (IOException e) {
             Log.e(TAG, "Cannot open API key file.", e);
         }
 
         return remoteURL;
-    }
-
-    private void inputRemoteEventsIntoDatabase(ArrayList<Event> remoteEvents) {
-        if (remoteEvents != null) {
-            //first of all transfer all notify statuses from the local database to the temporary remote database
-            ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(this);
-            remoteEvents = Utils.updateNotifyInRemote(remoteEvents, DBEvents);
-
-            //then delete ALL events from the local table1
-            getContentResolver().delete(CONTENT_URI, null, null);
-
-            //then add the remote events to the local database
-            for (Event event : remoteEvents) {
-                ContentValues values = new ContentValues();
-                values.put(COLUMN_EVENT_TITLE, event.getTitle());
-                values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
-                values.put(COLUMN_EVENT_DATE, event.getDate());
-                if (!TextUtils.isEmpty(event.getPhotoUrl()))
-                    values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
-                values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
-
-                getContentResolver().insert(CONTENT_URI, values);
-            }
-
-            //update event notifications for all future events fetched from the remote database
-            if (notifyOnAllEvents) scheduleNotifications(this, true);
-        }
     }
 
     private void getPreferences() {
