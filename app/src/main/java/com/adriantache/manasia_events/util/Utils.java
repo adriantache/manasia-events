@@ -391,6 +391,10 @@ public final class Utils {
         //until Dec 11, add VLJ every Tuesday: https://www.facebook.com/events/526194581137224
         //generate next VLJ date
         String nextVLJ = getNextVLJ();
+
+        //todo remove log
+        Log.i("getNextVLJ", "addRecurringEvents: " + nextVLJ);
+
         //generate the event
         Event VLJ = new Event(nextVLJ, "Seară VLJ",
                 "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
@@ -399,7 +403,7 @@ public final class Utils {
                         "În fiecare marți, să curgă vinul!\n" +
                         "\n" +
                         "PS: #manasiafood are în meniu, special pentru eventul VLJ, \n" +
-                        "< PIZZA>",
+                        "<PIZZA>",
                 "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/" +
                         "42967050_2259332690966868_4328291320184438784_n.jpg?" +
                         "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C");
@@ -458,10 +462,10 @@ public final class Utils {
         int dayOfTheWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
         //if it's already Tuesday, do nothing, otherwise move the date to next Tuesday
-        if (dayOfTheWeek < 2) {
-            calendar.add(2 - dayOfTheWeek, Calendar.DATE);
-        } else {
-            calendar.add(6 - dayOfTheWeek + 3, Calendar.DATE);
+        if (dayOfTheWeek < 3) {
+            calendar.add(Calendar.DATE, 3 - dayOfTheWeek);
+        } else if (dayOfTheWeek > 3) {
+            calendar.add(Calendar.DATE, 7 - dayOfTheWeek + 2);
         }
 
         return calendarToString(calendar);
@@ -482,7 +486,7 @@ public final class Utils {
         stringBuilder.append(calendar.get(Calendar.YEAR));
         stringBuilder.append("-");
 
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         if (month < 10) stringBuilder.append(0);
         stringBuilder.append(month);
         stringBuilder.append("-");

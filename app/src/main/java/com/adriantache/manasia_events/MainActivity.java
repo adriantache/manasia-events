@@ -180,10 +180,9 @@ public class MainActivity extends AppCompatActivity {
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        //todo if events is null here, trigger manual remote events update
-        //todo also move timeout fetch from fetchEvents above here
-        Calendar calendar = Calendar.getInstance();
-        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
+        //todo reenable overdue fetch detection (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000)
+//        Calendar calendar = Calendar.getInstance();
+        if (events == null) {
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
