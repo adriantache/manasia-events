@@ -29,4 +29,6 @@
     <string name="closed_noon">CLOSED. Opens at noon.</string>
     <string name="open_midnight">OPEN until midnight.</string>
     <string name="open_2am">OPEN until 2am.</string>
+    <string name="clickable_hint">clickable hint</string>
+    <string name="manasia_event_detail">manasia event detail</string>
 </resources>

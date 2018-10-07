@@ -391,63 +391,67 @@ public final class Utils {
         //generate next VLJ date, and pass parameters 3 for DAY_OF_THE_WEEK Tuesday, and limit date
         String nextVLJ = getNextWeeklyEvent(3, 1544565601000L);
 
-        //generate the event
-        Event VLJ = new Event(nextVLJ, "Seară VLJ",
-                "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
-                        "Licoarea bahică dezleagă limbile și unește sufletele. \n" +
-                        "\n" +
-                        "În fiecare marți, să curgă vinul!\n" +
-                        "\n" +
-                        "PS: #manasiafood are în meniu, special pentru eventul VLJ, \n" +
-                        "<PIZZA>",
-                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/" +
-                        "42967050_2259332690966868_4328291320184438784_n.jpg?" +
-                        "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C");
-        //calculate where we'll be inserting the event in the ArrayList
-        int eventPosition = getEventPosition(VLJ, events);
+        if (nextVLJ != null) {
+            //generate the event
+            Event VLJ = new Event(nextVLJ, "Seară VLJ",
+                    "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
+                            "Licoarea bahică dezleagă limbile și unește sufletele. \n" +
+                            "\n" +
+                            "În fiecare marți, să curgă vinul!\n" +
+                            "\n" +
+                            "PS: #manasiafood are în meniu, special pentru eventul VLJ, \n" +
+                            "<PIZZA>",
+                    "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/" +
+                            "42967050_2259332690966868_4328291320184438784_n.jpg?" +
+                            "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C");
+            //calculate where we'll be inserting the event in the ArrayList
+            int eventPosition = getEventPosition(VLJ, events);
 
-        if (nextVLJ != null) events.add(eventPosition, VLJ);
+            events.add(eventPosition, VLJ);
+        }
 
         //until Oct 14, add DYMMM every day: https://www.facebook.com/events/249804188941666
         //generate next DYMMM date
         String nextDYMMM = getNextDailyEvent(1539464401000L);
-        //generate the event
-        Event DYMMM = new Event(nextDYMMM, "Do You Mind My Mind",
-                "Unwind my mind \n" +
-                        "Behind my mind\n" +
-                        "Blind is my mind\n" +
-                        "Confined is my mind\n" +
-                        "Designed is my mind\n" +
-                        "Drink wine with my mind\n" +
-                        "Hide in my mind\n" +
-                        "Grind my mind\n" +
-                        "Be kind with my mind\n" +
-                        "Mankind through my mind\n" +
-                        "Nevermind my mind\n" +
-                        "Aligned with my mind\n" +
-                        "Combine with your mind\n" +
-                        "Find my mind\n" +
-                        "Wined, dined and sixty nined with your mind\n" +
-                        "Remind my mind to meet your mind\n" +
-                        "On the 5th of October.\n" +
-                        "\n" +
-                        "Signed\n" +
-                        "My Mind!\n" +
-                        "\n" +
-                        "\n" +
-                        "Vernisaj de fotografie și video proiecții.\n" +
-                        "\n" +
-                        "Expoziția face parte din circuitul Noaptea Albă a Galeriilor 2018 și " +
-                        "va avea loc la BNAC, un nou proiect Manasia HUB.",
-                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/43097415_2259689324264538" +
-                        "_921400064155320320_n.jpg?_nc_cat=110&oh=c5d49f1ae3d9be1347a9f5622e2ffbc1" +
-                        "&oe=5C5CBC35");
-        //calculate where we'll be inserting the event in the ArrayList
-        eventPosition = getEventPosition(DYMMM, events);
 
-        if (nextVLJ != null) events.add(eventPosition, DYMMM);
+        if (nextDYMMM != null) {
+            //generate the event
+            Event DYMMM = new Event(nextDYMMM, "Do You Mind My Mind",
+                    "Unwind my mind \n" +
+                            "Behind my mind\n" +
+                            "Blind is my mind\n" +
+                            "Confined is my mind\n" +
+                            "Designed is my mind\n" +
+                            "Drink wine with my mind\n" +
+                            "Hide in my mind\n" +
+                            "Grind my mind\n" +
+                            "Be kind with my mind\n" +
+                            "Mankind through my mind\n" +
+                            "Nevermind my mind\n" +
+                            "Aligned with my mind\n" +
+                            "Combine with your mind\n" +
+                            "Find my mind\n" +
+                            "Wined, dined and sixty nined with your mind\n" +
+                            "Remind my mind to meet your mind\n" +
+                            "On the 5th of October.\n" +
+                            "\n" +
+                            "Signed\n" +
+                            "My Mind!\n" +
+                            "\n" +
+                            "\n" +
+                            "Vernisaj de fotografie și video proiecții.\n" +
+                            "\n" +
+                            "Expoziția face parte din circuitul Noaptea Albă a Galeriilor 2018 și " +
+                            "va avea loc la BNAC, un nou proiect Manasia HUB.",
+                    "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/43097415_2259689324264538" +
+                            "_921400064155320320_n.jpg?_nc_cat=110&oh=c5d49f1ae3d9be1347a9f5622e2ffbc1" +
+                            "&oe=5C5CBC35");
+            //calculate where we'll be inserting the event in the ArrayList
+            int eventPosition = getEventPosition(DYMMM, events);
+
+            events.add(eventPosition, DYMMM);
+        }
     }
-
 
     private static String getNextWeeklyEvent(int weekday, long limitDate) {
         Calendar calendar = Calendar.getInstance();
