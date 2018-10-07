@@ -27,14 +27,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 
 /**
  * Class to store general utility functions
  **/
 public final class Utils {
     private static final int ERROR_VALUE = -1;
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
+    private static final String NOTIFY_SETTING = "notify";
 
     private Utils() {
         throw new AssertionError("No Utils Instances are allowed!");

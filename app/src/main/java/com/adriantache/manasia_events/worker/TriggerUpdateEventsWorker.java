@@ -26,7 +26,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 
 /**
@@ -38,6 +37,7 @@ public class TriggerUpdateEventsWorker extends Worker implements LifecycleOwner 
     private static final String JSON_RESULT = "JSON_STRING";
     private static final String TAG = "TriggerUpdateEventsWRK";
     private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
 
     public TriggerUpdateEventsWorker(Context context, WorkerParameters workerParameters) {
         super(context, workerParameters);

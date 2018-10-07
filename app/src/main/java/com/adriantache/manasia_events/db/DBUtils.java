@@ -10,11 +10,10 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
@@ -28,6 +27,10 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
  * Class to store general utility functions for database operations
  **/
 public final class DBUtils {
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
+    private static final String NOTIFY_SETTING = "notify";
+    private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
+
     private DBUtils() {
         throw new AssertionError("No Utils Instances are allowed!");
     }
@@ -169,6 +172,14 @@ public final class DBUtils {
                     .getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
             //set notify on every future event flag
             boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
+
+            // and write fetch date as well into SharedPrefs
+            Calendar calendar = Calendar.getInstance();
+            long lastUpdateTime = calendar.getTimeInMillis();
+            SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
+            editor.apply();
 
             //update event notifications for all future events fetched from the remote database
             if (notifyOnAllEvents) scheduleNotifications(context, true);

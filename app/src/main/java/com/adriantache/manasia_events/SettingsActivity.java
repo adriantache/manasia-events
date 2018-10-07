@@ -2,15 +2,14 @@ package com.adriantache.manasia_events;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.widget.ImageView;
 
-import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
     private static final int MAIN_ACTIVITY = 1;
     private static final int EVENT_ACTIVITY = 2;
     ImageView back;
@@ -20,11 +19,10 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        back = findViewById(R.id.back);
-
         final int activity = getIntent().getExtras().getInt("activity");
         final int DBEventID = getIntent().getExtras().getInt(DBEventIDTag);
 
+        back = findViewById(R.id.back);
         back.setOnClickListener(v -> {
             if (activity == MAIN_ACTIVITY) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);

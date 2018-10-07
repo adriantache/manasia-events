@@ -46,8 +46,6 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.State;
 import androidx.work.WorkManager;
 
-import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
@@ -61,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     private static final String JSON_RESULT = "JSON_STRING";
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
+    private static final String NOTIFY_SETTING = "notify";
     ListView listView;
     ImageView logo;
     ConstraintLayout constraintLayout;
@@ -71,11 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
 
-    //todo refresh database if events are seriously outdated
-    //todo use WorkManager to schedule database refresh
-
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
-    //todo replace ListView with RecyclerView
 
     //todo add food menu to app
     //todo redesign event details screen to move image to under nav and allow image resizing on click
@@ -83,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     //todo add progress indicator circle while fetching/decoding events
     //todo add hub details on logo click
 
-    //todo add indication in layout that click leads to details
     //todo prevent triggering closed Toast every time you visit MainActivity (maybe use StartActivityForResult instead and only show if no result?)
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
@@ -180,9 +175,11 @@ public class MainActivity extends AppCompatActivity {
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        //todo reenable overdue fetch detection (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000)
-//        Calendar calendar = Calendar.getInstance();
-        if (events == null) {
+        //first check to see if events are missing (database is empty) or stale (last updated >25 hours ago)
+        Calendar calendar = Calendar.getInstance();
+        getPreferences();
+
+        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90000000L) {
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -337,6 +334,9 @@ public class MainActivity extends AppCompatActivity {
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
         //set time of last remote update
         lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_LABEL, 0);
+
+        //todo remove this
+        Log.i(TAG, "Last update time: " + lastUpdateTime);
     }
 
     private void refreshList() {
@@ -384,3 +384,4 @@ public class MainActivity extends AppCompatActivity {
 //todo [low] translate app (modify class, ensure input of event translations)
 //todo implement splash screen while fetching remote data
 //todo implement SwipeRefreshLayout (is it really needed?)
+//todo replace ListView with RecyclerView

@@ -30,8 +30,8 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventDetail extends AppCompatActivity {
-    public static final String SHARED_PREFERENCES_TAG = "preferences";
-    public static final String NOTIFY_SETTING = "notify";
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
+    private static final String NOTIFY_SETTING = "notify";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
     ImageView thumbnail;
@@ -222,8 +222,6 @@ public class EventDetail extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //todo [IDEA] always notify on the day of the event
-    //todo call this from MainActivity as well
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {
         //read notify setting
