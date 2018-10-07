@@ -53,6 +53,8 @@ public class EventDetail extends AppCompatActivity {
     private int DBEventID = ERROR_VALUE;
     private boolean notifyOnAllEvents;
 
+    //todo zoom photo on click
+
     @Override
     public void onBackPressed() {
         backToMainActivity();

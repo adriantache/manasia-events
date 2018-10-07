@@ -51,14 +51,14 @@
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:textColor="#000"
         android:textSize="18sp"
         android:transitionName="title"
         app:layout_constraintBottom_toBottomOf="@+id/month"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/month"
         app:layout_constraintTop_toTopOf="@+id/day"
         tools:targetApi="lollipop"
@@ -79,4 +79,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/alarm"
         tools:targetApi="lollipop" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        app:srcCompat="@drawable/event_detail" />
 </android.support.constraint.ConstraintLayout>
