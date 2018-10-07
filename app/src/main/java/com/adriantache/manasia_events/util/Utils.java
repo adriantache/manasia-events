@@ -381,7 +381,6 @@ public final class Utils {
         }
 
         //add any recurring events here
-        //todo test my assumption that passing the reference is enough
         if (!events.isEmpty()) addRecurringEvents(events);
 
         return events;
@@ -389,11 +388,8 @@ public final class Utils {
 
     private static void addRecurringEvents(ArrayList<Event> events) {
         //until Dec 11, add VLJ every Tuesday: https://www.facebook.com/events/526194581137224
-        //generate next VLJ date
-        String nextVLJ = getNextVLJ();
-
-        //todo remove log
-        Log.i("getNextVLJ", "addRecurringEvents: " + nextVLJ);
+        //generate next VLJ date, and pass parameters 3 for DAY_OF_THE_WEEK Tuesday, and limit date
+        String nextVLJ = getNextWeeklyEvent(3, 1544565601000L);
 
         //generate the event
         Event VLJ = new Event(nextVLJ, "Seară VLJ",
@@ -414,7 +410,7 @@ public final class Utils {
 
         //until Oct 14, add DYMMM every day: https://www.facebook.com/events/249804188941666
         //generate next DYMMM date
-        String nextDYMMM = getNextDYMMM();
+        String nextDYMMM = getNextDailyEvent(1539464401000L);
         //generate the event
         Event DYMMM = new Event(nextDYMMM, "Do You Mind My Mind",
                 "Unwind my mind \n" +
@@ -452,30 +448,31 @@ public final class Utils {
         if (nextVLJ != null) events.add(eventPosition, DYMMM);
     }
 
-    private static String getNextVLJ() {
+
+    private static String getNextWeeklyEvent(int weekday, long limitDate) {
         Calendar calendar = Calendar.getInstance();
 
         //check that event end date is not exceeded
-        if (calendar.getTimeInMillis() > 1544565601000L) return null;
+        if (calendar.getTimeInMillis() > limitDate) return null;
 
         //get the current day of the week
         int dayOfTheWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
-        //if it's already Tuesday, do nothing, otherwise move the date to next Tuesday
-        if (dayOfTheWeek < 3) {
-            calendar.add(Calendar.DATE, 3 - dayOfTheWeek);
-        } else if (dayOfTheWeek > 3) {
-            calendar.add(Calendar.DATE, 7 - dayOfTheWeek + 2);
+        //if it's already that weekday, do nothing, otherwise move the date to next weekday
+        if (dayOfTheWeek < weekday) {
+            calendar.add(Calendar.DATE, weekday - dayOfTheWeek);
+        } else if (dayOfTheWeek > weekday) {
+            calendar.add(Calendar.DATE, 7 - dayOfTheWeek + weekday - 1);
         }
 
         return calendarToString(calendar);
     }
 
-    private static String getNextDYMMM() {
+    private static String getNextDailyEvent(long limitDate) {
         Calendar calendar = Calendar.getInstance();
 
         //check that event end date is not exceeded
-        if (calendar.getTimeInMillis() > 1539464401000L) return null;
+        if (calendar.getTimeInMillis() > limitDate) return null;
 
         return calendarToString(calendar);
     }
