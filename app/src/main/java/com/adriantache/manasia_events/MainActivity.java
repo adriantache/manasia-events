@@ -30,9 +30,12 @@ import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
+import com.adriantache.manasia_events.worker.UpdateEventsWorker;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,10 +43,12 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.State;
 import androidx.work.WorkManager;
 
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.EventDetail.SHARED_PREFERENCES_TAG;
+import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
     private static final String REMOTE_URL = "REMOTE_URL";
     private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
+    private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
+    private static final String JSON_RESULT = "JSON_STRING";
     ListView listView;
     ImageView logo;
     ConstraintLayout constraintLayout;
@@ -163,8 +170,6 @@ public class MainActivity extends AppCompatActivity {
                         .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
                         .build();
                 WorkManager.getInstance().enqueue(getEventJson);
-
-
             }
         }
     }
@@ -175,8 +180,73 @@ public class MainActivity extends AppCompatActivity {
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        //todo if events is null here, trigger manual database update
+        //todo if events is null here, trigger manual remote events update
         //todo also move timeout fetch from fetchEvents above here
+        Calendar calendar = Calendar.getInstance();
+        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
+            //test network connectivity to prevent unnecessary remote update attempt
+            ConnectivityManager cm = (ConnectivityManager)
+                    getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = null;
+            try {
+                if (cm != null) {
+                    activeNetwork = cm.getActiveNetworkInfo();
+                }
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Cannot get network info.", e);
+            }
+            if (activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting()) {
+                //populate the global ArrayList of events by adding a work request to fetch JSON...
+                Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+
+                //schedule the periodic work request for 5am, which will trigger the actual work request
+                OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
+                        .Builder(UpdateEventsWorker.class)
+                        .setInputData(remoteUrl)
+                        .addTag(EVENTS_JSON_WORK_TAG)
+                        .build();
+                WorkManager.getInstance().enqueue(getEventJson);
+
+                WorkManager.getInstance()
+                        .getStatusById(getEventJson.getId())
+                        .observe(MainActivity.this, workStatus -> {
+                            if (workStatus != null && workStatus.getState().equals(State.SUCCEEDED)) {
+                                //once we have confirmation the loader has succeeded, we use a character-
+                                //based stream to read the file and get the JSON string
+                                StringBuilder jsonResult = null;
+                                try (BufferedReader bufferedReader =
+                                             new BufferedReader(
+                                                     new InputStreamReader(
+                                                             getApplicationContext().openFileInput(JSON_RESULT)))) {
+                                    jsonResult = new StringBuilder();
+                                    int i;
+                                    while ((i = bufferedReader.read()) != -1) {
+                                        jsonResult.append((char) i);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                //we decode the JSON into events ArrayList
+                                ArrayList<Event> eventsTemp = null;
+                                if (jsonResult != null && jsonResult.length() != 0) {
+                                    eventsTemp = Utils.parseJSON(jsonResult.toString());
+                                }
+
+                                //and if remote fetch is successful...
+                                if (eventsTemp != null) {
+                                    Log.i(TAG, "fetchEvents: Successfully fetched and decoded remote JSON.");
+                                    // we send events to the database...
+                                    inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
+                                }
+
+                                //...and finally run tasks post database update
+                                afterDatabaseUpdate();
+                            }
+                        });
+            }
+        }
 
         if (events != null) {
             //and since we're at it also update the widget(s) with the new event data
@@ -196,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
     private void populateListView() {
         //populate list
         listView.setAdapter(new EventAdapter(this, events));
+
+        //todo figure out why this isn't working
         listView.setEmptyView(error);
 
         //set click listener and transition animation
