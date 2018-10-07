@@ -2,6 +2,7 @@ package com.adriantache.manasia_events.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -24,8 +25,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import android.support.annotation.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.adriantache.manasia_events.EventDetail.NOTIFY_SETTING;
@@ -381,6 +380,131 @@ public final class Utils {
             events = new ArrayList<>();
         }
 
+        //add any recurring events here
+        if (!events.isEmpty()) events = addRecurringEvents(events);
+
         return events;
+    }
+
+    private static ArrayList<Event> addRecurringEvents(ArrayList<Event> events) {
+        //until Dec 11, add VLJ every Tuesday: https://www.facebook.com/events/526194581137224
+        //generate next VLJ date
+        String nextVLJ = getNextVLJ();
+        Event VLJ = new Event(nextVLJ, "Seară VLJ",
+                "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
+                        "Licoarea bahică dezleagă limbile și unește sufletele. \n" +
+                        "\n" +
+                        "În fiecare marți, să curgă vinul!\n" +
+                        "\n" +
+                        "PS: #manasiafood are în meniu, special pentru eventul VLJ, \n" +
+                        "< PIZZA>",
+                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/" +
+                        "42967050_2259332690966868_4328291320184438784_n.jpg?" +
+                        "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C");
+        int eventPosition = getEventPosition(VLJ, events);
+
+        if (nextVLJ != null) events.add(eventPosition, VLJ);
+
+        //until Oct 14, add DYMMM every day: https://www.facebook.com/events/249804188941666
+        String nextDYMMM = getNextDYMMM();
+        Event DYMMM = new Event(nextDYMMM, "Do You Mind My Mind",
+                "Unwind my mind \n" +
+                        "Behind my mind\n" +
+                        "Blind is my mind\n" +
+                        "Confined is my mind\n" +
+                        "Designed is my mind\n" +
+                        "Drink wine with my mind\n" +
+                        "Hide in my mind\n" +
+                        "Grind my mind\n" +
+                        "Be kind with my mind\n" +
+                        "Mankind through my mind\n" +
+                        "Nevermind my mind\n" +
+                        "Aligned with my mind\n" +
+                        "Combine with your mind\n" +
+                        "Find my mind\n" +
+                        "Wined, dined and sixty nined with your mind\n" +
+                        "Remind my mind to meet your mind\n" +
+                        "On the 5th of October.\n" +
+                        "\n" +
+                        "Signed\n" +
+                        "My Mind!\n" +
+                        "\n" +
+                        "\n" +
+                        "Vernisaj de fotografie și video proiecții.\n" +
+                        "\n" +
+                        "Expoziția face parte din circuitul Noaptea Albă a Galeriilor 2018 și " +
+                        "va avea loc la BNAC, un nou proiect Manasia HUB.",
+                "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/43097415_2259689324264538" +
+                        "_921400064155320320_n.jpg?_nc_cat=110&oh=c5d49f1ae3d9be1347a9f5622e2ffbc1" +
+                        "&oe=5C5CBC35");
+        eventPosition = getEventPosition(DYMMM, events);
+
+        if (nextVLJ != null) events.add(eventPosition, DYMMM);
+
+        return events;
+    }
+
+    private static String getNextVLJ() {
+        Calendar calendar = Calendar.getInstance();
+
+        //check that event end date is not exceeded
+        if (calendar.getTimeInMillis() > 1544565601000L) return null;
+
+        //get the current day of the week
+        int dayOfTheWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+        //if it's already Tuesday, do nothing, otherwise move the date to next Tuesday
+        if (dayOfTheWeek < 2) {
+            calendar.add(2 - dayOfTheWeek, Calendar.DATE);
+        } else {
+            calendar.add(6 - dayOfTheWeek + 3, Calendar.DATE);
+        }
+
+        return calendarToString(calendar);
+    }
+
+    private static String getNextDYMMM() {
+        Calendar calendar = Calendar.getInstance();
+
+        //check that event end date is not exceeded
+        if (calendar.getTimeInMillis() > 1539464401000L) return null;
+
+        return calendarToString(calendar);
+    }
+
+    private static String calendarToString(Calendar calendar) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        if (day < 10) stringBuilder.append(0);
+        stringBuilder.append(day);
+        stringBuilder.append("-");
+
+        int month = calendar.get(Calendar.MONTH);
+        if (month < 10) stringBuilder.append(0);
+        stringBuilder.append(month);
+        stringBuilder.append("-");
+
+        stringBuilder.append(calendar.get(Calendar.YEAR));
+
+        return stringBuilder.toString();
+    }
+
+    private static int getEventPosition(Event vlj, ArrayList<Event> events) {
+        int position = 0;
+
+        Date vljDate = convertDate(vlj.getDate(), false);
+        if (vljDate == null) return 0;
+        long vljTime = vljDate.getTime();
+
+        for (Event event : events) {
+            Date comparedDate = convertDate(event.getDate(), false);
+            if (comparedDate == null) return 0;
+
+            if (vljTime > comparedDate.getTime()) return position;
+            else position++;
+        }
+
+        return position;
     }
 }
