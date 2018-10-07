@@ -381,15 +381,17 @@ public final class Utils {
         }
 
         //add any recurring events here
-        if (!events.isEmpty()) events = addRecurringEvents(events);
+        //todo test my assumption that passing the reference is enough
+        if (!events.isEmpty()) addRecurringEvents(events);
 
         return events;
     }
 
-    private static ArrayList<Event> addRecurringEvents(ArrayList<Event> events) {
+    private static void addRecurringEvents(ArrayList<Event> events) {
         //until Dec 11, add VLJ every Tuesday: https://www.facebook.com/events/526194581137224
         //generate next VLJ date
         String nextVLJ = getNextVLJ();
+        //generate the event
         Event VLJ = new Event(nextVLJ, "Seară VLJ",
                 "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
                         "Licoarea bahică dezleagă limbile și unește sufletele. \n" +
@@ -401,12 +403,15 @@ public final class Utils {
                 "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/" +
                         "42967050_2259332690966868_4328291320184438784_n.jpg?" +
                         "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C");
+        //calculate where we'll be inserting the event in the ArrayList
         int eventPosition = getEventPosition(VLJ, events);
 
         if (nextVLJ != null) events.add(eventPosition, VLJ);
 
         //until Oct 14, add DYMMM every day: https://www.facebook.com/events/249804188941666
+        //generate next DYMMM date
         String nextDYMMM = getNextDYMMM();
+        //generate the event
         Event DYMMM = new Event(nextDYMMM, "Do You Mind My Mind",
                 "Unwind my mind \n" +
                         "Behind my mind\n" +
@@ -437,11 +442,10 @@ public final class Utils {
                 "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/43097415_2259689324264538" +
                         "_921400064155320320_n.jpg?_nc_cat=110&oh=c5d49f1ae3d9be1347a9f5622e2ffbc1" +
                         "&oe=5C5CBC35");
+        //calculate where we'll be inserting the event in the ArrayList
         eventPosition = getEventPosition(DYMMM, events);
 
         if (nextVLJ != null) events.add(eventPosition, DYMMM);
-
-        return events;
     }
 
     private static String getNextVLJ() {
@@ -475,9 +479,7 @@ public final class Utils {
     private static String calendarToString(Calendar calendar) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        if (day < 10) stringBuilder.append(0);
-        stringBuilder.append(day);
+        stringBuilder.append(calendar.get(Calendar.YEAR));
         stringBuilder.append("-");
 
         int month = calendar.get(Calendar.MONTH);
@@ -485,7 +487,9 @@ public final class Utils {
         stringBuilder.append(month);
         stringBuilder.append("-");
 
-        stringBuilder.append(calendar.get(Calendar.YEAR));
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        if (day < 10) stringBuilder.append(0);
+        stringBuilder.append(day);
 
         return stringBuilder.toString();
     }
