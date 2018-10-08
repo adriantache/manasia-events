@@ -54,7 +54,6 @@ import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 public class MainActivity extends AppCompatActivity {
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
-    private static final String LAST_UPDATE_TIME_SETTING = "LAST_UPDATE_TIME";
     private static final String REMOTE_URL = "REMOTE_URL";
     private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SHARED_PREFERENCES_TAG = "preferences";
     private static final String NOTIFY_SETTING = "notify";
     private static final String FIRST_LAUNCH_SETTING = "notify";
+    private static final String LAST_UPDATE_TIME_SETTING = "LAST_UPDATE_TIME";
     ListView listView;
     ImageView logo;
     ConstraintLayout constraintLayout;

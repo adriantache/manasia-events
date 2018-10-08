@@ -31,4 +31,5 @@
     <string name="open_2am">OPEN until 2am.</string>
     <string name="clickable_hint">clickable hint</string>
     <string name="manasia_event_detail">manasia event detail</string>
+    <string name="open_android_notification_settings">Open Android Notification settings</string>
 </resources>
