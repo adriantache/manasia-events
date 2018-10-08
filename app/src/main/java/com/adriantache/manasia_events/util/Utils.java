@@ -189,7 +189,6 @@ public final class Utils {
         final int openColor = 0xff33691E;
         final int closedColor = 0xffBF360C;
 
-        //todo prevent Toast from triggering if this is not first launch, doable with a SharedPref
         if (hour > 2 && hour < 12) {
             openHours.setText(R.string.closed_noon);
             openHours.setTextColor(closedColor);
