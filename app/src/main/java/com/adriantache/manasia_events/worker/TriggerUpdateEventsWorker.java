@@ -43,7 +43,6 @@ public class TriggerUpdateEventsWorker extends Worker implements LifecycleOwner 
     public Result doWork() {
         //first remove any existing work that is scheduled to prevent duplicates due to
         //inconsistent trigger time
-        //todo remove this and replace it with a WorkManager Policy
         WorkManager.getInstance().cancelAllWorkByTag(EVENTS_JSON_WORK_TAG);
 
         //then reschedule all future work to run daily

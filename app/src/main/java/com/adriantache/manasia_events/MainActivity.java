@@ -116,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
 
         //update open hours TextView
         Utils.getOpenHours(openHours, this, firstLaunch);
-
         //reset the first launch flag so it doesn't remain set to false
-        //todo rethink this mechanism, user might not always return from EventDetail or MenuActivity
+        //todo rethink this mechanism, user might not always return from EventDetail or MenuActivity...
+        //todo ...might make more sense to just use startActivityForResult with those activities
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, true);
@@ -172,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
 
         //first check to see if events are missing (database is empty) or stale (last updated >25 hours ago)
         Calendar calendar = Calendar.getInstance();
-
+        //get shared prefs again to see if lastUpdateTime changed
+        getPreferences();
         if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90000000L) {
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
