@@ -83,6 +83,7 @@ public final class Utils {
         Date formattedDate = convertDate(date, false);
         Date today = getToday(true);
 
+        //todo replace compareTo with a custom method that takes into account when notifications are triggered
         if (formattedDate != null)
             return formattedDate.compareTo(today);
 

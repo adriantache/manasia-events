@@ -33,26 +33,22 @@ public class EventDetail extends AppCompatActivity {
     private static final String FIRST_LAUNCH_SETTING = "notify";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
-    ImageView thumbnail;
-    TextView day;
-    TextView month;
-    TextView title;
-    ImageView notifyStatus;
-    TextView description;
-    ImageView back;
-    TextView call;
-    TextView map;
-    TextView location;
-    SwitchIconView notifyIcon;
-    LinearLayout notify;
-    TextView notifyLabel;
-    ConstraintLayout constraintLayout;
-    LinearLayout titleBar;
+    private ImageView thumbnail;
+    private TextView day;
+    private TextView month;
+    private TextView title;
+    private ImageView notifyStatus;
+    private TextView description;
+    private SwitchIconView notifyIcon;
+    private LinearLayout notify;
+    private TextView notifyLabel;
+    private ConstraintLayout constraintLayout;
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
     private boolean notifyOnAllEvents;
 
     //todo zoom photo on click
+    //todo [IMPORTANT] fix snackbar despite notify all (problem is probably with events happening today)
 
     @Override
     public void onBackPressed() {
@@ -79,15 +75,14 @@ public class EventDetail extends AppCompatActivity {
         title = findViewById(R.id.title);
         notifyStatus = findViewById(R.id.notify_status);
         description = findViewById(R.id.description);
-        back = findViewById(R.id.back);
-        call = findViewById(R.id.call);
-        map = findViewById(R.id.map);
-        location = findViewById(R.id.location);
+        ImageView back = findViewById(R.id.back);
+        TextView call = findViewById(R.id.call);
+        TextView map = findViewById(R.id.map);
+        TextView location = findViewById(R.id.location);
         notifyIcon = findViewById(R.id.notify_icon);
         notify = findViewById(R.id.notify);
         notifyLabel = findViewById(R.id.notify_label);
         constraintLayout = findViewById(R.id.constraint_layout);
-        titleBar = findViewById(R.id.title_bar);
 
         //read notify setting
         SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
@@ -144,6 +139,30 @@ public class EventDetail extends AppCompatActivity {
         editor.apply();
     }
 
+    private void populateDetails() {
+        //populate fields with details
+        if (!TextUtils.isEmpty(event.getPhotoUrl())) {
+            Picasso.get().load(event.getPhotoUrl()).centerCrop().fit().into(thumbnail);
+            thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            thumbnail.setBackgroundResource(R.color.colorAccent);
+        } else {
+            thumbnail.setImageResource(R.drawable.manasia_logo);
+            thumbnail.setScaleType(ImageView.ScaleType.CENTER);
+            thumbnail.setBackgroundResource(R.color.blue_grey100);
+        }
+        day.setText(Utils.extractDayOrMonth(event.getDate(), true));
+        month.setText(Utils.extractDayOrMonth(event.getDate(), false));
+        title.setText(event.getTitle());
+        description.setText(event.getDescription());
+        if (event.getNotify() == 1)
+            notifyStatus.setImageResource(R.drawable.alarm_accent);
+        else
+            notifyStatus.setImageResource(R.drawable.alarm);
+
+        //set notify button state depending on notify state
+        notifyIcon.setIconEnabled(event.getNotify() == 1);
+    }
+
     private void setNotifyOnClickListener(boolean pastEvent) {
         //only add notification for events in the future (or today)
         if (pastEvent) {
@@ -189,46 +208,6 @@ public class EventDetail extends AppCompatActivity {
         }
     }
 
-    private void populateDetails() {
-        //populate fields with details
-        if (!TextUtils.isEmpty(event.getPhotoUrl())) {
-            Picasso.get().load(event.getPhotoUrl()).centerCrop().fit().into(thumbnail);
-            thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            thumbnail.setBackgroundResource(R.color.colorAccent);
-        } else {
-            thumbnail.setImageResource(R.drawable.manasia_logo);
-            thumbnail.setScaleType(ImageView.ScaleType.CENTER);
-            thumbnail.setBackgroundResource(R.color.blue_grey100);
-        }
-        day.setText(Utils.extractDayOrMonth(event.getDate(), true));
-        month.setText(Utils.extractDayOrMonth(event.getDate(), false));
-        title.setText(event.getTitle());
-        description.setText(event.getDescription());
-        if (event.getNotify() == 1)
-            notifyStatus.setImageResource(R.drawable.alarm_accent);
-        else
-            notifyStatus.setImageResource(R.drawable.alarm);
-
-        //set notify button state depending on notify state
-        notifyIcon.setIconEnabled(event.getNotify() == 1);
-    }
-
-    //method to update event in the local database
-    private void updateDatabase() {
-        int result = ERROR_VALUE;
-        if (DBEventID != ERROR_VALUE) {
-            result = DBUtils.updateEventToDatabase(this, DBEventID, event);
-        }
-
-        if (result == ERROR_VALUE) Log.d(TAG, "updateDatabase: Error writing event to database.");
-    }
-
-    //method that handles clicking the back button to create an artificial back stack to MainActivity
-    private void backToMainActivity() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-    }
-
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {
         //read notify setting
@@ -254,8 +233,7 @@ public class EventDetail extends AppCompatActivity {
 
                 Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
 
-                boolean pastDate = Utils.compareDateToToday(event.getDate()) < 0;
-                setNotifyOnClickListener(pastDate);
+                setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
             });
 
             snackbar.show();
@@ -282,6 +260,22 @@ public class EventDetail extends AppCompatActivity {
             TextView textView = view.findViewById(R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
         }
+    }
+
+    //method to update event in the local database
+    private void updateDatabase() {
+        int result = ERROR_VALUE;
+        if (DBEventID != ERROR_VALUE) {
+            result = DBUtils.updateEventToDatabase(this, DBEventID, event);
+        }
+
+        if (result == ERROR_VALUE) Log.d(TAG, "updateDatabase: Error writing event to database.");
+    }
+
+    //method that handles clicking the back button to create an artificial back stack to MainActivity
+    private void backToMainActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }
 
