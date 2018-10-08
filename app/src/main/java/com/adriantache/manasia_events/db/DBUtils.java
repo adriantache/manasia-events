@@ -182,6 +182,7 @@ public final class DBUtils {
             editor.apply();
 
             //update event notifications for all future events fetched from the remote database
+            //todo consider replacing this with a WorkManager chain and refactor it
             if (notifyOnAllEvents) scheduleNotifications(context, true);
             else {
                 //todo seems to me like I'm forgetting to update notifications on individual events so I added this, need to check it

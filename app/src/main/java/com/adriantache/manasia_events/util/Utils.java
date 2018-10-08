@@ -177,7 +177,7 @@ public final class Utils {
     }
 
     //set the message that informs people when/until when the bar is open
-    public static void getOpenHours(TextView openHours, Context context) {
+    public static void getOpenHours(TextView openHours, Context context, boolean generateToast) {
         TimeZone bucharest = TimeZone.getTimeZone("Europe/Bucharest");
         Calendar calendar = Calendar.getInstance(bucharest);
 
@@ -188,10 +188,11 @@ public final class Utils {
         final int openColor = 0xff33691E;
         final int closedColor = 0xffBF360C;
 
+        //todo prevent Toast from triggering if this is not first launch, doable with a SharedPref
         if (hour > 2 && hour < 12) {
             openHours.setText(R.string.closed_noon);
             openHours.setTextColor(closedColor);
-            Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
+            if (generateToast) Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
         } else if (hour >= 12 && hour < 24) {
             if (day == 1) {
                 openHours.setText(R.string.open_midnight);
@@ -202,7 +203,7 @@ public final class Utils {
             if (day == 1) {
                 openHours.setText(R.string.closed_noon);
                 openHours.setTextColor(closedColor);
-                Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
+                if (generateToast) Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
             } else {
                 openHours.setText(R.string.open_2am);
                 openHours.setTextColor(openColor);

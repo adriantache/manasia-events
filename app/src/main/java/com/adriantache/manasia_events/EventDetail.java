@@ -32,6 +32,7 @@ import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 public class EventDetail extends AppCompatActivity {
     private static final String SHARED_PREFERENCES_TAG = "preferences";
     private static final String NOTIFY_SETTING = "notify";
+    private static final String FIRST_LAUNCH_SETTING = "notify";
     private static final String TAG = "EventDetail";
     private static final int ERROR_VALUE = -1;
     ImageView thumbnail;
@@ -136,6 +137,12 @@ public class EventDetail extends AppCompatActivity {
                 startActivity(locationIntent);
             }
         });
+
+        //inform MainActivity that this isn't first launch
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(FIRST_LAUNCH_SETTING, false);
+        editor.apply();
     }
 
     private void setNotifyOnClickListener(boolean pastEvent) {

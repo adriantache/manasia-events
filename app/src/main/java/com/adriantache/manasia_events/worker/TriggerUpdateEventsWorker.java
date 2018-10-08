@@ -4,7 +4,6 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -16,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.PeriodicWorkRequest;
@@ -25,7 +23,6 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 
 /**
@@ -36,8 +33,6 @@ public class TriggerUpdateEventsWorker extends Worker implements LifecycleOwner 
     private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     private static final String JSON_RESULT = "JSON_STRING";
     private static final String TAG = "TriggerUpdateEventsWRK";
-    private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
 
     public TriggerUpdateEventsWorker(Context context, WorkerParameters workerParameters) {
         super(context, workerParameters);
@@ -102,17 +97,6 @@ public class TriggerUpdateEventsWorker extends Worker implements LifecycleOwner 
 
                                     // send events to the database...
                                     inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
-
-                                    // and write fetch date into SharedPrefs
-                                    Calendar calendar = Calendar.getInstance();
-                                    long lastUpdateTime = calendar.getTimeInMillis();
-                                    SharedPreferences sharedPref = getApplicationContext()
-                                            .getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPref.edit();
-                                    editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
-                                    editor.apply();
-
-                                    //todo trigger notifications scheduling update here, currently happens in method below
                                 }
                             }
                         });

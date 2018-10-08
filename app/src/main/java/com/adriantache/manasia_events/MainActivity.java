@@ -54,13 +54,14 @@ import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 public class MainActivity extends AppCompatActivity {
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
-    private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
+    private static final String LAST_UPDATE_TIME_SETTING = "LAST_UPDATE_TIME";
     private static final String REMOTE_URL = "REMOTE_URL";
     private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     private static final String JSON_RESULT = "JSON_STRING";
     private static final String SHARED_PREFERENCES_TAG = "preferences";
     private static final String NOTIFY_SETTING = "notify";
+    private static final String FIRST_LAUNCH_SETTING = "notify";
     ListView listView;
     ImageView logo;
     ConstraintLayout constraintLayout;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     long lastUpdateTime;
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
+    private boolean firstLaunch;
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -109,75 +111,67 @@ public class MainActivity extends AppCompatActivity {
         error = findViewById(R.id.error);
         openHours = findViewById(R.id.open_hours);
 
-        //update open hours TextView
-        Utils.getOpenHours(openHours, this);
-
-        //retrieve SharedPrefs before binding the ArrayAdapter
+        //get shared prefs
         getPreferences();
 
+        //update open hours TextView
+        Utils.getOpenHours(openHours, this, firstLaunch);
+
+        //reset the first launch flag so it doesn't remain set to false
+        //todo rethink this mechanism, user might not always return from EventDetail or MenuActivity
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(FIRST_LAUNCH_SETTING, true);
+        editor.apply();
+
         //populate the list initially since theoretically the latest events are already in the DB
-        afterDatabaseUpdate();
+        updateFromDatabase();
 
         //update events and display them, if available
-        fetchEvents();
+        schedulePeriodicRemoteEventsFetch();
 
         //show snackbar if user hasn't chosen to be notified for all events
         if (!notifyOnAllEvents) showSnackbar();
     }
 
     //todo reschedule notifications on remote events fetch
-    //todo schedule remote events fetch before 12 pm to prevent notifications fix deleting notifications
-    private void fetchEvents() {
-        //we read when the database was last fetched from remote, and if time is more than
-        // one hour we refresh the remote source
-        //todo rethink time interval since events are only refreshed daily at ~4am
-        //todo trigger immediate events fetch if last update is >24h-4am, otherwise schedule update for 5am EEST/EET
-        Calendar calendar = Calendar.getInstance();
-        //todo rethink this so that an outdated fetch triggers immediate work and
-        // processes the output, otherwise we just start up TriggerUpdateEventsWorker.class
-        if (calendar.getTimeInMillis() - lastUpdateTime > 3600 * 1000) {
-        }
-
+    private void schedulePeriodicRemoteEventsFetch() {
         //normally just schedule a periodic work request to fetch events daily
-        //todo figure out if above doesn't negate the need for this (i.e. this should only exist if lastUpdateTime is undefined)
-        else {
-            //test network connectivity to prevent unnecessary remote update attempt
-            ConnectivityManager cm = (ConnectivityManager)
-                    getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = null;
-            try {
-                if (cm != null) {
-                    activeNetwork = cm.getActiveNetworkInfo();
-                }
-            } catch (NullPointerException e) {
-                Log.e(TAG, "Cannot get network info.", e);
+        //test network connectivity to prevent unnecessary remote update attempt
+        ConnectivityManager cm = (ConnectivityManager)
+                getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = null;
+        try {
+            if (cm != null) {
+                activeNetwork = cm.getActiveNetworkInfo();
             }
-            if (activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting()) {
-                //populate the global ArrayList of events by adding a work request to fetch JSON...
-                Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Cannot get network info.", e);
+        }
+        if (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting()) {
+            //populate the global ArrayList of events by adding a work request to fetch JSON...
+            Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
 
-                //schedule the periodic work request for 5am, which will trigger the actual work request
-                OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
-                        .Builder(TriggerUpdateEventsWorker.class)
-                        .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
-                        .setInputData(remoteUrl)
-                        .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
-                        .build();
-                WorkManager.getInstance().enqueue(getEventJson);
-            }
+            //schedule the periodic work request for 5am, which will trigger the actual work request
+            OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
+                    .Builder(TriggerUpdateEventsWorker.class)
+                    .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
+                    .setInputData(remoteUrl)
+                    .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
+                    .build();
+            WorkManager.getInstance().enqueue(getEventJson);
         }
     }
 
     //tasks which run on remote events refresh or in case that refresh is not possible
-    public void afterDatabaseUpdate() {
+    public void updateFromDatabase() {
         //...then reading that database (this also populates the ArrayList with the very important
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         //first check to see if events are missing (database is empty) or stale (last updated >25 hours ago)
         Calendar calendar = Calendar.getInstance();
-        getPreferences();
 
         if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90000000L) {
             //test network connectivity to prevent unnecessary remote update attempt
@@ -232,13 +226,13 @@ public class MainActivity extends AppCompatActivity {
 
                                 //and if remote fetch is successful...
                                 if (eventsTemp != null) {
-                                    Log.i(TAG, "fetchEvents: Successfully fetched and decoded remote JSON.");
+                                    Log.i(TAG, "fetch events: Successfully fetched and decoded remote JSON.");
                                     // we send events to the database...
                                     inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
                                 }
 
                                 //...and finally run tasks post database update
-                                afterDatabaseUpdate();
+                                updateFromDatabase();
                             }
                         });
             }
@@ -333,12 +327,12 @@ public class MainActivity extends AppCompatActivity {
         //set notify on every future event flag
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
         //set time of last remote update
-        lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_LABEL, 0);
-
-        //todo remove this
-        Log.i(TAG, "Last update time: " + lastUpdateTime);
+        lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_SETTING, 0);
+        //set whether this is the first launch of MainActivity to prevent open hours Toast when coming back
+        firstLaunch = sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
     }
 
+    //todo figure out if we still care about this, all it does is change notify status, would only trigger if notifyForAllEvents is false
     private void refreshList() {
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
