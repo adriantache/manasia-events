@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/drinks_menu"
+        android:icon="@drawable/cocktails"
+        android:title="Drinks Menu"
+        app:showAsAction="ifRoom" />
+
+    <!--todo add food icon here-->
+    <item
+        android:id="@+id/food_menu"
+        android:icon="@drawable/error_robot"
+        android:title="Food Menu"
+        app:showAsAction="ifRoom" />
+
+    <!--todo add settings icon here-->
+    <item
+    android:id="@+id/settings"
+    android:icon="@drawable/error_robot"
+    android:title="Settings"
+    app:showAsAction="never" />
+</menu>

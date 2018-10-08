@@ -17,10 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
     private static final String REMOTE_URL = "REMOTE_URL";
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     ImageView logo;
     ConstraintLayout constraintLayout;
-    Button menu;
+    ImageView menu;
     TextView error;
     TextView openHours;
     long lastUpdateTime;
@@ -293,8 +294,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         menu.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-            startActivity(intent);
+            PopupMenu popup = new PopupMenu(this, v);
+            popup.getMenuInflater().inflate(R.menu.main_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(this);
+            popup.show();
         });
     }
 
@@ -364,6 +367,26 @@ public class MainActivity extends AppCompatActivity {
         View view = snackbar.getView();
         TextView textView = view.findViewById(R.id.snackbar_text);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.drinks_menu:
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.food_menu:
+                //todo add functionality
+                return true;
+            case R.id.settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                settingsIntent.putExtra("activity", 1);
+                startActivity(settingsIntent);
+                return true;
+            default:
+                return false;
+        }
     }
 }
 
