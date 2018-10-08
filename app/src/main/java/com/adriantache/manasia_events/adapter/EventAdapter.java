@@ -1,6 +1,7 @@
 package com.adriantache.manasia_events.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,12 @@ import java.util.List;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
+import static android.content.Context.MODE_PRIVATE;
 
 public class EventAdapter extends ArrayAdapter<Event> {
     private final List<Event> events = new ArrayList<>();
+    private static final String SHARED_PREFERENCES_TAG = "preferences";
+    private static final String NOTIFY_SETTING = "notify";
 
     public EventAdapter(@NonNull Context context, @NonNull List<Event> objects) {
         super(context, 0, objects);
@@ -80,8 +83,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
             else holder.notifyStatus.setVisibility(View.VISIBLE);
 
             //change notification image depending on whether the user has set it to notify them
+            SharedPreferences sharedPref = getContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            boolean notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
             if (holder.notifyStatus.getVisibility() == View.VISIBLE) {
-                if (event.getNotify() == 1 || getNotifyAllSetting(getContext()))
+                if (event.getNotify() == 1 || notifyOnAllEvents)
                     holder.notifyStatus.setImageResource(R.drawable.alarm_accent);
                 else holder.notifyStatus.setImageResource(R.drawable.alarm);
             }

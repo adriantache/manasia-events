@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,13 +24,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
-import static com.adriantache.manasia_events.util.Utils.getNotifyAllSetting;
 
 public class EventDetail extends AppCompatActivity {
     private static final String SHARED_PREFERENCES_TAG = "preferences";
@@ -66,7 +64,8 @@ public class EventDetail extends AppCompatActivity {
         super.onResume();
 
         //read notify setting
-        notifyOnAllEvents = getNotifyAllSetting(this);
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
     }
 
     @Override
@@ -91,7 +90,8 @@ public class EventDetail extends AppCompatActivity {
         titleBar = findViewById(R.id.title_bar);
 
         //read notify setting
-        notifyOnAllEvents = getNotifyAllSetting(this);
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
 
         //get the event for which to display details
         Intent intent = getIntent();
@@ -139,7 +139,6 @@ public class EventDetail extends AppCompatActivity {
         });
 
         //inform MainActivity that this isn't first launch
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
@@ -161,7 +160,8 @@ public class EventDetail extends AppCompatActivity {
         } else {
             notify.setOnClickListener(v -> {
                 //read notify setting
-                notifyOnAllEvents = getNotifyAllSetting(this);
+                SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+                notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
 
                 if (event.getNotify() == 1) {
                     notifyIcon.setIconEnabled(false);
@@ -232,7 +232,8 @@ public class EventDetail extends AppCompatActivity {
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {
         //read notify setting
-        notifyOnAllEvents = getNotifyAllSetting(this);
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
 
         if (!notifyOnAllEvents) {
             Snackbar snackbar = Snackbar.make(constraintLayout,
@@ -241,8 +242,8 @@ public class EventDetail extends AppCompatActivity {
                     Snackbar.LENGTH_LONG);
 
             snackbar.setAction("Activate", v -> {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences sharedPref2 = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref2.edit();
                 editor.putBoolean(NOTIFY_SETTING, true);
                 editor.apply();
 

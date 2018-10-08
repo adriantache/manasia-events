@@ -243,11 +243,6 @@ public final class Utils {
         return remoteEvents;
     }
 
-    public static boolean getNotifyAllSetting(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        return sharedPref.getBoolean(NOTIFY_SETTING, false);
-    }
-
     //turn a 3 letter month and a day "int" into a date of the format yyyy-MM-dd
     private static String buildDate(String month, String day) {
         StringBuilder date = new StringBuilder();

@@ -11,11 +11,13 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="58dp"
-        android:layout_marginStart="4dp"
+        android:layout_width="92dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/manasia_logo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/manasia_logo" />
@@ -56,14 +58,14 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="6dp"
-        android:layout_marginBottom="6dp"
         android:contentDescription="@string/menu"
         android:drawableStart="@drawable/menu"
         android:drawablePadding="8dp"
         android:scaleType="centerInside"
         android:text="@string/menu"
-        app:layout_constraintBottom_toTopOf="@+id/list_view"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo" />
 
     <TextView
         android:id="@+id/error"

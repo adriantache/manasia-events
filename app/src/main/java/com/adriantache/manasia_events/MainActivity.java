@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     //todo add progress indicator circle while fetching/decoding events
     //todo add hub details on logo click
 
-    //todo prevent triggering closed Toast every time you visit MainActivity (maybe use StartActivityForResult instead and only show if no result?)
+    //todo hamburger menu to keep food and drinks menu and settings developer.android.com/training/implementing-navigation/nav-drawer
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -380,3 +380,4 @@ public class MainActivity extends AppCompatActivity {
 //todo implement splash screen while fetching remote data
 //todo implement SwipeRefreshLayout (is it really needed?)
 //todo replace ListView with RecyclerView
+//todo [idea] prevent notifications from triggering if user doesn't interact with them

@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -61,10 +63,12 @@ public class SettingsActivity extends AppCompatActivity {
         boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
         //set time of last remote update
         long lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_SETTING, 0);
+        Calendar calendar = Calendar.getInstance();
+        long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime)/1000/3600;
         //set whether this is the first launch of MainActivity to prevent open hours Toast when coming back
         boolean firstLaunch = sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
-        String displayText = "Dev Info: LUT = " + lastUpdateTime + "; NotifyAll = "
-                + notifyOnAllEvents + "; FirstLaunch = " + firstLaunch +".";
+        String displayText = "Dev Info: Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
+                + notifyOnAllEvents + ";\n FirstLaunch = " + firstLaunch +".";
         devTools.setTextColor(0xffD4E157);
         devTools.setBackgroundColor(0xff795548);
         devTools.setText(displayText);
