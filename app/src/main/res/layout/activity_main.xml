@@ -55,8 +55,10 @@
 
     <ImageView
         android:id="@+id/menu"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:layout_marginEnd="6dp"
         android:contentDescription="@string/menu"
         android:foreground="?android:attr/selectableItemBackground"

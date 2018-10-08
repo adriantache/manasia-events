@@ -5,20 +5,20 @@
     <item
         android:id="@+id/drinks_menu"
         android:icon="@drawable/cocktails"
-        android:title="Drinks Menu"
+        android:title="@string/drinks_menu"
         app:showAsAction="ifRoom" />
 
     <!--todo add food icon here-->
     <item
         android:id="@+id/food_menu"
         android:icon="@drawable/error_robot"
-        android:title="Food Menu"
+        android:title="@string/food_menu"
         app:showAsAction="ifRoom" />
 
     <!--todo add settings icon here-->
     <item
     android:id="@+id/settings"
     android:icon="@drawable/error_robot"
-    android:title="Settings"
-    app:showAsAction="never" />
+    android:title="@string/settings"
+    app:showAsAction="ifRoom" />
 </menu>

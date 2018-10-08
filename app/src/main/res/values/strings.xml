@@ -32,4 +32,7 @@
     <string name="clickable_hint">clickable hint</string>
     <string name="manasia_event_detail">manasia event detail</string>
     <string name="open_android_notification_settings">Open Android Notification settings</string>
+    <string name="drinks_menu">Drinks Menu</string>
+    <string name="food_menu">Food Menu</string>
+    <string name="settings">Settings</string>
 </resources>

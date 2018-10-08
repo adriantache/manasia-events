@@ -57,8 +57,13 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        devTools = findViewById(R.id.dev_tools);
+        //now that we can get here directly from MainActivity, we set the flag here as well
         SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(FIRST_LAUNCH_SETTING, false);
+        editor.apply();
+
+        devTools = findViewById(R.id.dev_tools);
         //set notify on every future event flag
         boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
         //set time of last remote update
@@ -68,10 +73,11 @@ public class SettingsActivity extends AppCompatActivity {
         //set whether this is the first launch of MainActivity to prevent open hours Toast when coming back
         boolean firstLaunch = sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
         String displayText = "Dev Info: Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
-                + notifyOnAllEvents + ";\n FirstLaunch = " + firstLaunch +".";
+                + notifyOnAllEvents + "; \n\t\t\t\tFirstLaunch = " + firstLaunch +".";
         devTools.setTextColor(0xffD4E157);
         devTools.setBackgroundColor(0xff795548);
         devTools.setText(displayText);
+
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
