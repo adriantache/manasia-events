@@ -46,22 +46,14 @@ public class EventDetail extends AppCompatActivity {
     private Event event = null;
     private int DBEventID = ERROR_VALUE;
     private boolean notifyOnAllEvents;
+    private SharedPreferences sharedPref;
 
     //todo zoom photo on click
-    //todo [IMPORTANT] fix snackbar despite notify all (problem is probably with events happening today)
+    //todo remap this class and refactor it so that it makes more sense
 
     @Override
     public void onBackPressed() {
         backToMainActivity();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        //read notify setting
-        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
     }
 
     @Override
@@ -85,13 +77,11 @@ public class EventDetail extends AppCompatActivity {
         constraintLayout = findViewById(R.id.constraint_layout);
 
         //read notify setting
-        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
+        getSharedPrefs();
 
         //get the event for which to display details
         Intent intent = getIntent();
         DBEventID = Objects.requireNonNull(intent.getExtras()).getInt(DBEventIDTag);
-
         if (DBEventID != ERROR_VALUE)
             event = DBUtils.getEventFromDatabase(this, DBEventID);
         else
@@ -99,6 +89,8 @@ public class EventDetail extends AppCompatActivity {
 
         if (event != null) {
             populateDetails();
+            //todo figure this mechanism out and improve on it
+            //set on click listener and details for the notify button, but only if event is not in the past
             setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
         } else {
             Toast.makeText(this, "Error getting event from database.", Toast.LENGTH_SHORT).show();
@@ -134,9 +126,25 @@ public class EventDetail extends AppCompatActivity {
         });
 
         //inform MainActivity that this isn't first launch
+        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
+    }
+
+    private void getSharedPrefs() {
+        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+
+        //todo remove this
+        Log.i(TAG, "getSharedPrefs: " + notifyOnAllEvents);
+
+        //read notify setting
+        if (sharedPref != null)
+            notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
+        else getSharedPrefs();
+
+        //todo remove this
+        Log.i(TAG, "getSharedPrefs after update: " + notifyOnAllEvents);
     }
 
     private void populateDetails() {
@@ -154,18 +162,24 @@ public class EventDetail extends AppCompatActivity {
         month.setText(Utils.extractDayOrMonth(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
-        if (event.getNotify() == 1)
+        if (event.getNotify() == 1 || notifyOnAllEvents)
             notifyStatus.setImageResource(R.drawable.alarm_accent);
         else
             notifyStatus.setImageResource(R.drawable.alarm);
 
         //set notify button state depending on notify state
-        notifyIcon.setIconEnabled(event.getNotify() == 1);
+        notifyIcon.setIconEnabled(event.getNotify() == 1 || notifyOnAllEvents);
     }
 
     private void setNotifyOnClickListener(boolean pastEvent) {
+        //todo determine if this is necessary, might be due to the snackbar
+        //read notify setting
+        getSharedPrefs();
+
         //only add notification for events in the future (or today)
         if (pastEvent) {
+            notifyStatus.setImageResource(R.drawable.alarm);
+            notifyIcon.setIconEnabled(false);
             notifyIcon.setEnabled(false);
 
             //also hide the notification indicator up top
@@ -178,10 +192,6 @@ public class EventDetail extends AppCompatActivity {
             notify.setOnClickListener(v -> showSnackbar());
         } else {
             notify.setOnClickListener(v -> {
-                //read notify setting
-                SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-                notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
-
                 if (event.getNotify() == 1) {
                     notifyIcon.setIconEnabled(false);
                     notifyStatus.setImageResource(R.drawable.alarm);
@@ -203,6 +213,7 @@ public class EventDetail extends AppCompatActivity {
                     showSnackbar();
                 }
 
+                //todo determine if this notifications update is necessary or we should just trigger the main method
                 scheduleNotifications(getApplicationContext(), false);
             });
         }
@@ -210,10 +221,6 @@ public class EventDetail extends AppCompatActivity {
 
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar() {
-        //read notify setting
-        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
-
         if (!notifyOnAllEvents) {
             Snackbar snackbar = Snackbar.make(constraintLayout,
                     "You will be notified on the day of the event.\n" +
@@ -221,8 +228,8 @@ public class EventDetail extends AppCompatActivity {
                     Snackbar.LENGTH_LONG);
 
             snackbar.setAction("Activate", v -> {
-                SharedPreferences sharedPref2 = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref2.edit();
+                sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(NOTIFY_SETTING, true);
                 editor.apply();
 
@@ -233,7 +240,7 @@ public class EventDetail extends AppCompatActivity {
 
                 Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
 
-                setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
+                setNotifyOnClickListener(false);
             });
 
             snackbar.show();
