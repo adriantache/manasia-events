@@ -24,15 +24,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
-import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
+import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
+import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 public class EventDetail extends AppCompatActivity {
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
-    private static final String NOTIFY_SETTING = "notify";
-    private static final String FIRST_LAUNCH_SETTING = "notify";
     private static final String TAG = "EventDetail";
-    private static final int ERROR_VALUE = -1;
     private ImageView thumbnail;
     private TextView day;
     private TextView month;
@@ -44,7 +44,7 @@ public class EventDetail extends AppCompatActivity {
     private TextView notifyLabel;
     private ConstraintLayout constraintLayout;
     private Event event = null;
-    private int DBEventID = ERROR_VALUE;
+    private int dbEventId = ERROR_VALUE;
     private boolean notifyOnAllEvents;
     private SharedPreferences sharedPref;
 
@@ -81,9 +81,9 @@ public class EventDetail extends AppCompatActivity {
 
         //get the event for which to display details
         Intent intent = getIntent();
-        DBEventID = Objects.requireNonNull(intent.getExtras()).getInt(DBEventIDTag);
-        if (DBEventID != ERROR_VALUE)
-            event = DBUtils.getEventFromDatabase(this, DBEventID);
+        dbEventId = Objects.requireNonNull(intent.getExtras()).getInt(DB_EVENT_ID_TAG);
+        if (dbEventId != ERROR_VALUE)
+            event = DBUtils.getEventFromDatabase(this, dbEventId);
         else
             Toast.makeText(this, "Error getting event ID.", Toast.LENGTH_SHORT).show();
 
@@ -133,18 +133,9 @@ public class EventDetail extends AppCompatActivity {
     }
 
     private void getSharedPrefs() {
-        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-
-        //todo remove this
-        Log.i(TAG, "getSharedPrefs: " + notifyOnAllEvents);
-
         //read notify setting
-        if (sharedPref != null)
-            notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
-        else getSharedPrefs();
-
-        //todo remove this
-        Log.i(TAG, "getSharedPrefs after update: " + notifyOnAllEvents);
+        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
     }
 
     private void populateDetails() {
@@ -257,7 +248,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.setAction("Settings", v -> {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 settingsIntent.putExtra("activity", 2);
-                settingsIntent.putExtra(DBEventIDTag, DBEventID);
+                settingsIntent.putExtra(DB_EVENT_ID_TAG, dbEventId);
                 startActivity(settingsIntent);
             });
 
@@ -272,8 +263,8 @@ public class EventDetail extends AppCompatActivity {
     //method to update event in the local database
     private void updateDatabase() {
         int result = ERROR_VALUE;
-        if (DBEventID != ERROR_VALUE) {
-            result = DBUtils.updateEventToDatabase(this, DBEventID, event);
+        if (dbEventId != ERROR_VALUE) {
+            result = DBUtils.updateEventToDatabase(this, dbEventId, event);
         }
 
         if (result == ERROR_VALUE) Log.d(TAG, "updateDatabase: Error writing event to database.");

@@ -1,7 +1,6 @@
 package com.adriantache.manasia_events.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,16 +25,12 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static android.content.Context.MODE_PRIVATE;
+import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
 
 /**
  * Class to store general utility functions
  **/
 public final class Utils {
-    private static final int ERROR_VALUE = -1;
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
-    private static final String NOTIFY_SETTING = "notify";
-
     private Utils() {
         throw new AssertionError("No Utils Instances are allowed!");
     }
@@ -192,7 +187,8 @@ public final class Utils {
         if (hour > 2 && hour < 12) {
             openHours.setText(R.string.closed_noon);
             openHours.setTextColor(closedColor);
-            if (generateToast) Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
+            if (generateToast)
+                Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
         } else if (hour >= 12 && hour < 24) {
             if (day == 1) {
                 openHours.setText(R.string.open_midnight);
@@ -203,7 +199,8 @@ public final class Utils {
             if (day == 1) {
                 openHours.setText(R.string.closed_noon);
                 openHours.setTextColor(closedColor);
-                if (generateToast) Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
+                if (generateToast)
+                    Toast.makeText(context, R.string.closed_noon, Toast.LENGTH_SHORT).show();
             } else {
                 openHours.setText(R.string.open_2am);
                 openHours.setTextColor(openColor);

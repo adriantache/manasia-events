@@ -14,15 +14,15 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
-import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
+import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
+import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 public class SettingsActivity extends AppCompatActivity {
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
-    private static final String NOTIFY_SETTING = "notify";
-    private static final String FIRST_LAUNCH_SETTING = "notify";
-    private static final String LAST_UPDATE_TIME_SETTING = "LAST_UPDATE_TIME";
-    private static final int MAIN_ACTIVITY = 1;
-    private static final int EVENT_ACTIVITY = 2;
     ImageView back;
     TextView devTools;
     Button notificationSettings;
@@ -33,16 +33,16 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         final int activity = getIntent().getExtras().getInt("activity");
-        final int DBEventID = getIntent().getExtras().getInt(DBEventIDTag);
+        final int DBEventID = getIntent().getExtras().getInt(DB_EVENT_ID_TAG);
 
         back = findViewById(R.id.back);
         back.setOnClickListener(v -> {
-            if (activity == MAIN_ACTIVITY) {
+            if (activity == SOURCE_MAIN_ACTIVITY) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
-            } else if (activity == EVENT_ACTIVITY) {
+            } else if (activity == SOURCE_EVENT_ACTIVITY) {
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-                intent.putExtra(DBEventIDTag, DBEventID);
+                intent.putExtra(DB_EVENT_ID_TAG, DBEventID);
                 startActivity(intent);
             }
         });
@@ -58,26 +58,25 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         //now that we can get here directly from MainActivity, we set the flag here as well
-        SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getApplicationContext()
+                .getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
 
         devTools = findViewById(R.id.dev_tools);
-        //set notify on every future event flag
-        boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
-        //set time of last remote update
+        //time of last remote update
         long lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_SETTING, 0);
         Calendar calendar = Calendar.getInstance();
-        long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime)/1000/3600;
-        //set whether this is the first launch of MainActivity to prevent open hours Toast when coming back
-        boolean firstLaunch = sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
+        long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600;
+        //notify on every future event
+        //whether this is the first launch of MainActivity to prevent open hours Toast when coming back
         String displayText = "Dev Info: Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
-                + notifyOnAllEvents + "; \n\t\t\t\tFirstLaunch = " + firstLaunch +".";
+                + sharedPrefs.getBoolean(NOTIFY_SETTING, false) + "; \n\t\t\t\tFirstLaunch = " +
+                sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true) + ".";
         devTools.setTextColor(0xffD4E157);
         devTools.setBackgroundColor(0xff795548);
         devTools.setText(displayText);
-
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

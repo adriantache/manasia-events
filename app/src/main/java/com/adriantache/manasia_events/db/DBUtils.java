@@ -22,15 +22,14 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
+import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 /**
  * Class to store general utility functions for database operations
  **/
 public final class DBUtils {
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
-    private static final String NOTIFY_SETTING = "notify";
-    private static final String LAST_UPDATE_TIME_LABEL = "LAST_UPDATE_TIME";
-
     private DBUtils() {
         throw new AssertionError("No Utils Instances are allowed!");
     }
@@ -178,7 +177,7 @@ public final class DBUtils {
             long lastUpdateTime = calendar.getTimeInMillis();
             SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putLong(LAST_UPDATE_TIME_LABEL, lastUpdateTime);
+            editor.putLong(LAST_UPDATE_TIME_SETTING, lastUpdateTime);
             editor.apply();
 
             //update event notifications for all future events fetched from the remote database

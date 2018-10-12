@@ -29,17 +29,16 @@ import androidx.work.WorkerParameters;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.support.v4.app.NotificationCompat.CATEGORY_EVENT;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
-import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
+import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
+import static com.adriantache.manasia_events.util.CommonStrings.MANASIA_NOTIFICATION_CHANNEL;
+import static com.adriantache.manasia_events.util.CommonStrings.MANASIA_NOTIFICATION_CHANNEL_GROUP;
 import static com.adriantache.manasia_events.util.Utils.prettyDate;
 
 /**
  * Custom class to trigger scheduled notifications
  **/
 public class NotifyWorker extends Worker {
-    private static final int ERROR_VALUE = -1;
-    private static final String MANASIA_NOTIFICATION_CHANNEL = "Manasia Event Reminder";
-    private static final String MANASIA_NOTIFICATION_CHANNEL_GROUP = "Manasia Events";
-
     public NotifyWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
@@ -55,7 +54,7 @@ public class NotifyWorker extends Worker {
     }
 
     private void triggerNotification() {
-        final int DBEventID = getInputData().getInt(DBEventIDTag, ERROR_VALUE);
+        final int DBEventID = getInputData().getInt(DB_EVENT_ID_TAG, ERROR_VALUE);
 
         Event event = null;
 
@@ -96,7 +95,7 @@ public class NotifyWorker extends Worker {
 
         //create an intent to open the event details activity when the user clicks the notification
         Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-        intent.putExtra(DBEventIDTag, DBEventID);
+        intent.putExtra(DB_EVENT_ID_TAG, DBEventID);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //put together the PendingIntent
         PendingIntent pendingIntent =

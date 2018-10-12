@@ -13,8 +13,9 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
 import static com.adriantache.manasia_events.db.DBUtils.readDatabase;
+import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFICATION_WORK_TAG;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
 
@@ -23,7 +24,6 @@ import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
  **/
 public class NotifyUtils {
     //set a tag in order to be able to disable all work if needed
-    private static final String workTag = "notificationWork";
 
     public NotifyUtils() {
         throw new AssertionError("Cannot instantiate utility class.");
@@ -39,7 +39,7 @@ public class NotifyUtils {
      */
     public static void scheduleNotifications(Context context, boolean addAll) {
         ArrayList<Event> events = (ArrayList<Event>) readDatabase(context);
-        if (events == null || events.size() == 0) return;
+        if (events == null || events.isEmpty()) return;
 
         resetAllWork(context);
 
@@ -52,7 +52,7 @@ public class NotifyUtils {
 
     private static void resetAllWork(Context context) {
         //cancel all pending work tasks
-        WorkManager.getInstance().cancelAllWorkByTag(workTag);
+        WorkManager.getInstance().cancelAllWorkByTag(NOTIFICATION_WORK_TAG);
 
         //clear all notifications to prevent duplicates
         //todo [IMPORTANT] figure out database ID increment problem, should negate the need for this code
@@ -65,7 +65,7 @@ public class NotifyUtils {
 
     private static void addNotification(int DBEventID, String eventDate) {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
-        Data inputData = new Data.Builder().putInt(DBEventIDTag, DBEventID).build();
+        Data inputData = new Data.Builder().putInt(DB_EVENT_ID_TAG, DBEventID).build();
 
         //get delay until notification triggers
         long delay = calculateDelay(eventDate);
@@ -75,7 +75,7 @@ public class NotifyUtils {
             OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWorker.class)
                     .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                     .setInputData(inputData)
-                    .addTag(workTag)
+                    .addTag(NOTIFICATION_WORK_TAG)
                     .build();
 
             WorkManager.getInstance().enqueue(notificationWork);

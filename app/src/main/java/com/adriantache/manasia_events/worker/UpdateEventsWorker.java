@@ -1,6 +1,7 @@
 package com.adriantache.manasia_events.worker;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -8,20 +9,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
-import android.support.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
+import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
+
 /**
  * Custom class to trigger fetching remote events json file
  **/
 public class UpdateEventsWorker extends Worker {
-    private static final String REMOTE_URL = "REMOTE_URL";
-    private static final String JSON_RESULT = "JSON_STRING";
-
     public UpdateEventsWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }

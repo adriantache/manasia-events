@@ -37,8 +37,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -51,20 +49,20 @@ import androidx.work.WorkManager;
 
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
+import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.ENQUEUE_EVENTS_JSON_WORK_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
+import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
+import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
-    public static final String DBEventIDTag = "DBEventID";
     private static final String TAG = "MainActivity";
-    private static final String REMOTE_URL = "REMOTE_URL";
-    private static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
-    private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
-    private static final String JSON_RESULT = "JSON_STRING";
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
-    private static final String NOTIFY_SETTING = "notify";
-    private static final String FIRST_LAUNCH_SETTING = "notify";
-    private static final String LAST_UPDATE_TIME_SETTING = "LAST_UPDATE_TIME";
     ListView listView;
     ImageView logo;
     ConstraintLayout constraintLayout;
@@ -83,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     //todo add progress indicator circle while fetching/decoding events
     //todo add hub details on logo click
-
-    //todo hamburger menu to keep food and drinks menu and settings developer.android.com/training/implementing-navigation/nav-drawer
 
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
@@ -269,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             Event event = (Event) parent.getItemAtPosition(position);
 
             Intent intent = new Intent(getApplicationContext(), EventDetail.class);
-            intent.putExtra(DBEventIDTag, event.getDatabaseID());
+            intent.putExtra(DB_EVENT_ID_TAG, event.getDatabaseID());
 
             //code to animate event details between activities
             ActivityOptions options = null;

@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.adriantache.manasia_events.MainActivity.DBEventIDTag;
+import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
 import static com.adriantache.manasia_events.util.Utils.extractDayOrMonth;
 import static com.adriantache.manasia_events.util.Utils.isEventToday;
@@ -63,7 +63,7 @@ public class EventWidget extends AppWidgetProvider {
 
                 //set intent to open that event's details
                 Intent intent = new Intent(context, EventDetail.class);
-                intent.putExtra(DBEventIDTag, event.getDatabaseID());
+                intent.putExtra(DB_EVENT_ID_TAG, event.getDatabaseID());
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
                         intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);
@@ -140,7 +140,7 @@ public class EventWidget extends AppWidgetProvider {
 
                     //set intent to open that event's details
                     Intent intent = new Intent(context, EventDetail.class);
-                    intent.putExtra(DBEventIDTag, event.getDatabaseID());
+                    intent.putExtra(DB_EVENT_ID_TAG, event.getDatabaseID());
                     PendingIntent pendingIntent = PendingIntent.getActivity(context, 3,
                             intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     views.setOnClickPendingIntent(R.id.relative_layout, pendingIntent);

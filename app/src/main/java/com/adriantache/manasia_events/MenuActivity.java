@@ -18,10 +18,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import static android.text.Html.FROM_HTML_SEPARATOR_LINE_BREAK_HEADING;
+import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 public class MenuActivity extends AppCompatActivity {
-    private static final String FIRST_LAUNCH_SETTING = "notify";
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
     ImageView back;
     CardView nonAlcoholic;
     CardView beer;

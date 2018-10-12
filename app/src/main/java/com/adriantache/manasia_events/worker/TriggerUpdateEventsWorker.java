@@ -24,14 +24,14 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
+import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
 
 /**
  * This class exists only as a middleman to add an initial delay to the
  * PeriodicWorkRequest which updates events from the remote source
  **/
 public class TriggerUpdateEventsWorker extends Worker implements LifecycleOwner {
-    private static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
-    private static final String JSON_RESULT = "JSON_STRING";
     private static final String TAG = "TriggerUpdateEventsWRK";
 
     public TriggerUpdateEventsWorker(Context context, WorkerParameters workerParameters) {

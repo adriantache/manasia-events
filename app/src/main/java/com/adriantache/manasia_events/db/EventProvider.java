@@ -17,12 +17,12 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
+import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
 
 /**
  * ContentProvider to keep database access separate from the app and ensure sanity checks on the input data
  **/
 public class EventProvider extends ContentProvider {
-    private static final int ERROR_VALUE = -1;
     private static final int EVENTS = 100;
     private static final int SINGLE_EVENT = 101;
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

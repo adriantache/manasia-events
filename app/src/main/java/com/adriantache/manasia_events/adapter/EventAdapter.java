@@ -22,11 +22,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 public class EventAdapter extends ArrayAdapter<Event> {
     private final List<Event> events = new ArrayList<>();
-    private static final String SHARED_PREFERENCES_TAG = "preferences";
-    private static final String NOTIFY_SETTING = "notify";
 
     public EventAdapter(@NonNull Context context, @NonNull List<Event> objects) {
         super(context, 0, objects);
