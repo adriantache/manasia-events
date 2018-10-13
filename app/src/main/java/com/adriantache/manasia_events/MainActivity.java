@@ -58,6 +58,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
 import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 
@@ -379,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 return true;
             case R.id.settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                settingsIntent.putExtra("activity", 1);
+                settingsIntent.putExtra("activity", SOURCE_MAIN_ACTIVITY);
                 startActivity(settingsIntent);
                 return true;
             default:

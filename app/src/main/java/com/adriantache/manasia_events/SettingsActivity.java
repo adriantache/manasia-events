@@ -13,39 +13,44 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
-import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
     ImageView back;
     TextView devTools;
     Button notificationSettings;
 
+    //todo fix settings update problem
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        final int activity = getIntent().getExtras().getInt("activity");
+        final int activity = Objects.requireNonNull(getIntent().getExtras()).getInt("activity");
         final int DBEventID = getIntent().getExtras().getInt(DB_EVENT_ID_TAG);
 
         back = findViewById(R.id.back);
-        back.setOnClickListener(v -> {
-            if (activity == SOURCE_MAIN_ACTIVITY) {
+        if (activity == SOURCE_MAIN_ACTIVITY) {
+            back.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
-            } else if (activity == SOURCE_EVENT_ACTIVITY) {
+            });
+        } else if (activity == SOURCE_EVENT_ACTIVITY) {
+            back.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
                 intent.putExtra(DB_EVENT_ID_TAG, DBEventID);
                 startActivity(intent);
-            }
-        });
+            });
+        }
 
         notificationSettings = findViewById(R.id.notification_settings);
         notificationSettings.setOnClickListener(v -> {

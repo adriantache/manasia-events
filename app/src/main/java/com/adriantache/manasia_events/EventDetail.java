@@ -30,6 +30,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
 
 public class EventDetail extends AppCompatActivity {
     private static final String TAG = "EventDetail";
@@ -45,11 +46,12 @@ public class EventDetail extends AppCompatActivity {
     private ConstraintLayout constraintLayout;
     private Event event = null;
     private int dbEventId = ERROR_VALUE;
-    private boolean notifyOnAllEvents;
+    //todo determine if we need this at this level
     private SharedPreferences sharedPref;
 
     //todo zoom photo on click
-    //todo remap this class and refactor it so that it makes more sense
+    //todo [BUG] find NOTIFY_SETTINGS problem
+    //todo set notifyOnAllEvents and settings reading to default to TRUE
 
     @Override
     public void onBackPressed() {
@@ -76,9 +78,6 @@ public class EventDetail extends AppCompatActivity {
         notifyLabel = findViewById(R.id.notify_label);
         constraintLayout = findViewById(R.id.constraint_layout);
 
-        //read notify setting
-        getSharedPrefs();
-
         //get the event for which to display details
         Intent intent = getIntent();
         dbEventId = Objects.requireNonNull(intent.getExtras()).getInt(DB_EVENT_ID_TAG);
@@ -87,11 +86,9 @@ public class EventDetail extends AppCompatActivity {
         else
             Toast.makeText(this, "Error getting event ID.", Toast.LENGTH_SHORT).show();
 
+        //populate the activity with event details
         if (event != null) {
             populateDetails();
-            //todo figure this mechanism out and improve on it
-            //set on click listener and details for the notify button, but only if event is not in the past
-            setNotifyOnClickListener(Utils.compareDateToToday(event.getDate()) < 0);
         } else {
             Toast.makeText(this, "Error getting event from database.", Toast.LENGTH_SHORT).show();
             finish();
@@ -126,16 +123,11 @@ public class EventDetail extends AppCompatActivity {
         });
 
         //inform MainActivity that this isn't first launch
+        //todo replace with startActivityForResult
         sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
-    }
-
-    private void getSharedPrefs() {
-        //read notify setting
-        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-        notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
     }
 
     private void populateDetails() {
@@ -153,66 +145,70 @@ public class EventDetail extends AppCompatActivity {
         month.setText(Utils.extractDayOrMonth(event.getDate(), false));
         title.setText(event.getTitle());
         description.setText(event.getDescription());
+
+        //set on click listener and details for the notify button
+        setNotifyDetails();
+    }
+
+    private void setNotifyDetails() {
+        //if event is in the past, set some defaults and no onClickListener
+        if (Utils.compareDateToToday(event.getDate()) < 0) {
+            //hide the notification indicator up top
+            notifyStatus.setVisibility(View.INVISIBLE);
+
+            //and gray out the SwitchIconView
+            notifyIcon.setIconEnabled(false);
+            notifyIcon.setEnabled(false);
+
+            return;
+        }
+
+        //read notify setting to determine if notifyOnAllEvents is true
+        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        boolean notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, true);
+
+        //set notify status appearance
         if (event.getNotify() == 1 || notifyOnAllEvents)
             notifyStatus.setImageResource(R.drawable.alarm_accent);
         else
             notifyStatus.setImageResource(R.drawable.alarm);
 
-        //set notify button state depending on notify state
-        notifyIcon.setIconEnabled(event.getNotify() == 1 || notifyOnAllEvents);
-    }
-
-    private void setNotifyOnClickListener(boolean pastEvent) {
-        //todo determine if this is necessary, might be due to the snackbar
-        //read notify setting
-        getSharedPrefs();
-
-        //only add notification for events in the future (or today)
-        if (pastEvent) {
-            notifyStatus.setImageResource(R.drawable.alarm);
-            notifyIcon.setIconEnabled(false);
-            notifyIcon.setEnabled(false);
-
-            //also hide the notification indicator up top
-            notifyStatus.setVisibility(View.INVISIBLE);
-        } else if (notifyOnAllEvents) {
+        //set notify button appearance and onClickListener
+        if (notifyOnAllEvents) {
             notifyIcon.setIconEnabled(true);
             notifyLabel.setText(getString(R.string.notifying));
-            notifyStatus.setImageResource(R.drawable.alarm_accent);
 
-            notify.setOnClickListener(v -> showSnackbar());
+            notify.setOnClickListener(v -> showSnackbar(false));
         } else {
             notify.setOnClickListener(v -> {
                 if (event.getNotify() == 1) {
                     notifyIcon.setIconEnabled(false);
-                    notifyStatus.setImageResource(R.drawable.alarm);
                     notifyLabel.setText(getString(R.string.notify));
 
                     event.setNotify(0);
                     updateDatabase();
 
-                    Toast.makeText(getApplicationContext(), "Disabled notification.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Disabled notification.",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     notifyIcon.setIconEnabled(true);
-                    notifyStatus.setImageResource(R.drawable.alarm_accent);
                     notifyLabel.setText(getString(R.string.notifying));
 
                     event.setNotify(1);
                     updateDatabase();
 
-                    //if we set the notify flag, use the Snackbar to prompt the user to always get notified
-                    showSnackbar();
+                    //since we set the notify flag, use the Snackbar to prompt the user to always get notified
+                    showSnackbar(true);
                 }
 
-                //todo determine if this notifications update is necessary or we should just trigger the main method
                 scheduleNotifications(getApplicationContext(), false);
             });
         }
     }
 
     //show a snackbar inviting the user to activate notification for all events
-    public void showSnackbar() {
-        if (!notifyOnAllEvents) {
+    public void showSnackbar(boolean promptAlwaysNotify) {
+        if (promptAlwaysNotify) {
             Snackbar snackbar = Snackbar.make(constraintLayout,
                     "You will be notified on the day of the event.\n" +
                             "Would you like to be notified for all events?",
@@ -224,21 +220,21 @@ public class EventDetail extends AppCompatActivity {
                 editor.putBoolean(NOTIFY_SETTING, true);
                 editor.apply();
 
-                notifyOnAllEvents = true;
-
                 //since we're activating the setting to always be notified, go ahead and schedule notifications
                 scheduleNotifications(getApplicationContext(), true);
 
-                Toast.makeText(this, "We will notify you for all future events.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "We will notify you for all future events.",
+                        Toast.LENGTH_SHORT).show();
 
-                setNotifyOnClickListener(false);
+                setNotifyDetails();
             });
 
-            snackbar.show();
-
+            //center snackbar text
             View view = snackbar.getView();
             TextView textView = view.findViewById(R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            snackbar.show();
         } else {
             Snackbar snackbar = Snackbar.make(constraintLayout,
                     "You are already being notified for all events.\n" +
@@ -247,16 +243,17 @@ public class EventDetail extends AppCompatActivity {
 
             snackbar.setAction("Settings", v -> {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                settingsIntent.putExtra("activity", 2);
+                settingsIntent.putExtra("activity", SOURCE_EVENT_ACTIVITY);
                 settingsIntent.putExtra(DB_EVENT_ID_TAG, dbEventId);
                 startActivity(settingsIntent);
             });
 
-            snackbar.show();
-
+            //center snackbar text
             View view = snackbar.getView();
             TextView textView = view.findViewById(R.id.snackbar_text);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            snackbar.show();
         }
     }
 
