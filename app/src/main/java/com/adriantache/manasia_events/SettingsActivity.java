@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -24,6 +26,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACT
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final String TAG = "SettingsActivity";
     ImageView back;
     TextView devTools;
     Button notificationSettings;
@@ -37,7 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         final int activity = Objects.requireNonNull(getIntent().getExtras()).getInt("activity");
         final int DBEventID = getIntent().getExtras().getInt(DB_EVENT_ID_TAG);
-
         back = findViewById(R.id.back);
         if (activity == SOURCE_MAIN_ACTIVITY) {
             back.setOnClickListener(v -> {
@@ -63,14 +65,24 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         //now that we can get here directly from MainActivity, we set the flag here as well
+        //todo replace this with startActivityForResult as well
         SharedPreferences sharedPrefs = getApplicationContext()
                 .getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
 
+        //this generates some debugging text useful for when logcat isn't available
+        //todo eventually remove this, maybe
         devTools = findViewById(R.id.dev_tools);
+        populateDevText();
+        devTools.setOnClickListener(v -> populateDevText());
+    }
+
+    private void populateDevText() {
         //time of last remote update
+        SharedPreferences sharedPrefs = getApplicationContext()
+                .getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         long lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_SETTING, 0);
         Calendar calendar = Calendar.getInstance();
         long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600;
@@ -78,19 +90,44 @@ public class SettingsActivity extends AppCompatActivity {
         //whether this is the first launch of MainActivity to prevent open hours Toast when coming back
         String displayText = "Dev Info: Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
                 + sharedPrefs.getBoolean(NOTIFY_SETTING, false) + "; \n\t\t\t\tFirstLaunch = " +
-                sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true) + ".";
+                sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true) +
+                ". Raw preferences: " + sharedPrefs.getAll().toString();
         devTools.setTextColor(0xffD4E157);
         devTools.setBackgroundColor(0xff795548);
         devTools.setText(displayText);
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragmentCompat
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         //in the future, remember to add this line to the styles.xml theme:
         //<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_TAG);
             addPreferencesFromResource(R.xml.preferences);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+            getPreferenceScreen().getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+
+            getPreferenceScreen().getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            //todo remove this
+            Toast.makeText(getContext(), "Preference changed: " + key + " - " +
+                    sharedPreferences.getBoolean(key, false), Toast.LENGTH_SHORT).show();
         }
     }
 }
