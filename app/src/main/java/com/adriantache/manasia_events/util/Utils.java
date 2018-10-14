@@ -37,11 +37,12 @@ public final class Utils {
 
     //date related methods
     public static String extractDayOrMonth(String s, boolean day) {
-        if (TextUtils.isEmpty(s)) return "ERROR";
+        final String error = "ERROR";
+        if (TextUtils.isEmpty(s)) return error;
 
         String[] parts = s.split("-");
 
-        if (parts.length != 3) return "ERROR";
+        if (parts.length != 3) return error;
 
         if (day) return parts[2];
         else switch (parts[1]) {
@@ -70,7 +71,7 @@ public final class Utils {
             case "12":
                 return "DEC";
             default:
-                return "ERROR";
+                return error;
         }
     }
 
