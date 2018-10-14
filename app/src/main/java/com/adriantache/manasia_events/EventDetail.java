@@ -24,12 +24,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
 
 public class EventDetail extends AppCompatActivity {
@@ -124,7 +124,7 @@ public class EventDetail extends AppCompatActivity {
 
         //inform MainActivity that this isn't first launch
         //todo replace with startActivityForResult
-        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        sharedPref = getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
@@ -164,7 +164,7 @@ public class EventDetail extends AppCompatActivity {
         }
 
         //read notify setting to determine if notifyOnAllEvents is true
-        sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        sharedPref = getDefaultSharedPreferences(getApplicationContext());
         boolean notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, true);
 
         //set notify status appearance
@@ -215,7 +215,7 @@ public class EventDetail extends AppCompatActivity {
                     Snackbar.LENGTH_LONG);
 
             snackbar.setAction("Activate", v -> {
-                sharedPref = getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+                sharedPref = getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(NOTIFY_SETTING, true);
                 editor.apply();

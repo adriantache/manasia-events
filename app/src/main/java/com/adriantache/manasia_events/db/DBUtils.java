@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.Context.MODE_PRIVATE;
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.db.EventContract.CONTENT_URI;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DATE;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_DESCRIPTION;
@@ -24,7 +24,6 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 /**
  * Class to store general utility functions for database operations
@@ -167,16 +166,14 @@ public final class DBUtils {
                 context.getContentResolver().insert(CONTENT_URI, values);
             }
 
-            SharedPreferences sharedPrefs = context
-                    .getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            SharedPreferences sharedPrefs = getDefaultSharedPreferences(context);
             //set notify on every future event flag
             boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
 
             // and write fetch date as well into SharedPrefs
             Calendar calendar = Calendar.getInstance();
             long lastUpdateTime = calendar.getTimeInMillis();
-            SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
+            SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putLong(LAST_UPDATE_TIME_SETTING, lastUpdateTime);
             editor.apply();
 

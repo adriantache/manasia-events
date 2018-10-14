@@ -9,7 +9,6 @@ public class CommonStrings {
     public static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     public static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
     public static final String JSON_RESULT = "JSON_STRING";
-    public static final String SHARED_PREFERENCES_TAG = "preferences";
     public static final String NOTIFY_SETTING = "notify";
     public static final String FIRST_LAUNCH_SETTING = "notify";
     public static final String LAST_UPDATE_TIME_SETTING = "LAST_UPDATE_TIME";

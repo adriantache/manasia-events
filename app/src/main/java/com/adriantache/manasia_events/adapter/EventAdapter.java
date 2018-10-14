@@ -2,6 +2,8 @@ package com.adriantache.manasia_events.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import static android.content.Context.MODE_PRIVATE;
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 public class EventAdapter extends ArrayAdapter<Event> {
     private final List<Event> events = new ArrayList<>();
@@ -83,7 +81,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
             else holder.notifyStatus.setVisibility(View.VISIBLE);
 
             //change notification image depending on whether the user has set it to notify them
-            SharedPreferences sharedPref = getContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            SharedPreferences sharedPref = getDefaultSharedPreferences(getContext());
             boolean notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, false);
             if (holder.notifyStatus.getVisibility() == View.VISIBLE) {
                 if (event.getNotify() == 1 || notifyOnAllEvents)

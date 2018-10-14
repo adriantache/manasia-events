@@ -17,9 +17,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static android.text.Html.FROM_HTML_SEPARATOR_LINE_BREAK_HEADING;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 
 public class MenuActivity extends AppCompatActivity {
     ImageView back;
@@ -73,7 +73,8 @@ public class MenuActivity extends AppCompatActivity {
         back.setOnClickListener(v -> back());
 
         //inform MainActivity that this isn't first launch
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
+
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();

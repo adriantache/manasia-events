@@ -47,6 +47,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.State;
 import androidx.work.WorkManager;
 
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
@@ -57,7 +58,6 @@ import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
-import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         //reset the first launch flag so it doesn't remain set to false
         //todo rethink this mechanism, user might not always return from EventDetail or MenuActivity...
         //todo ...might make more sense to just use startActivityForResult with those activities
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, true);
         editor.apply();
@@ -326,7 +326,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     private void getPreferences() {
-        SharedPreferences sharedPrefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getDefaultSharedPreferences(getApplicationContext());
+
         //set notify on every future event flag
         notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
         //set time of last remote update
@@ -348,7 +349,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 "Would you like to be notified for all events?",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Activate", v -> {
-            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_TAG, MODE_PRIVATE);
+            SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
+
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(NOTIFY_SETTING, true);
             editor.apply();

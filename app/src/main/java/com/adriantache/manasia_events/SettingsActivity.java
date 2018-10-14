@@ -1,6 +1,5 @@
 package com.adriantache.manasia_events;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,11 +15,11 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.Objects;
 
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.SHARED_PREFERENCES_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 
@@ -62,8 +61,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         //now that we can get here directly from MainActivity, we set the flag here as well
         //todo replace this with startActivityForResult as well
-        SharedPreferences sharedPrefs = getApplicationContext()
-                .getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getDefaultSharedPreferences(getApplicationContext());
+
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(FIRST_LAUNCH_SETTING, false);
         editor.apply();
@@ -77,8 +76,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void populateDevText() {
         //time of last remote update
-        SharedPreferences sharedPrefs = getApplicationContext()
-                .getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getDefaultSharedPreferences(getApplicationContext());
+
         long lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME_SETTING, 0);
         Calendar calendar = Calendar.getInstance();
         long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600;
@@ -99,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
         //in the future, remember to add this line to the styles.xml theme:
         //<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_TAG);
+            getPreferenceManager().getSharedPreferences();
             addPreferencesFromResource(R.xml.preferences);
         }
 
