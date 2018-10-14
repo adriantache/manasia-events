@@ -125,9 +125,7 @@ public class EventDetail extends AppCompatActivity {
         //inform MainActivity that this isn't first launch
         //todo replace with startActivityForResult
         sharedPref = getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(FIRST_LAUNCH_SETTING, false);
-        editor.apply();
+        sharedPref.edit().putBoolean(FIRST_LAUNCH_SETTING, false).apply();
     }
 
     private void populateDetails() {
@@ -216,9 +214,9 @@ public class EventDetail extends AppCompatActivity {
 
             snackbar.setAction("Activate", v -> {
                 sharedPref = getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(NOTIFY_SETTING, true);
-                editor.apply();
+                //todo remove this is there are no problems
+                if(!sharedPref.edit().putBoolean(NOTIFY_SETTING, true).commit())
+                    Toast.makeText(this, "FATAL ERROR SAVING NOTIFY ALL SETTING!", Toast.LENGTH_LONG).show();
 
                 //since we're activating the setting to always be notified, go ahead and schedule notifications
                 scheduleNotifications(getApplicationContext(), true);
