@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,10 +25,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACT
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
-    private static final String TAG = "SettingsActivity";
-    ImageView back;
     TextView devTools;
-    Button notificationSettings;
 
     //todo fix settings update problem
 
@@ -40,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         final int activity = Objects.requireNonNull(getIntent().getExtras()).getInt("activity");
         final int DBEventID = getIntent().getExtras().getInt(DB_EVENT_ID_TAG);
-        back = findViewById(R.id.back);
+        ImageView back = findViewById(R.id.back);
         if (activity == SOURCE_MAIN_ACTIVITY) {
             back.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -54,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
-        notificationSettings = findViewById(R.id.notification_settings);
+        Button notificationSettings = findViewById(R.id.notification_settings);
         notificationSettings.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -73,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.apply();
 
         //this generates some debugging text useful for when logcat isn't available
-        //todo eventually remove this, maybe
+        //todo eventually remove this, maybe (could be useful to help users with debug, but settings is user facing)
         devTools = findViewById(R.id.dev_tools);
         populateDevText();
         devTools.setOnClickListener(v -> populateDevText());
