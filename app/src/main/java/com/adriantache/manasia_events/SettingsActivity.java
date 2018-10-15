@@ -1,6 +1,7 @@
 package com.adriantache.manasia_events;
 
 import android.content.Intent;
+
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView devTools;
 
     //todo fix settings update problem
+    //todo figure out settings implementation, probably some implementation confusion between SharedPrefs and Preferences
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
         //in the future, remember to add this line to the styles.xml theme:
         //<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            getPreferenceManager().getSharedPreferences();
+            getPreferenceManager().setStorageDefault();
             addPreferencesFromResource(R.xml.preferences);
         }
 

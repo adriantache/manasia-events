@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="false"
+        android:icon="@drawable/alarm"
         android:key="notify"
+        android:singleLine="false"
+        android:summaryOff="You manually click Notify on the event detail screen for each event you are interested in."
+        android:summaryOn="You will be notified on the day of every event."
         android:title="Always notify for all events"
-        android:singleLine="false"/>
+        android:visibility="visible" />
 </PreferenceScreen>

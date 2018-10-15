@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -111,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         error = findViewById(R.id.error);
         openHours = findViewById(R.id.open_hours);
 
+        //set default preferences on first launch, in case this matters for some reason
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         //get shared prefs
         getPreferences();
 
@@ -174,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Calendar calendar = Calendar.getInstance();
         //get shared prefs again to see if lastUpdateTime changed
         getPreferences();
-        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90000000L) {
+        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90_000_000L) {
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
