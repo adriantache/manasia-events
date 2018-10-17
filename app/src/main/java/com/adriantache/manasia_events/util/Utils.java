@@ -366,20 +366,21 @@ public final class Utils {
                 //add all tags, if they exist, otherwise return an empty ArrayList
                 JSONArray tags = child.optJSONArray("tags");
                 ArrayList<String> eventTags = new ArrayList<>();
-                for (int j = 0; j < tags.length(); j++) {
-                    JSONObject tag = tags.optJSONObject(j);
-                    String tagName = tag.optString("name");
-                    if (!TextUtils.isEmpty(tagName)) {
-                        //add the tags to the current event
-                        eventTags.add(tagName);
+                if (tags != null)
+                    for (int j = 0; j < tags.length(); j++) {
+                        JSONObject tag = tags.optJSONObject(j);
+                        String tagName = tag.optString("name");
+                        if (!TextUtils.isEmpty(tagName)) {
+                            //add the tags to the current event
+                            eventTags.add(tagName);
 
-                        //add each tag to the class-level tags, and either increment count or create a new one
-                        if (Event.tags.containsKey(tagName)) {
-                            int value = Event.tags.get(tagName);
-                            Event.tags.put(tagName, ++value);
-                        } else Event.tags.put(tagName, 1);
+                            //add each tag to the class-level tags, and either increment count or create a new one
+                            if (Event.tags.containsKey(tagName)) {
+                                int value = Event.tags.get(tagName);
+                                Event.tags.put(tagName, ++value);
+                            } else Event.tags.put(tagName, 1);
+                        }
                     }
-                }
 
                 //give the description breathing room
                 if (description != null)
