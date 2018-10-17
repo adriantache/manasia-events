@@ -342,7 +342,7 @@ public final class Utils {
         return imageTag;
     }
 
-    public static ArrayList<Event> parseJSON(String JSON) {
+    public static ArrayList<Event> parseJSON(final String JSON) {
         if (TextUtils.isEmpty(JSON) || JSON.length() < 50) return new ArrayList<>();
 
         ArrayList<Event> events = new ArrayList<>();
@@ -352,6 +352,7 @@ public final class Utils {
             JSONObject root = new JSONObject(JSON);
             JSONArray eventTitle = root.optJSONArray("event_title");
 
+            //get each event
             for (int i = 0; i < eventTitle.length(); i++) {
                 JSONObject child = eventTitle.optJSONObject(i);
                 String title = child.optString("name");
@@ -362,12 +363,30 @@ public final class Utils {
                 String imageUrl = child.optString("image_url");
                 if (!TextUtils.isEmpty(imageUrl)) imageUrl = getImageUrl(imageUrl);
 
+                //add all tags, if they exist, otherwise return an empty ArrayList
+                JSONArray tags = child.optJSONArray("tags");
+                ArrayList<String> eventTags = new ArrayList<>();
+                for (int j = 0; j < tags.length(); j++) {
+                    JSONObject tag = tags.optJSONObject(j);
+                    String tagName = tag.optString("name");
+                    if (!TextUtils.isEmpty(tagName)) {
+                        //add the tags to the current event
+                        eventTags.add(tagName);
+
+                        //add each tag to the class-level tags, and either increment count or create a new one
+                        if (Event.tags.containsKey(tagName)) {
+                            int value = Event.tags.get(tagName);
+                            Event.tags.put(tagName, ++value);
+                        } else Event.tags.put(tagName, 1);
+                    }
+                }
+
                 //give the description breathing room
                 if (description != null)
                     description = description.replace("\n", "\n\n");
 
                 if (date != null && title != null && description != null)
-                    events.add(new Event(date, title, description, imageUrl));
+                    events.add(new Event(date, title, description, imageUrl, eventTags));
             }
         } catch (JSONException e) {
             Log.e("parseJSON", "Cannot parse JSON", e);
@@ -386,6 +405,17 @@ public final class Utils {
         String nextVLJ = getNextWeeklyEvent(3, 1544565601000L);
 
         if (nextVLJ != null) {
+            //generate tags ArrayList
+            ArrayList<String> eventTags = new ArrayList<>();
+            String vljTag = "Drinks";
+            eventTags.add(vljTag);
+
+            //also update tags HashMap
+            if (Event.tags.containsKey(vljTag)) {
+                int value = Event.tags.get(vljTag);
+                Event.tags.put(vljTag, ++value);
+            } else Event.tags.put(vljTag, 1);
+
             //generate the event
             Event vlj = new Event(nextVLJ, "Seară VLJ",
                     "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
@@ -397,7 +427,7 @@ public final class Utils {
                             "<PIZZA>",
                     "https://scontent.fotp3-1.fna.fbcdn.net/v/t1.0-9/" +
                             "42967050_2259332690966868_4328291320184438784_n.jpg?" +
-                            "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C");
+                            "_nc_cat=104&oh=504a1edc450cdcf0712192568844c3d0&oe=5C4F3C1C", eventTags);
             //calculate where we'll be inserting the event in the ArrayList
             int eventPosition = getEventPosition(vlj, events);
 
