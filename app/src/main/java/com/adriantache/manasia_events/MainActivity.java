@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //todo [low] translate app (modify class, ensure input of event translations)
 //todo implement splash screen while fetching remote data
 //todo implement SwipeRefreshLayout (is it really needed?)
-//todo replace ListView with RecyclerView
+//todo replace ListView with RecyclerView (and use this: https://github.com/saket/InboxRecyclerView)
 //todo [idea] prevent notifications from triggering if user doesn't interact with them
 //todo [IDEA] scroll to TODAY on startup and mark it somehow in the list
 //todo [IDEA] alternative to above: colour events happening TODAY differently and change date to TODAY
