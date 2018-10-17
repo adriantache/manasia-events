@@ -33,6 +33,7 @@ import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
+import com.ramotion.foldingcell.FoldingCell;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -111,6 +112,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         menu = findViewById(R.id.menu);
         error = findViewById(R.id.error);
         openHours = findViewById(R.id.open_hours);
+
+        // implement FoldingCell
+        final FoldingCell fc = findViewById(R.id.folding_cell);
+        // attach click listener to folding cell
+        fc.setOnClickListener(v -> fc.toggle(false));
 
         //set default preferences on first launch, in case this matters for some reason
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);

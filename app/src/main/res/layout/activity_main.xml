@@ -21,6 +21,48 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/manasia_logo" />
 
+    <com.ramotion.foldingcell.FoldingCell xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/folding_cell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/logo">
+
+        <!--unfolded layout-->
+        <FrameLayout
+            android:id="@+id/cell_content_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_dark"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+        </FrameLayout>
+
+        <!--folded layout-->
+        <FrameLayout
+            android:id="@+id/cell_title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/filters_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_blue_dark"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center|center_vertical"
+                android:padding="8dp"
+                android:text="@string/filters"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+    </com.ramotion.foldingcell.FoldingCell>
+
     <!--todo replace ListView with RecyclerView-->
     <ListView
         android:id="@+id/list_view"
@@ -33,7 +75,7 @@
         app:layout_constraintBottom_toTopOf="@+id/busy_level"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo" />
+        app:layout_constraintTop_toBottomOf="@+id/folding_cell" />
 
     <TextView
         android:id="@+id/busy_level"
@@ -56,10 +98,10 @@
         android:id="@+id/menu"
         android:layout_width="46dp"
         android:layout_height="46dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:contentDescription="@string/menu"
         android:foreground="?android:attr/selectableItemBackground"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:scaleType="centerInside"
         android:src="@drawable/menu"
         app:layout_constraintBottom_toBottomOf="@+id/logo"

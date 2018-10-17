@@ -10,14 +10,8 @@
     <string name="map">MAP</string>
     <string name="event_thumbnail">Event thumbnail</string>
     <string name="manasia_logo">Manasia logo</string>
+    <string name="filters_set">Filters [SET]</string>
     <string name="filters">Filters</string>
-    <string name="music">MUSIC</string>
-    <string name="shops">SHOPS</string>
-    <string name="hub">HUB</string>
-    <string name="level_of_crowdedness">Level of crowdedness:</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="manasia_events_settings">Manasia Events Settings</string>
     <string name="next_manasia_event">NEXT MANASIA EVENT</string>
     <string name="next_event_thumbnail">Next event thumbnail</string>
