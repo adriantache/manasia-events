@@ -8,7 +8,10 @@ import android.text.TextUtils;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -20,6 +23,7 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_TAGS;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
@@ -42,7 +46,7 @@ public final class DBUtils {
     public static List<Event> readDatabase(Context context) {
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
-                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY};
+                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY, COLUMN_TAGS};
 
         //order by date since FB stores them in a random order
         String sortOrder = COLUMN_EVENT_DATE + " DESC";
@@ -69,7 +73,14 @@ public final class DBUtils {
                 String photoUrl = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_PHOTO_URL));
                 int notify = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_NOTIFY));
 
-                DBEvents.add(new Event(id, date, title, description, photoUrl, notify));
+                //get tags and decode them into an ArrayList
+                String rawTags = cursor.getString(cursor.getColumnIndex(COLUMN_TAGS));
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                Gson gson = new Gson();
+                ArrayList<String> tags = gson.fromJson(rawTags, type);
+
+                DBEvents.add(new Event(id, date, title, description, photoUrl, tags, notify));
             }
         } finally {
             cursor.close();
@@ -82,15 +93,15 @@ public final class DBUtils {
      * Method to get a single Event object from the database
      *
      * @param context   Context for EventDBHelper
-     * @param DBEventID Unique database ID of the event, as fetched from the database
+     * @param dbEventId Unique database ID of the event, as fetched from the database
      * @return The event requested by ID
      */
-    public static Event getEventFromDatabase(Context context, int DBEventID) {
+    public static Event getEventFromDatabase(Context context, int dbEventId) {
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
-                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY};
+                        COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY, COLUMN_TAGS};
         String selection = _ID + " == ?";
-        String selectionArgs[] = {String.valueOf(DBEventID)};
+        String selectionArgs[] = {String.valueOf(dbEventId)};
 
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, null);
 
@@ -112,7 +123,14 @@ public final class DBUtils {
                 String photoUrl = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_PHOTO_URL));
                 int notify = cursor.getInt(cursor.getColumnIndex(COLUMN_EVENT_NOTIFY));
 
-                event = new Event(id, date, title, description, photoUrl, notify);
+                //get tags and decode them into an ArrayList
+                String rawTags = cursor.getString(cursor.getColumnIndex(COLUMN_TAGS));
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                Gson gson = new Gson();
+                ArrayList<String> tags = gson.fromJson(rawTags, type);
+
+                event = new Event(id, date, title, description, photoUrl, tags, notify);
             }
         } finally {
             cursor.close();
@@ -125,11 +143,11 @@ public final class DBUtils {
      * Method to send an Event object to the database and update its details
      *
      * @param context   Context for EventDBHelper
-     * @param DBEventID Unique database ID of the event, as fetched from the database
+     * @param dbEventId Unique database ID of the event, as fetched from the database
      * @param event     Event object to be updated into the database
-     * @return (long) Result of the insertion operation, should be == DBEventID
+     * @return (long) Result of the insertion operation, should be == dbEventId
      */
-    public static int updateEventToDatabase(Context context, int DBEventID, Event event) {
+    public static int updateEventToDatabase(Context context, int dbEventId, Event event) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_EVENT_TITLE, event.getTitle());
         values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
@@ -138,8 +156,14 @@ public final class DBUtils {
             values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
         values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
 
+        //convert to String and add tags
+        ArrayList<String> tags = event.getEventTags();
+        Gson gson = new Gson();
+        String tagString = gson.toJson(tags);
+        values.put(COLUMN_TAGS, tagString);
+
         String selection = _ID + " == ?";
-        String selectionArgs[] = {String.valueOf(DBEventID)};
+        String selectionArgs[] = {String.valueOf(dbEventId)};
 
         return context.getContentResolver().update(CONTENT_URI, values, selection, selectionArgs);
     }
@@ -147,8 +171,8 @@ public final class DBUtils {
     public static void inputRemoteEventsIntoDatabase(ArrayList<Event> remoteEvents, Context context) {
         if (remoteEvents != null) {
             //first of all transfer all notify statuses from the local database to the temporary remote database
-            ArrayList<Event> DBEvents = (ArrayList<Event>) DBUtils.readDatabase(context);
-            remoteEvents = Utils.updateNotifyInRemote(remoteEvents, DBEvents);
+            ArrayList<Event> dbEvents = (ArrayList<Event>) DBUtils.readDatabase(context);
+            remoteEvents = Utils.updateNotifyInRemote(remoteEvents, dbEvents);
 
             //then delete ALL events from the local table
             context.getContentResolver().delete(CONTENT_URI, null, null);
@@ -162,6 +186,12 @@ public final class DBUtils {
                 if (!TextUtils.isEmpty(event.getPhotoUrl()))
                     values.put(COLUMN_EVENT_PHOTO_URL, event.getPhotoUrl());
                 values.put(COLUMN_EVENT_NOTIFY, event.getNotify());
+
+                //convert to String and add tags
+                ArrayList<String> tags = event.getEventTags();
+                Gson gson = new Gson();
+                String tagString = gson.toJson(tags);
+                values.put(COLUMN_TAGS, tagString);
 
                 context.getContentResolver().insert(CONTENT_URI, values);
             }

@@ -149,7 +149,9 @@ public class EventProvider extends ContentProvider {
         String date = values.getAsString(COLUMN_EVENT_DATE);
         if (date == null)
             throw new IllegalArgumentException("Event requires a date");
-        //todo add test for date format yyyy-MM-dd
+        //todo test this code
+//        if (!date.matches("^\\[1-2]d{3}-[0-1]\\d-[0-3]\\d/gm"))
+//            throw new IllegalArgumentException("Event date must be of format yyyy-MM-dd");
 
         Integer notify = values.getAsInteger(COLUMN_EVENT_NOTIFY);
         if (notify != null && notify != 0 && notify != 1)

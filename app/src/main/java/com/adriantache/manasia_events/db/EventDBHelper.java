@@ -9,6 +9,7 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_NOTIFY;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_PHOTO_URL;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_EVENT_TITLE;
+import static com.adriantache.manasia_events.db.EventContract.EventEntry.COLUMN_TAGS;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry.TABLE_NAME;
 import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
 
@@ -16,7 +17,7 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
  * Creates and updates SQL database
  **/
 public class EventDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "events.db";
 
     private static final String SQL_CREATE_ENTRIES =
@@ -26,7 +27,8 @@ public class EventDBHelper extends SQLiteOpenHelper {
                     COLUMN_EVENT_DESCRIPTION + " TEXT NOT NULL, " +
                     COLUMN_EVENT_DATE + " TEXT NOT NULL, " +
                     COLUMN_EVENT_PHOTO_URL + " TEXT, " +
-                    COLUMN_EVENT_NOTIFY + " INTEGER DEFAULT 0);";
+                    COLUMN_EVENT_NOTIFY + " INTEGER DEFAULT 0, " +
+                    COLUMN_TAGS + " TEXT);";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
 

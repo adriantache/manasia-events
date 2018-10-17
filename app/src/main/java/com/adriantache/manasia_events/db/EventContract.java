@@ -25,5 +25,6 @@ public final class EventContract {
         public static final String COLUMN_EVENT_DATE = "date";
         public static final String COLUMN_EVENT_PHOTO_URL = "photo_url";
         public static final String COLUMN_EVENT_NOTIFY = "notify";
+        public static final String COLUMN_TAGS = "tags";
     }
 }
