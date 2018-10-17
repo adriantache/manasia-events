@@ -3,11 +3,8 @@ package com.adriantache.manasia_events.custom_class;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class Event {
-    public static HashMap<String, Integer> tags = new HashMap<>();
     private ArrayList<String> eventTags;
     private String date; //date of format yyyy-MM-dd
     private String title;
@@ -52,21 +49,6 @@ public class Event {
         this.photoUrl = photoUrl;
         this.eventTags = eventTags;
         this.notify = notify;
-    }
-
-    //return total number of tags
-    public static int getNumberOfTags() {
-        int numberOfTags = 0;
-
-        Iterator<HashMap.Entry<String, Integer>> iterator = tags.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            HashMap.Entry<String, Integer> pair = iterator.next();
-
-            numberOfTags += pair.getValue();
-        }
-
-        return numberOfTags;
     }
 
     //getters

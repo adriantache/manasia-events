@@ -373,12 +373,6 @@ public final class Utils {
                         if (!TextUtils.isEmpty(tagName)) {
                             //add the tags to the current event
                             eventTags.add(tagName);
-
-                            //add each tag to the class-level tags, and either increment count or create a new one
-                            if (Event.tags.containsKey(tagName)) {
-                                int value = Event.tags.get(tagName);
-                                Event.tags.put(tagName, ++value);
-                            } else Event.tags.put(tagName, 1);
                         }
                     }
 
@@ -411,12 +405,6 @@ public final class Utils {
             String vljTag = "Drinks";
             eventTags.add(vljTag);
 
-            //also update tags HashMap
-            if (Event.tags.containsKey(vljTag)) {
-                int value = Event.tags.get(vljTag);
-                Event.tags.put(vljTag, ++value);
-            } else Event.tags.put(vljTag, 1);
-
             //generate the event
             Event vlj = new Event(nextVLJ, "Seară VLJ",
                     "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
@@ -438,6 +426,7 @@ public final class Utils {
 
     private static String getNextWeeklyEvent(int weekday, long limitDate) {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
         //check that event end date is not exceeded
         if (calendar.getTimeInMillis() > limitDate) return null;
@@ -457,6 +446,7 @@ public final class Utils {
 
     private static String getNextDailyEvent(long limitDate) {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
         //check that event end date is not exceeded
         if (calendar.getTimeInMillis() > limitDate) return null;

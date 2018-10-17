@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -17,10 +20,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -42,6 +47,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
@@ -76,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
     private boolean firstLaunch;
+    private HashMap<String, Integer> tagMap;
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -117,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         final FoldingCell fc = findViewById(R.id.folding_cell);
         // attach click listener to folding cell
         fc.setOnClickListener(v -> fc.toggle(false));
+        //todo play with this
+        //fc.initialize(90, 1000, Color.DKGRAY, 1);
 
         //set default preferences on first launch, in case this matters for some reason
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -261,6 +271,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             sendBroadcast(intent);
 
             populateListView();
+
+            //compute tags HashMap from events ArrayList
+            computeTagMap();
+            //populate FoldingCell with tags
+            populateFoldingCell();
         }
     }
 
@@ -308,6 +323,141 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             popup.setOnMenuItemClickListener(this);
             popup.show();
         });
+    }
+
+    private void computeTagMap() {
+        tagMap = new HashMap<>();
+
+        for (Event event : events) {
+            ArrayList<String> tags = event.getEventTags();
+
+            if (!tags.isEmpty()) {
+                for (String tag : tags) {
+                    //add each tag to the class-level tags, and either increment count or create a new one
+                    if (tagMap.containsKey(tag)) {
+                        int value = tagMap.get(tag);
+                        tagMap.put(tag, ++value);
+                    } else tagMap.put(tag, 1);
+                }
+            }
+        }
+    }
+
+    private void populateFoldingCell() {
+        LinearLayout tagsLL = findViewById(R.id.tags_linear_layout);
+        View[] views = makeTagTextViews();
+        populateText(tagsLL, views, this);
+    }
+
+    //turn tags into TextViews
+    private View[] makeTagTextViews() {
+        //create as many views as there are tags, plus 3 extra: title, confirm button, reset button
+        View[] views = new View[tagMap.size() + 3];
+        int pointer = 0;
+
+        //title TextView
+        TextView titleTextView = new TextView(this);
+        titleTextView.setText("TAGS: ");
+        titleTextView.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+        titleTextView.setPadding(8, 8, 8, 8);
+        titleTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+
+        //make titleTV the width of the screen so it displays on top
+        Display display = getWindowManager().getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        titleTextView.setWidth(point.x);
+
+        views[pointer++] = titleTextView;
+
+        //tags TextViews
+        Iterator<HashMap.Entry<String, Integer>> iterator = tagMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            HashMap.Entry<String, Integer> pair = iterator.next();
+
+            TextView textView = new TextView(this);
+            textView.setText(pair.getKey());
+            textView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+            textView.setBackgroundColor(Color.RED);
+            textView.setTextColor(Color.WHITE);
+            textView.setPadding(16, 16, 16, 16);
+
+            //todo update this
+            textView.setOnClickListener(v -> Toast.makeText(this, "CLICKY", Toast.LENGTH_SHORT).show());
+
+            views[pointer++] = textView;
+        }
+
+        //todo reset button
+
+        //todo confirm button
+
+        return views;
+    }
+
+    /*
+     *  Got this off https://stackoverflow.com/questions/6996837/android-multi-line-linear-layout
+     *  Copyright 2011 Sherif, modified by me
+     */
+    private void populateText(LinearLayout ll, View[] views, Context context) {
+        if (views == null || ll == null) {
+            Log.e(TAG, "populateText: ERROR POPULATING VIEWS");
+            return;
+        }
+
+        Display display = getWindowManager().getDefaultDisplay();
+        ll.removeAllViews();
+
+        Point point = new Point();
+        display.getSize(point);
+        int maxWidth = point.x - 20;
+
+        LinearLayout.LayoutParams params;
+        LinearLayout newLL = new LinearLayout(context);
+        newLL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        newLL.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+        newLL.setOrientation(LinearLayout.HORIZONTAL);
+
+        int widthSoFar = 0;
+
+        for (View view : views) {
+            //todo remove this when we have the number of views locked down
+            if (view == null) continue;
+
+            LinearLayout linearLayout = new LinearLayout(context);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+            linearLayout.setLayoutParams(new ListView.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            view.measure(0, 0);
+            params = new LinearLayout.LayoutParams(view.getMeasuredWidth(),
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            int margin = 8;
+            params.setMargins(margin, margin, margin, margin);
+            linearLayout.addView(view, params);
+            linearLayout.measure(0, 0);
+            widthSoFar = widthSoFar + view.getMeasuredWidth() + 2 * margin;
+
+            if (widthSoFar >= maxWidth) {
+                ll.addView(newLL);
+
+                newLL = new LinearLayout(context);
+                newLL.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                newLL.setOrientation(LinearLayout.HORIZONTAL);
+                newLL.setGravity(Gravity.CENTER);
+                params = new LinearLayout.LayoutParams(linearLayout
+                        .getMeasuredWidth(), linearLayout.getMeasuredHeight());
+                newLL.addView(linearLayout, params);
+                widthSoFar = linearLayout.getMeasuredWidth();
+            } else {
+                newLL.addView(linearLayout);
+            }
+        }
+        ll.addView(newLL);
     }
 
     private String getRemoteURL() {
@@ -398,6 +548,23 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             default:
                 return false;
         }
+    }
+
+    //return total number of tags
+    public int getNumberOfTags() {
+        if (tagMap.isEmpty()) return 0;
+
+        int numberOfTags = 0;
+
+        Iterator<HashMap.Entry<String, Integer>> iterator = tagMap.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            HashMap.Entry<String, Integer> pair = iterator.next();
+
+            numberOfTags += pair.getValue();
+        }
+
+        return numberOfTags;
     }
 }
 

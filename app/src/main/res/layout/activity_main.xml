@@ -37,16 +37,20 @@
             android:background="@android:color/holo_green_dark"
             android:visibility="gone">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/tags_linear_layout"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:orientation="vertical"
+                android:padding="8dp" />
         </FrameLayout>
 
         <!--folded layout-->
         <FrameLayout
             android:id="@+id/cell_title_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="40dp">
 
             <TextView
                 android:id="@+id/filters_text_view"
