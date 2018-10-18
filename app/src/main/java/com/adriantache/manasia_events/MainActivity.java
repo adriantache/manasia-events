@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private boolean notifyOnAllEvents;
     private boolean firstLaunch;
     private Map<String, Integer> tagMap;
+    private FoldingCell fc;
+    private ArrayList<String> filtersSet = new ArrayList<>();
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -98,10 +100,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-        homeIntent.addCategory(Intent.CATEGORY_HOME);
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(homeIntent);
+        //fold filters on back press if they're open
+        if (fc.isUnfolded()) fc.fold(false);
+        else {
+            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+            homeIntent.addCategory(Intent.CATEGORY_HOME);
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
+        }
     }
 
     //update list from db when returning from EventDetail
@@ -124,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         openHours = findViewById(R.id.open_hours);
 
         // implement FoldingCell
-        final FoldingCell fc = findViewById(R.id.folding_cell);
+        fc = findViewById(R.id.folding_cell);
         // attach click listener to folding cell
         fc.setOnClickListener(v -> fc.toggle(false));
         //todo play with this
@@ -283,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private void populateListView() {
         //populate list
-        listView.setAdapter(new EventAdapter(this, events));
+        listView.setAdapter(new EventAdapter(this, filter(events)));
 
         //todo figure out why this isn't working
         listView.setEmptyView(error);
@@ -368,11 +374,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         View[] views = new View[tagMap.size() + 2];
         int pointer = 0;
 
+        //set padding to correct pixel value depending on screen density
+        int viewPadding = Math.round(8 * getResources().getDisplayMetrics().density);
+
         //title TextView
         TextView titleTextView = new TextView(this);
         titleTextView.setText("TAGS: ");
         titleTextView.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-        titleTextView.setPadding(8, 8, 8, 8);
+        titleTextView.setPadding(viewPadding, viewPadding, viewPadding, viewPadding);
         titleTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
 
         //make titleTV the width of the screen so it displays on top
@@ -388,28 +397,37 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         while (iterator.hasNext()) {
             HashMap.Entry<String, Integer> pair = iterator.next();
 
+            //don't draw empty tags
+            if (pair.getValue() == 0) continue;
+
+            String tag = pair.getKey();
+
             TextView textView = new TextView(this);
-            textView.setText(pair.getKey());
+            textView.setText(tag);
             textView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
             textView.setTextColor(Color.WHITE);
 
-            //todo add colour calculation method here
-            textView.setBackgroundColor(Color.RED);
+            if (!filtersSet.isEmpty() && filtersSet.contains(tag))
+                textView.setBackgroundColor(Color.GRAY);
+            else {
+                //todo add colour calculation method here
+                textView.setBackgroundColor(Color.RED);
+            }
 
-            //todo test if this does something
-            textView.setPadding(16, 16, 16, 16);
+            //note to self: this uses lame pixels, not cool DiPs
+            textView.setPadding(viewPadding, viewPadding, viewPadding, viewPadding);
 
-            //todo update this
-            textView.setOnClickListener(v -> Toast.makeText(this, "CLICKY " + v.toString(), Toast.LENGTH_SHORT).show());
+            //add and apply a filter on click
+            textView.setOnClickListener(v -> addFilter(tag));
 
             views[pointer++] = textView;
         }
 
-        //todo reset button
+        //reset button
         TextView resetTextView = new TextView(this);
-        resetTextView.setText("RESET TAGS");
+        resetTextView.setText("CLEAR ALL TAGS");
         resetTextView.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-        resetTextView.setPadding(16, 16, 16, 16);
+        resetTextView.setPadding(viewPadding, viewPadding, viewPadding, viewPadding);
         resetTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
         resetTextView.setBackgroundColor(Color.YELLOW);
 
@@ -417,19 +435,61 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         resetTextView.setWidth(point.x);
 
         //todo update this
-        resetTextView.setOnClickListener(v -> Toast.makeText(this, "CLICKY " + v.toString(), Toast.LENGTH_SHORT).show());
+        resetTextView.setOnClickListener(v -> resetFilters());
 
         views[pointer] = resetTextView;
 
         return views;
     }
 
-    private void setFilter(String filter) {
-        //todo add code to set/remove individual tag filter
+    //add or remove an individual tag from the filter
+    private void addFilter(String filter) {
+        //set/remove individual tag filter
+        if (filtersSet.isEmpty() || !filtersSet.contains(filter)) filtersSet.add(filter);
+        else filtersSet.remove(filter);
+
+        //update filters text to indicate filters are set
+        TextView filtersText = findViewById(R.id.filters_text_view);
+        if (filtersSet.isEmpty()) filtersText.setText(getString(R.string.filters));
+        else filtersText.setText(getString(R.string.filters_set));
+
+        //redraw filters
+        populateFoldingCell();
+
+        //finally, update UI
+        populateListView();
     }
 
+    //filter events by set tags
+    private ArrayList<Event> filter(ArrayList<Event> events) {
+        if (filtersSet.isEmpty()) return events;
+
+        ArrayList<Event> filteredEvents = new ArrayList<>();
+        final String noTag = " NO TAG ";
+
+        for (Event event : events) {
+            ArrayList<String> tags = event.getEventTags();
+
+            //also add "no tag" events
+            if (tags.isEmpty() && filtersSet.contains(noTag)) filteredEvents.add(event);
+
+            for (String tag : tags) {
+                if (filtersSet.contains(tag)) filteredEvents.add(event);
+            }
+        }
+
+        return filteredEvents;
+    }
+
+    //remove all filters
     private void resetFilters() {
-        //todo add code to reset filters
+        filtersSet = new ArrayList<>();
+
+        //redraw filters
+        populateFoldingCell();
+
+        //finally, update UI
+        populateListView();
     }
 
     /*
@@ -442,9 +502,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             return;
         }
 
-        Display display = getWindowManager().getDefaultDisplay();
         ll.removeAllViews();
 
+        Display display = getWindowManager().getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
         int maxWidth = point.x - 20;
@@ -459,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         int widthSoFar = 0;
 
         for (View view : views) {
-            //leaving this in just in case
+            //leaving this in just in case I miscount at some point
             if (view == null) continue;
 
             LinearLayout linearLayout = new LinearLayout(context);
@@ -471,11 +531,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             view.measure(0, 0);
             params = new LinearLayout.LayoutParams(view.getMeasuredWidth(),
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            int margin = 8;
-            params.setMargins(margin, margin, margin, margin);
+
+            //calculate margin in pixels from our value in DiPs
+            int marginSide = Math.round(4 * getResources().getDisplayMetrics().density);
+            int marginTops = Math.round(4 * getResources().getDisplayMetrics().density);
+
+            params.setMargins(marginSide, marginTops, marginSide, marginTops);
+
             linearLayout.addView(view, params);
             linearLayout.measure(0, 0);
-            widthSoFar = widthSoFar + view.getMeasuredWidth() + 2 * margin;
+            widthSoFar = widthSoFar + view.getMeasuredWidth() + 2 * marginSide;
 
             if (widthSoFar >= maxWidth) {
                 ll.addView(newLL);
