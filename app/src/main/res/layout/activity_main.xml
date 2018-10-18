@@ -76,13 +76,13 @@
         android:layout_marginBottom="8dp"
         android:divider="@android:color/transparent"
         android:drawablePadding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/busy_level"
+        app:layout_constraintBottom_toTopOf="@+id/wifi_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/folding_cell" />
 
     <TextView
-        android:id="@+id/busy_level"
+        android:id="@+id/wifi_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

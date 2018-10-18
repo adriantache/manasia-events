@@ -28,7 +28,7 @@ public class CommonStrings {
     public static final int SOURCE_EVENT_ACTIVITY = 2;
     public static final int ERROR_VALUE = -1;
 
-    public CommonStrings() {
+    private CommonStrings() {
         throw new IllegalStateException("Class should not be instantiated!");
     }
 }

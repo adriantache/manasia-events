@@ -49,6 +49,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
     private boolean firstLaunch;
-    private HashMap<String, Integer> tagMap;
+    private Map<String, Integer> tagMap;
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -339,20 +341,31 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         tagMap.put(tag, ++value);
                     } else tagMap.put(tag, 1);
                 }
+            } else {
+                final String noTag = " NO TAG ";
+                if (tagMap.containsKey(noTag)) {
+                    int value = tagMap.get(noTag);
+                    tagMap.put(noTag, ++value);
+                } else tagMap.put(noTag, 1);
             }
         }
+
+        //sort HashMap
+        tagMap = new TreeMap<>(tagMap);
+
+        Log.i(TAG, "computeTagMap: " + tagMap.toString());
     }
 
     private void populateFoldingCell() {
         LinearLayout tagsLL = findViewById(R.id.tags_linear_layout);
         View[] views = makeTagTextViews();
-        populateText(tagsLL, views, this);
+        populateTagLinearLayout(tagsLL, views, this);
     }
 
     //turn tags into TextViews
     private View[] makeTagTextViews() {
-        //create as many views as there are tags, plus 3 extra: title, confirm button, reset button
-        View[] views = new View[tagMap.size() + 3];
+        //create as many views as there are tags, plus 2 extra: title and reset button
+        View[] views = new View[tagMap.size() + 2];
         int pointer = 0;
 
         //title TextView
@@ -378,30 +391,54 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             TextView textView = new TextView(this);
             textView.setText(pair.getKey());
             textView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
-            textView.setBackgroundColor(Color.RED);
             textView.setTextColor(Color.WHITE);
+
+            //todo add colour calculation method here
+            textView.setBackgroundColor(Color.RED);
+
+            //todo test if this does something
             textView.setPadding(16, 16, 16, 16);
 
             //todo update this
-            textView.setOnClickListener(v -> Toast.makeText(this, "CLICKY", Toast.LENGTH_SHORT).show());
+            textView.setOnClickListener(v -> Toast.makeText(this, "CLICKY " + v.toString(), Toast.LENGTH_SHORT).show());
 
             views[pointer++] = textView;
         }
 
         //todo reset button
+        TextView resetTextView = new TextView(this);
+        resetTextView.setText("RESET TAGS");
+        resetTextView.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+        resetTextView.setPadding(16, 16, 16, 16);
+        resetTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+        resetTextView.setBackgroundColor(Color.YELLOW);
 
-        //todo confirm button
+        //make resetTextView the width of the screen so it displays on its own row
+        resetTextView.setWidth(point.x);
+
+        //todo update this
+        resetTextView.setOnClickListener(v -> Toast.makeText(this, "CLICKY " + v.toString(), Toast.LENGTH_SHORT).show());
+
+        views[pointer] = resetTextView;
 
         return views;
+    }
+
+    private void setFilter(String filter) {
+        //todo add code to set/remove individual tag filter
+    }
+
+    private void resetFilters() {
+        //todo add code to reset filters
     }
 
     /*
      *  Got this off https://stackoverflow.com/questions/6996837/android-multi-line-linear-layout
      *  Copyright 2011 Sherif, modified by me
      */
-    private void populateText(LinearLayout ll, View[] views, Context context) {
+    private void populateTagLinearLayout(LinearLayout ll, View[] views, Context context) {
         if (views == null || ll == null) {
-            Log.e(TAG, "populateText: ERROR POPULATING VIEWS");
+            Log.e(TAG, "populateTagLinearLayout: ERROR POPULATING TAG VIEWS");
             return;
         }
 
@@ -422,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         int widthSoFar = 0;
 
         for (View view : views) {
-            //todo remove this when we have the number of views locked down
+            //leaving this in just in case
             if (view == null) continue;
 
             LinearLayout linearLayout = new LinearLayout(context);

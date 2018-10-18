@@ -25,9 +25,6 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTI
 public class SettingsActivity extends AppCompatActivity {
     TextView devTools;
 
-    //todo fix settings update problem
-    //todo figure out settings implementation, probably some implementation confusion between SharedPrefs and Preferences
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
