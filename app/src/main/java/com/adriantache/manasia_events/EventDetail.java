@@ -22,6 +22,7 @@ import com.adriantache.manasia_events.util.Utils;
 import com.github.zagum.switchicon.SwitchIconView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -142,7 +143,16 @@ public class EventDetail extends AppCompatActivity {
         day.setText(Utils.extractDayOrMonth(event.getDate(), true));
         month.setText(Utils.extractDayOrMonth(event.getDate(), false));
         title.setText(event.getTitle());
-        description.setText(event.getDescription());
+
+        //Add tags under description
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(event.getDescription());
+        stringBuilder.append("\n\nTags: ");
+        ArrayList<String> tags = event.getEventTags();
+        for (String tag : tags) {
+            stringBuilder.append("[").append(tag).append("] ");
+        }
+        description.setText(stringBuilder);
 
         //set on click listener and details for the notify button
         setNotifyDetails();
