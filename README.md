@@ -27,6 +27,6 @@ behaviours for the back key and button.
 The app is still in development, with many ideas still pending and will be modified depending on feedback or interest from the 
 people at Manasia.
 
-**Functionality demo** (*as of 30/8/18, does not include notifications*):
+**Functionality demo** (*as of 18/10/18, does not include notifications demo*):
 
-![Manasia App Demo](https://thumbs.gfycat.com/HighlevelHandsomeHarrierhawk-size_restricted.gif)
+![Manasia App Demo](https://thumbs.gfycat.com/QualifiedFreeHypacrosaurus-size_restricted.gif)
