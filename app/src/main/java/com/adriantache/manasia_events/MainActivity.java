@@ -518,11 +518,19 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private void resetFilters() {
         filtersSet = new ArrayList<>();
 
+        //update filters text to indicate filters are set
+        TextView filtersText = findViewById(R.id.filters_text_view);
+        if (filtersSet.isEmpty()) filtersText.setText(getString(R.string.filters));
+        else filtersText.setText(getString(R.string.filters_set));
+
+        //close the UI
+        fc.fold(false);
+
+        //update UI
+        populateListView();
+
         //redraw filters
         populateFoldingCell();
-
-        //finally, update UI
-        populateListView();
     }
 
     /*
