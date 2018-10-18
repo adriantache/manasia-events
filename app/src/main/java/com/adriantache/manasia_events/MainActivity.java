@@ -405,13 +405,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             TextView textView = new TextView(this);
             textView.setText(tag);
             textView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
-            textView.setTextColor(Color.WHITE);
 
-            if (!filtersSet.isEmpty() && filtersSet.contains(tag))
+            if (!filtersSet.isEmpty() && filtersSet.contains(tag)) {
                 textView.setBackgroundColor(Color.GRAY);
-            else {
-                //todo add colour calculation method here
-                textView.setBackgroundColor(Color.RED);
+                textView.setTextColor(getTextColour(Color.GRAY));
+            } else {
+                int tagBGColour = getTagColour(Color.RED, tag);
+                textView.setBackgroundColor(tagBGColour);
+                textView.setTextColor(getTextColour(tagBGColour));
             }
 
             //note to self: this uses lame pixels, not cool DiPs
@@ -434,12 +435,44 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         //make resetTextView the width of the screen so it displays on its own row
         resetTextView.setWidth(point.x);
 
-        //todo update this
+        //reset all filters on click
         resetTextView.setOnClickListener(v -> resetFilters());
 
         views[pointer] = resetTextView;
 
         return views;
+    }
+
+    //return tag colour based on frequency of tag in total
+    private int getTagColour(int colour, String tag) {
+        final int R = (colour >> 16) & 0xff;
+        final int G = (colour >> 8) & 0xff;
+        final int B = (colour) & 0xff;
+        float[] hsv = new float[3];
+
+        Color.RGBToHSV(R, G, B, hsv);
+        float maxSaturation = hsv[1];
+
+        if (tagMap.isEmpty()) computeTagMap();
+
+        int maxPopularity = getNumberOfTags();
+        float tagPopularity = tagMap.get(tag);
+
+        //add half saturation back to prevent washed out colours
+        hsv[1] = maxSaturation * (tagPopularity / maxPopularity) + maxSaturation / 2;
+
+        return Color.HSVToColor(hsv);
+    }
+
+    //get black or white depending on contrast with background colour
+    private int getTextColour(int colour) {
+        final int R = (colour >> 16) & 0xff;
+        final int G = (colour >> 8) & 0xff;
+        final int B = (colour) & 0xff;
+
+        //convert to YIQ colour space as per https://stackoverflow.com/questions/4672271/reverse-opposing-colors
+        double y = (299 * R + 587 * G + 114 * B) / 1000;
+        return y >= 128 ? Color.BLACK : Color.WHITE;
     }
 
     //add or remove an individual tag from the filter
