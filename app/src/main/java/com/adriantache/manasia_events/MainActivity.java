@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         if (tagMap.isEmpty()) computeTagMap();
 
-        int maxPopularity = getNumberOfTags();
+        int maxPopularity = getMaxNumberOfTags();
         float tagPopularity = tagMap.get(tag);
 
         //add half saturation back to prevent washed out colours
@@ -685,21 +685,21 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-    //return total number of tags
-    public int getNumberOfTags() {
+    //return max number of tags for one single tag
+    public int getMaxNumberOfTags() {
         if (tagMap.isEmpty()) return 0;
 
-        int numberOfTags = 0;
+        int maxTags = 0;
 
         Iterator<HashMap.Entry<String, Integer>> iterator = tagMap.entrySet().iterator();
 
         while (iterator.hasNext()) {
             HashMap.Entry<String, Integer> pair = iterator.next();
 
-            numberOfTags += pair.getValue();
+            if (pair.getValue() > maxTags) maxTags = pair.getValue();
         }
 
-        return numberOfTags;
+        return maxTags;
     }
 }
 
