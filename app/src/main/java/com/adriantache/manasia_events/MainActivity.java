@@ -200,9 +200,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         //first check to see if events are missing (database is empty) or stale (last updated >25 hours ago)
         Calendar calendar = Calendar.getInstance();
+
+        //todo remove this
+        Log.i(TAG, "updateFromDatabase: " + ((calendar.getTimeInMillis() - lastUpdateTime)));
+
         //get shared prefs again to see if lastUpdateTime changed
         getPreferences();
-        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90_000_000L) {
+        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90000000L) {
+            //todo remove this
+            Log.i(TAG, "updateFromDatabase: TRIGGERING EMPTY OR TIMEOUT UPDATE");
+
             //test network connectivity to prevent unnecessary remote update attempt
             ConnectivityManager cm = (ConnectivityManager)
                     getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -358,8 +365,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         //sort HashMap
         tagMap = new TreeMap<>(tagMap);
-
-        Log.i(TAG, "computeTagMap: " + tagMap.toString());
     }
 
     private void populateFoldingCell() {

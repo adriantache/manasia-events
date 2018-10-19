@@ -84,8 +84,8 @@ public class SettingsActivity extends AppCompatActivity {
         long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600;
         //notify on every future event
         //whether this is the first launch of MainActivity to prevent open hours Toast when coming back
-        String displayText = "Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
-                + sharedPrefs.getBoolean(NOTIFY_SETTING, false) + "; \n\t\t\t\tFirstLaunch = " +
+        String displayText = "Time since LUT: " + timeSinceLUT + " hours; NotifyAll: "
+                + sharedPrefs.getBoolean(NOTIFY_SETTING, false) + "; FirstLaunch: " +
                 sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
         devTools.setTextColor(0xffD4E157);
         devTools.setBackgroundColor(0xff795548);
