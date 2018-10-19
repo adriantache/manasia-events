@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,6 +70,9 @@ public class SettingsActivity extends AppCompatActivity {
         devTools = findViewById(R.id.dev_tools);
         populateDevText();
         devTools.setOnClickListener(v -> populateDevText());
+        //set hide on click for dev tools view
+        TextView devToolsHider = findViewById(R.id.dev_tools_hide);
+        devToolsHider.setOnClickListener(v -> devToolsHider.setVisibility(View.INVISIBLE));
     }
 
     private void populateDevText() {
@@ -80,10 +84,9 @@ public class SettingsActivity extends AppCompatActivity {
         long timeSinceLUT = (calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600;
         //notify on every future event
         //whether this is the first launch of MainActivity to prevent open hours Toast when coming back
-        String displayText = "Dev Info: Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
+        String displayText = "Time since LUT = " + timeSinceLUT + " hours; NotifyAll = "
                 + sharedPrefs.getBoolean(NOTIFY_SETTING, false) + "; \n\t\t\t\tFirstLaunch = " +
-                sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true) +
-                ". Raw preferences: " + sharedPrefs.getAll().toString();
+                sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
         devTools.setTextColor(0xffD4E157);
         devTools.setBackgroundColor(0xff795548);
         devTools.setText(displayText);
