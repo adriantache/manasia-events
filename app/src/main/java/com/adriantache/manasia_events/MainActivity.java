@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.ramotion.foldingcell.FoldingCell;
 
 import java.io.BufferedReader;
@@ -51,11 +53,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.State;
 import androidx.work.WorkManager;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -232,45 +235,13 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         .setInputData(remoteUrl)
                         .addTag(EVENTS_JSON_WORK_TAG)
                         .build();
-                WorkManager.getInstance().enqueue(getEventJson);
+                //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
+                ListenableFuture<Void> listenableFuture = WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG,
+                        ExistingWorkPolicy.KEEP, getEventJson).enqueue();
 
-                WorkManager.getInstance()
-                        .getStatusById(getEventJson.getId())
-                        .observe(MainActivity.this, workStatus -> {
-                            if (workStatus != null && workStatus.getState().equals(State.SUCCEEDED)) {
-                                //once we have confirmation the loader has succeeded, we use a character-
-                                //based stream to read the file and get the JSON string
-                                StringBuilder jsonResult = null;
-                                try (BufferedReader bufferedReader =
-                                             new BufferedReader(
-                                                     new InputStreamReader(
-                                                             getApplicationContext().openFileInput(JSON_RESULT)))) {
-                                    jsonResult = new StringBuilder();
-                                    int i;
-                                    while ((i = bufferedReader.read()) != -1) {
-                                        jsonResult.append((char) i);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                //we decode the JSON into events ArrayList
-                                ArrayList<Event> eventsTemp = null;
-                                if (jsonResult != null && jsonResult.length() != 0) {
-                                    eventsTemp = Utils.parseJSON(jsonResult.toString());
-                                }
-
-                                //and if remote fetch is successful...
-                                if (eventsTemp != null) {
-                                    Log.i(TAG, "fetch events: Successfully fetched and decoded remote JSON.");
-                                    // we send events to the database...
-                                    inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
-                                }
-
-                                //...and finally run tasks post database update
-                                updateFromDatabase();
-                            }
-                        });
+                //trigger additional tasks once the work is completed
+                listenableFuture.addListener(() ->
+                        runOnUiThread(MainActivity.this::onWorkCompleted), new CurrentThreadExecutor());
             }
         }
 
@@ -292,6 +263,41 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             //populate FoldingCell with tags
             populateFoldingCell();
         }
+    }
+
+    private void onWorkCompleted() {
+        //once we have confirmation the loader has succeeded, we use a character-
+        //based stream to read the file and get the JSON string
+        StringBuilder jsonResult = null;
+        try (BufferedReader bufferedReader =
+                     new BufferedReader(
+                             new InputStreamReader(
+                                     getApplicationContext().openFileInput(JSON_RESULT)))) {
+            jsonResult = new StringBuilder();
+            int i;
+            while ((i = bufferedReader.read()) != -1) {
+                jsonResult.append((char) i);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //we decode the JSON into events ArrayList
+        ArrayList<Event> eventsTemp = null;
+        if (jsonResult != null && jsonResult.length() != 0) {
+            eventsTemp = Utils.parseJSON(jsonResult.toString());
+        }
+
+        //and if remote fetch is successful...
+        if (eventsTemp != null) {
+            Log.i(TAG, "fetch events: Successfully fetched and decoded remote JSON.");
+            // we send events to the database...
+            inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
+        }
+
+        //todo resolve loop coming from database input delay (should move processing to different thread)
+        //...and finally run tasks post database update
+        updateFromDatabase();
     }
 
     private void populateListView() {
@@ -713,6 +719,12 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
 
         return maxTags;
+    }
+}
+
+class CurrentThreadExecutor implements Executor {
+    public void execute(@NonNull Runnable r) {
+        r.run();
     }
 }
 

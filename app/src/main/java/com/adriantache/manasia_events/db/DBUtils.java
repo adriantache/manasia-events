@@ -197,8 +197,6 @@ public final class DBUtils {
             }
 
             SharedPreferences sharedPrefs = getDefaultSharedPreferences(context);
-            //set notify on every future event flag
-            boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
 
             // and write fetch date as well into SharedPrefs
             Calendar calendar = Calendar.getInstance();
@@ -208,6 +206,8 @@ public final class DBUtils {
             editor.apply();
 
             //update event notifications for all future events fetched from the remote database
+            //get notify on every future event flag
+            boolean notifyOnAllEvents = sharedPrefs.getBoolean(NOTIFY_SETTING, false);
             //todo consider replacing this with a WorkManager chain and refactor it
             if (notifyOnAllEvents) scheduleNotifications(context, true);
             else {
