@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -77,15 +78,16 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTI
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "MainActivity";
-    ListView listView;
-    ImageView logo;
-    ConstraintLayout constraintLayout;
-    ImageView menu;
-    TextView error;
-    TextView openHours;
     long lastUpdateTime;
+    private ListView listView;
+    private ImageView logo;
+    private ConstraintLayout constraintLayout;
+    private ImageView menu;
+    private TextView error;
+    private TextView openHours;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
     private boolean firstLaunch;
@@ -132,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         menu = findViewById(R.id.menu);
         error = findViewById(R.id.error);
         openHours = findViewById(R.id.open_hours);
+
+        //set up SwipeRefreshLayout
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         // implement FoldingCell
         fc = findViewById(R.id.folding_cell);
@@ -218,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         //check if events are empty or time since LUT > time since EUH
         if (events == null || hoursSinceLUT > timeSinceEUH) {
             triggerImmediateRemoteUpdate();
-
         }
 
         if (events != null) {
@@ -353,6 +358,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             popup.setOnMenuItemClickListener(this);
             popup.show();
         });
+
+        //stop refresh indicator
+        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
     }
 
     private void computeTagMap() {
@@ -728,6 +736,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
 
         return maxTags;
+    }
+
+    @Override
+    public void onRefresh() {
+        triggerImmediateRemoteUpdate();
     }
 }
 

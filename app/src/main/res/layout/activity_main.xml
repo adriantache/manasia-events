@@ -67,19 +67,25 @@
         </FrameLayout>
     </com.ramotion.foldingcell.FoldingCell>
 
-    <!--todo replace ListView with RecyclerView-->
-    <ListView
-        android:id="@+id/list_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:divider="@android:color/transparent"
-        android:drawablePadding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/wifi_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/folding_cell" />
+        app:layout_constraintTop_toBottomOf="@+id/folding_cell">
+
+        <!--todo replace ListView with RecyclerView-->
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:drawablePadding="8dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/wifi_password"
@@ -96,7 +102,7 @@
         android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/list_view" />
+        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout" />
 
     <ImageView
         android:id="@+id/menu"
@@ -120,10 +126,10 @@
         android:gravity="center"
         android:text="@string/no_events_found"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/list_view"
-        app:layout_constraintLeft_toLeftOf="@id/list_view"
-        app:layout_constraintRight_toRightOf="@id/list_view"
-        app:layout_constraintTop_toTopOf="@id/list_view" />
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintLeft_toLeftOf="@id/swipe_refresh_layout"
+        app:layout_constraintRight_toRightOf="@id/swipe_refresh_layout"
+        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout" />
 
     <TextView
         android:id="@+id/open_hours"
@@ -140,6 +146,6 @@
         android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_view"
+        app:layout_constraintTop_toBottomOf="@+id/swipe_refresh_layout"
         tools:text="Opens at 12 am." />
 </android.support.constraint.ConstraintLayout>
