@@ -67,6 +67,7 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.ENQUEUE_EVENTS_JSON_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.EVENT_UPDATE_HOUR;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
 
             //schedule the periodic work request for 5am, which will trigger the actual work request
+            //todo prevent triggering this if PeriodicWorkRequest already exists
             OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
                     .Builder(TriggerUpdateEventsWorker.class)
                     .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
@@ -196,53 +198,27 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     //tasks which run on remote events refresh or in case that refresh is not possible
+    //todo refactor this whole class, but this for sure, it's weird
+    //todo test if local file has additional events compared to database, might signal problem with listenableFuture
     public void updateFromDatabase() {
         //...then reading that database (this also populates the ArrayList with the very important
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        //first check to see if events are missing (database is empty) or stale (last updated >25 hours ago)
+        //first check to see if events are missing (database is empty) or stale (last updated
+        // before normal update time)
         Calendar calendar = Calendar.getInstance();
-
-        //todo remove this
-        Log.i(TAG, "updateFromDatabase: " + ((calendar.getTimeInMillis() - lastUpdateTime)));
+        // calculating the amount of hours since EVENT_UPDATE_HOUR + 1 to compensate for difference in minutes
+        int timeSinceEUH = calendar.get(Calendar.HOUR_OF_DAY) - EVENT_UPDATE_HOUR + 1;
+        int hoursSinceLUT = (int) ((calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600);
 
         //get shared prefs again to see if lastUpdateTime changed
         getPreferences();
-        if (events == null || calendar.getTimeInMillis() - lastUpdateTime > 90000000L) {
-            //todo remove this
-            Log.i(TAG, "updateFromDatabase: TRIGGERING EMPTY OR TIMEOUT UPDATE");
 
-            //test network connectivity to prevent unnecessary remote update attempt
-            ConnectivityManager cm = (ConnectivityManager)
-                    getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = null;
-            try {
-                if (cm != null) {
-                    activeNetwork = cm.getActiveNetworkInfo();
-                }
-            } catch (NullPointerException e) {
-                Log.e(TAG, "Cannot get network info.", e);
-            }
-            if (activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting()) {
-                //populate the global ArrayList of events by adding a work request to fetch JSON...
-                Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+        //check if events are empty or time since LUT > time since EUH
+        if (events == null || hoursSinceLUT > timeSinceEUH) {
+            triggerImmediateRemoteUpdate();
 
-                //schedule the periodic work request for 5am, which will trigger the actual work request
-                OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
-                        .Builder(UpdateEventsWorker.class)
-                        .setInputData(remoteUrl)
-                        .addTag(EVENTS_JSON_WORK_TAG)
-                        .build();
-                //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
-                ListenableFuture<Void> listenableFuture = WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG,
-                        ExistingWorkPolicy.KEEP, getEventJson).enqueue();
-
-                //trigger additional tasks once the work is completed
-                listenableFuture.addListener(() ->
-                        runOnUiThread(MainActivity.this::onWorkCompleted), new CurrentThreadExecutor());
-            }
         }
 
         if (events != null) {
@@ -262,6 +238,39 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             computeTagMap();
             //populate FoldingCell with tags
             populateFoldingCell();
+        }
+    }
+
+    private void triggerImmediateRemoteUpdate() {
+        //test network connectivity to prevent unnecessary remote update attempt
+        ConnectivityManager cm = (ConnectivityManager)
+                getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = null;
+        try {
+            if (cm != null) {
+                activeNetwork = cm.getActiveNetworkInfo();
+            }
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Cannot get network info.", e);
+        }
+        if (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting()) {
+            //populate the global ArrayList of events by adding a work request to fetch JSON...
+            Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+
+            //build an immediate OneTimeWorkRequest to fetch events from remote
+            OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
+                    .Builder(UpdateEventsWorker.class)
+                    .setInputData(remoteUrl)
+                    .addTag(EVENTS_JSON_WORK_TAG)
+                    .build();
+            //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
+            ListenableFuture<Void> listenableFuture = WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG,
+                    ExistingWorkPolicy.KEEP, getEventJson).enqueue();
+
+            //trigger additional tasks once the work is completed
+            listenableFuture.addListener(() ->
+                    runOnUiThread(MainActivity.this::onWorkCompleted), new CurrentThreadExecutor());
         }
     }
 
@@ -304,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         //populate list
         listView.setAdapter(new EventAdapter(this, filter(events)));
 
-        //todo figure out why this isn't working
+        //todo figure out why this sometimes isn't working
         listView.setEmptyView(error);
 
         //set click listener and transition animation

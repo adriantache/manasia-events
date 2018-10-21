@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
+import static com.adriantache.manasia_events.util.CommonStrings.EVENT_UPDATE_HOUR;
 
 /**
  * Class to store general utility functions
@@ -113,9 +114,9 @@ public final class Utils {
         //set the timezone of Bucharest since that's when the update time is set
         c.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
-        //we add a day and set time to 5 am
+        //we add a day and set time to 5 am (defined in EVENT_UPDATE_HOUR)
         c.add(Calendar.DATE, 1);
-        c.set(Calendar.HOUR_OF_DAY, 5);
+        c.set(Calendar.HOUR_OF_DAY, EVENT_UPDATE_HOUR);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
 
