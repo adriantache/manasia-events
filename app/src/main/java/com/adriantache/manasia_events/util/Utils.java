@@ -439,7 +439,7 @@ public final class Utils {
         if (dayOfTheWeek < weekday) {
             calendar.add(Calendar.DATE, weekday - dayOfTheWeek);
         } else if (dayOfTheWeek > weekday) {
-            calendar.add(Calendar.DATE, 7 - dayOfTheWeek + weekday - 1);
+            calendar.add(Calendar.DATE, 7 - dayOfTheWeek + weekday);
         }
 
         return calendarToString(calendar);

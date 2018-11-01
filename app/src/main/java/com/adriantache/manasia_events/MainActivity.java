@@ -78,7 +78,8 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTI
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity
+        implements PopupMenu.OnMenuItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "MainActivity";
     long lastUpdateTime;
     private ListView listView;
