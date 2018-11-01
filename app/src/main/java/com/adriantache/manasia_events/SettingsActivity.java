@@ -13,13 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.Objects;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 
@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        final int activity = Objects.requireNonNull(getIntent().getExtras()).getInt("activity");
+        final int activity = getIntent().getIntExtra(SOURCE_ACTIVITY, 0);
         final int DBEventID = getIntent().getExtras().getInt(DB_EVENT_ID_TAG);
         ImageView back = findViewById(R.id.back);
         if (activity == SOURCE_MAIN_ACTIVITY) {

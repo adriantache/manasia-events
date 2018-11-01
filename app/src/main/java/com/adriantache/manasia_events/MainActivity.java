@@ -74,6 +74,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 import static com.adriantache.manasia_events.util.Utils.calculateDelay;
 import static com.adriantache.manasia_events.util.Utils.getRefreshDate;
@@ -87,7 +88,6 @@ public class MainActivity extends AppCompatActivity
     private ConstraintLayout constraintLayout;
     private ImageView menu;
     private TextView error;
-    private TextView openHours;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         constraintLayout = findViewById(R.id.constraint_layout);
         menu = findViewById(R.id.menu);
         error = findViewById(R.id.error);
-        openHours = findViewById(R.id.open_hours);
+        TextView openHours = findViewById(R.id.open_hours);
 
         //set up SwipeRefreshLayout
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity
         //update open hours TextView
         Utils.getOpenHours(openHours, this, firstLaunch);
         //reset the first launch flag so it doesn't remain set to false
-        //todo rethink this mechanism, user might not always return from EventDetail or MenuActivity...
+        //todo rethink this mechanism, user might not always return from EventDetail or DrinksMenuActivity...
         //todo ...might make more sense to just use startActivityForResult with those activities
         SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -706,15 +706,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drinks_menu:
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                Intent intent = new Intent(getApplicationContext(), DrinksMenuActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.food_menu:
-                //todo add functionality
+                Intent intent2 = new Intent(getApplicationContext(), FoodMenuActivity.class);
+                startActivity(intent2);
                 return true;
             case R.id.settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                settingsIntent.putExtra("activity", SOURCE_MAIN_ACTIVITY);
+                settingsIntent.putExtra(SOURCE_ACTIVITY, SOURCE_MAIN_ACTIVITY);
                 startActivity(settingsIntent);
                 return true;
             default:

@@ -2,7 +2,6 @@ package com.adriantache.manasia_events;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -11,17 +10,21 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.adriantache.manasia_events.util.CommonStrings;
+
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static android.text.Html.FROM_HTML_SEPARATOR_LINE_BREAK_HEADING;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_ACTIVITY;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_DRINKS_MENU_ACTIVITY;
+import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_FOOD_MENU_ACTIVITY;
 
-public class MenuActivity extends AppCompatActivity {
+public class DrinksMenuActivity extends AppCompatActivity {
     ImageView back;
     CardView nonAlcoholic;
     CardView beer;
@@ -43,7 +46,7 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_drinks_menu);
 
         back = findViewById(R.id.back);
         nonAlcoholic = findViewById(R.id.nonAlcoholic);
@@ -80,26 +83,30 @@ public class MenuActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    @Override
+    public void onBackPressed() {
+        back();
+    }
+
     private void back() {
+        //test whether we came back from a menu or not
+        final int SOURCE_ACTIVITY = getIntent().getIntExtra(CommonStrings.SOURCE_ACTIVITY, 0);
+
         if (menuItemsHidden) {
             drinksDetail.setText(null);
             toggleMenuItemVisibility();
-            title.setText("manasia menu");
+            title.setText("manasia drinks");
             snackbar.dismiss();
+        } else if (SOURCE_ACTIVITY == SOURCE_FOOD_MENU_ACTIVITY) {
+            Intent intent = new Intent(getApplicationContext(), FoodMenuActivity.class);
+            startActivity(intent);
         } else {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        back();
-    }
-
     private void openDetailView(View v) {
-        Log.i("ONCLICK", "onClick: " + v.getId());
-
         //workaround because IDs are apparently no longer final
         if (v.getId() == nonAlcoholic.getId()) {
             toggleMenuItemVisibility();
@@ -134,7 +141,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Manasia Summer</b><i><small> (puree passion fruit, pineapple juice, orange juice, grenadine, lemon fresh, mint)</small></i><b></p>" +
                     "<p>Green Apple</b><i><small> (lime, apple juice, brown sugar)</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == beer.getId()) {
             toggleMenuItemVisibility();
             title.setText("beer");
@@ -161,7 +167,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Ciuc Natur Radler Lemon</b><i><small> (1.9% alc) 500 ml</small></i><b></p>" +
                     "<p>Heineken</b><i><small> (0.0% alc) 500 ml</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == cocktails.getId()) {
             toggleMenuItemVisibility();
             title.setText("cocktails");
@@ -189,7 +194,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Ciresica</b><i><small> (30ml vodka, 30ml amaretto, sour, suc cirese)</small></i><b></p>" +
                     "<p>Orgasm</b><i><small> (20ml kahlua, 20ml amaretto, 20ml bailey's, cream)</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == longDrinks.getId()) {
             toggleMenuItemVisibility();
             title.setText("long drinks");
@@ -202,7 +206,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Whiskey/Vodka Energy</b><i><small> (40ml vodka/whiskey, Red Bull)</small></i><b></p>" +
                     "<p>Bloody Mary</b><i><small> (40ml vodka Wyborowa, suc de rosii, Santal, sare, piper, Tabasco, telina)</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == shots.getId()) {
             toggleMenuItemVisibility();
             title.setText("shots");
@@ -218,7 +221,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Tatratea</p>" +
                     "<p>Kamikaze (3 shots)</p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == spirits.getId()) {
             toggleMenuItemVisibility();
             title.setText("spirits");
@@ -241,7 +243,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Disaronno</p>" +
                     "<p>Baileys Irish Cream</p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == wine.getId()) {
             toggleMenuItemVisibility();
             title.setText("wine");
@@ -268,7 +269,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Colina</b><i><small> (cabernet sauvignon)</small></i><b></p>" +
                     "<p>Floarea Soarelui</b><i><small> (medium dry, feteasca neagra)</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == spritz.getId()) {
             toggleMenuItemVisibility();
             title.setText("spritz");
@@ -281,7 +281,6 @@ public class MenuActivity extends AppCompatActivity {
                     "<br><p>Frizza roze/alb 150ml</b><i><small> (Vinca)</small></i><b></p>" +
                     "<p>Frizza roze/alb 750ml</b><i><small> (Vinca)</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         } else if (v.getId() == cider.getId()) {
             toggleMenuItemVisibility();
             title.setText("cider");
@@ -297,8 +296,9 @@ public class MenuActivity extends AppCompatActivity {
                     "<p>Old Mout Passion Fruit&Apple</b><i><small> /500 ml</small></i><b></p>" +
                     "<p>Old Mout Summer Berries</b><i><small> /500 ml</small></i><b></p>" +
                     "</b>", FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-            showSnackbar();
         }
+
+        showSnackbar();
     }
 
     private void toggleMenuItemVisibility() {
@@ -330,11 +330,11 @@ public class MenuActivity extends AppCompatActivity {
     //snackbar on list detail to link to manasia food
     private void showSnackbar() {
         snackbar = Snackbar.make(constraintLayout,
-                "Hungry? Visit our friends at:",
+                "Hungry? Visit the food menu:",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Manasia Food", v -> {
-            Uri manasiaFood = Uri.parse("https://www.facebook.com/manasiafood/");
-            Intent intent = new Intent(Intent.ACTION_VIEW, manasiaFood);
+            Intent intent = new Intent(this, FoodMenuActivity.class);
+            intent.putExtra(SOURCE_ACTIVITY, SOURCE_DRINKS_MENU_ACTIVITY);
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }

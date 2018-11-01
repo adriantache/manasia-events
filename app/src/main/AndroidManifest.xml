@@ -40,7 +40,17 @@
             android:authorities="com.adriantache.manasia_events"
             android:exported="false" />
 
-        <activity android:name=".MenuActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".DrinksMenuActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".FoodMenuActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
