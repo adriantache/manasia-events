@@ -2,6 +2,10 @@ package com.adriantache.manasia_events;
 
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +14,8 @@ import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,6 +34,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
@@ -40,7 +49,6 @@ import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.ramotion.foldingcell.FoldingCell;
 
 import java.io.BufferedReader;
@@ -52,15 +60,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-
-import androidx.work.Data;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
@@ -84,7 +87,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     long lastUpdateTime;
     private ListView listView;
-    private ImageView logo;
     private ConstraintLayout constraintLayout;
     private ImageView menu;
     private TextView error;
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity
     private Map<String, Integer> tagMap;
     private FoldingCell fc;
     private ArrayList<String> filtersSet = new ArrayList<>();
+
+    //todo [IMPORTANT] prevent events from the past or far future from displaying
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -130,7 +134,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         listView = findViewById(R.id.list_view);
-        logo = findViewById(R.id.logo);
         constraintLayout = findViewById(R.id.constraint_layout);
         menu = findViewById(R.id.menu);
         error = findViewById(R.id.error);
@@ -171,37 +174,58 @@ public class MainActivity extends AppCompatActivity
 
         //show snackbar if user hasn't chosen to be notified for all events
         if (!notifyOnAllEvents) showSnackbar();
+
+
+        //todo DELETE this !!!
+        NameViewModel model = ViewModelProviders.of(this).get(NameViewModel.class);
+        // Create the observer which updates the UI.
+        final Observer<List<WorkInfo>> nameObserver = list -> {
+            StringBuilder sb = new StringBuilder();
+            if (list != null) {
+                int i = 0;
+
+                for (WorkInfo w : list) {
+                    sb.append(i);
+                    sb.append(". \t");
+
+                    sb.append(w.getId());
+                    sb.append(" ");
+                    sb.append(w.getTags());
+                    sb.append(" ");
+                    sb.append(w.getState());
+                    sb.append(" \n");
+                }
+            }
+
+            Log.i("WRK update", sb.toString());
+        };
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        model.getStatus().observe(this, nameObserver);
     }
 
     //todo reschedule notifications on remote events fetch
+    //todo replace the ConnectivityManager stuff with WorkRequest constraints
     private void schedulePeriodicRemoteEventsFetch() {
-        //normally just schedule a periodic work request to fetch events daily
-        //test network connectivity to prevent unnecessary remote update attempt
-        ConnectivityManager cm = (ConnectivityManager)
-                getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = null;
-        try {
-            if (cm != null) {
-                activeNetwork = cm.getActiveNetworkInfo();
-            }
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Cannot get network info.", e);
-        }
-        if (activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting()) {
-            //populate the global ArrayList of events by adding a work request to fetch JSON...
-            Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+        //todo normally just schedule a periodic work request to fetch events daily
+        //populate the global ArrayList of events by adding a work request to fetch JSON...
+        Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
 
-            //schedule the periodic work request for 5am, which will trigger the actual work request
-            //todo prevent triggering this if PeriodicWorkRequest already exists
-            OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
-                    .Builder(TriggerUpdateEventsWorker.class)
-                    .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
-                    .setInputData(remoteUrl)
-                    .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
-                    .build();
-            WorkManager.getInstance().enqueue(getEventJson);
-        }
+        //set constraints to the work to prevent it running when it's not useful
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        //schedule the periodic work request for 5am, which will trigger the actual work request
+        //todo prevent triggering this if PeriodicWorkRequest already exists
+        //todo replace this directly with PeriodicWorkRequest with setInitialDelay once alpha02 launches
+        OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
+                .Builder(TriggerUpdateEventsWorker.class)
+                .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
+                .setInputData(remoteUrl)
+                .setConstraints(constraints)
+                .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
+                .build();
+        WorkManager.getInstance().enqueue(getEventJson);
     }
 
     //tasks which run on remote events refresh or in case that refresh is not possible
@@ -247,37 +271,31 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //todo check if work is already scheduled instead of cancelling or if it drifts significantly
+    //todo fix network activeNetwork.isConnectedOrConnecting()
     private void triggerImmediateRemoteUpdate() {
-        //test network connectivity to prevent unnecessary remote update attempt
-        ConnectivityManager cm = (ConnectivityManager)
-                getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = null;
-        try {
-            if (cm != null) {
-                activeNetwork = cm.getActiveNetworkInfo();
-            }
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Cannot get network info.", e);
-        }
-        if (activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting()) {
-            //populate the global ArrayList of events by adding a work request to fetch JSON...
-            Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
+        //populate the global ArrayList of events by adding a work request to fetch JSON...
+        Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
 
-            //build an immediate OneTimeWorkRequest to fetch events from remote
-            OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
-                    .Builder(UpdateEventsWorker.class)
-                    .setInputData(remoteUrl)
-                    .addTag(EVENTS_JSON_WORK_TAG)
-                    .build();
-            //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
-            ListenableFuture<Void> listenableFuture = WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG,
-                    ExistingWorkPolicy.KEEP, getEventJson).enqueue();
+        //set constraints to the work to prevent it running when it's not useful
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
+                .build();
 
-            //trigger additional tasks once the work is completed
-            listenableFuture.addListener(() ->
-                    runOnUiThread(MainActivity.this::onWorkCompleted), new CurrentThreadExecutor());
-        }
+        //build an immediate OneTimeWorkRequest to fetch events from remote
+        OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
+                .Builder(UpdateEventsWorker.class)
+                .setConstraints(constraints)
+                .setInputData(remoteUrl)
+                .addTag(EVENTS_JSON_WORK_TAG)
+                .build();
+        //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
+        WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG,
+                ExistingWorkPolicy.KEEP, getEventJson).enqueue();
+
+        //stop refresh indicator
+        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
     }
 
     private void onWorkCompleted() {
@@ -397,6 +415,7 @@ public class MainActivity extends AppCompatActivity
         populateTagLinearLayout(tagsLL, views, this);
     }
 
+    //todo remove colour
     //turn tags into TextViews
     private View[] makeTagTextViews() {
         //create as many views as there are tags, plus 2 extra: title and reset button
@@ -422,10 +441,7 @@ public class MainActivity extends AppCompatActivity
         views[pointer++] = titleTextView;
 
         //tags TextViews
-        Iterator<HashMap.Entry<String, Integer>> iterator = tagMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            HashMap.Entry<String, Integer> pair = iterator.next();
-
+        for (HashMap.Entry<String, Integer> pair : tagMap.entrySet()) {
             //don't draw empty tags
             if (pair.getValue() == 0) continue;
 
@@ -472,6 +488,7 @@ public class MainActivity extends AppCompatActivity
         return views;
     }
 
+    //todo remove colour and add number of events instead
     //return tag colour based on frequency of tag in total
     private int getTagColour(int colour, String tag) {
         final int R = (colour >> 16) & 0xff;
@@ -746,9 +763,9 @@ public class MainActivity extends AppCompatActivity
     }
 }
 
-class CurrentThreadExecutor implements Executor {
-    public void execute(@NonNull Runnable r) {
-        r.run();
+class NameViewModel extends ViewModel {
+    public LiveData<List<WorkInfo>> getStatus() {
+        return WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG);
     }
 }
 

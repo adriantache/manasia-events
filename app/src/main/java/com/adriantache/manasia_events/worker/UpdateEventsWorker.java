@@ -3,25 +3,31 @@ package com.adriantache.manasia_events.worker;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.concurrent.TimeUnit;
+import android.util.Log;
 
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.util.Utils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
+import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
 
 /**
  * Custom class to trigger fetching remote events json file
  **/
 public class UpdateEventsWorker extends Worker {
+    private static final String TAG = "UpdateEventsWRK";
+
     public UpdateEventsWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
@@ -39,15 +45,17 @@ public class UpdateEventsWorker extends Worker {
         }
 
         if (!TextUtils.isEmpty(jsonString) && jsonString.length() > 50) {
-            try (PrintWriter printWriter = new PrintWriter(new File(
-                    getApplicationContext().getFilesDir(), JSON_RESULT), "UTF-8")) {
-                printWriter.write(jsonString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            storeJSON(jsonString);
+//            try (PrintWriter printWriter = new PrintWriter(new File(
+//                    getApplicationContext().getFilesDir(), JSON_RESULT), "UTF-8")) {
+//                printWriter.write(jsonString);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
-            return Result.SUCCESS;
-        } else return Result.FAILURE;
+//            return Result.success(new Data.Builder().putString(JSON_RESULT, jsonString).build());
+            return Result.success();
+        } else return Result.failure();
     }
 
     //OKHTTP implementation
@@ -73,5 +81,21 @@ public class UpdateEventsWorker extends Worker {
         }
 
         return JSON;
+    }
+
+    private void storeJSON(String jsonResult) {
+        //decode the JSON into events ArrayList
+        ArrayList<Event> eventsTemp = null;
+        if (jsonResult != null && jsonResult.length() != 0) {
+            eventsTemp = Utils.parseJSON(jsonResult);
+        }
+
+        //if remote fetch is successful...
+        if (eventsTemp != null) {
+            Log.i(TAG, "fetchEvents: Successfully fetched and decoded remote JSON.");
+
+            // send events to the database...
+            inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
+        }
     }
 }

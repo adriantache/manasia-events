@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import com.adriantache.manasia_events.EventDetail;
 import com.adriantache.manasia_events.R;
@@ -22,9 +24,6 @@ import com.adriantache.manasia_events.db.DBUtils;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.support.v4.app.NotificationCompat.CATEGORY_EVENT;
@@ -45,13 +44,21 @@ public class NotifyWorker extends Worker {
 
     @NonNull
     @Override
-    public Worker.Result doWork() {
+    public Result doWork() {
         triggerNotification();
 
-        return Worker.Result.SUCCESS;
-        // (Returning RETRY tells WorkManager to try this task again
-        // later; FAILURE says not to try again.)
+        return Result.success();
     }
+
+    //    @NonNull
+//    @Override
+//    public Worker.Result doWork() {
+//        triggerNotification();
+//
+//        return Worker.Result.SUCCESS;
+//        // (Returning RETRY tells WorkManager to try this task again
+//        // later; FAILURE says not to try again.)
+//    }
 
     private void triggerNotification() {
         final int DBEventID = getInputData().getInt(DB_EVENT_ID_TAG, ERROR_VALUE);

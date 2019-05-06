@@ -139,6 +139,7 @@ public class FoodMenuActivity extends AppCompatActivity {
             toggleMenuItemVisibility();
             title.setText("soup");
             categoryImageView.setImageResource(R.drawable.soup);
+            //TODO finish filling in menu items
             foodDetail.setText(Html.fromHtml("<h2>SOUPS</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
@@ -165,7 +166,7 @@ public class FoodMenuActivity extends AppCompatActivity {
                             "<i><small>(Beef meat/lamb meat, mixed salad leaves, smoked cheese, grilled zucchini, tomatoes, cheese sauce, Manasia Food sauce)</small></i>" +
                             "<p><b>Vegetarian Burger</b></p>" +
                             "<i><small>(Grilled halloumi, mixed salad leaves, tomatoes, grilled zucchini, Pesto sauce, Manasia Food sauce)</small></i>" +
-                            "<h4>SPECIAL MENU: ANY BURGER + FRENCH FRIES</h4><p/>",
+                            "<p/><h4>SPECIAL MENU: ANY BURGER + FRENCH FRIES</h4><p/>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
         }
         //todo finish food menu input

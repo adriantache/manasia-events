@@ -3,15 +3,15 @@ package com.adriantache.manasia_events.notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.worker.NotifyWorker;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import static com.adriantache.manasia_events.db.DBUtils.readDatabase;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
@@ -45,7 +45,7 @@ public class NotifyUtils {
 
         for (Event event : events) {
             if (compareDateToToday(event.getDate()) > -1 && (addAll || event.getNotify() == 1)) {
-                addNotification(event.getDatabaseID(), event.getDate());
+                addNotification(context, event.getDatabaseID(), event.getDate());
             }
         }
     }
@@ -63,7 +63,7 @@ public class NotifyUtils {
         }
     }
 
-    private static void addNotification(int dbEventID, String eventDate) {
+    private static void addNotification(Context context, int dbEventID, String eventDate) {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
         Data inputData = new Data.Builder().putInt(DB_EVENT_ID_TAG, dbEventID).build();
 

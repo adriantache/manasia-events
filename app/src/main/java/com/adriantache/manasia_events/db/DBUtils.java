@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.util.Utils;
@@ -169,6 +170,8 @@ public final class DBUtils {
     }
 
     public static void inputRemoteEventsIntoDatabase(ArrayList<Event> remoteEvents, Context context) {
+        Log.i("WRKTest", "fetchEvents: Start input events into database.");
+
         if (remoteEvents != null) {
             //first of all transfer all notify statuses from the local database to the temporary remote database
             ArrayList<Event> dbEvents = (ArrayList<Event>) DBUtils.readDatabase(context);
@@ -195,6 +198,8 @@ public final class DBUtils {
 
                 context.getContentResolver().insert(CONTENT_URI, values);
             }
+
+            Log.i("WRKTest", "fetchEvents: Successfully input events into database.");
 
             SharedPreferences sharedPrefs = getDefaultSharedPreferences(context);
 

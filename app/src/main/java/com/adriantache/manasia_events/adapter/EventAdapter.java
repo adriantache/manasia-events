@@ -28,8 +28,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
     public EventAdapter(@NonNull Context context, @NonNull List<Event> objects) {
         super(context, 0, objects);
-        this.events.clear();
-        if (objects != null && events != null) this.events.addAll(objects);
+        this.events.addAll(objects);
     }
 
     @Override
