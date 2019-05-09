@@ -165,7 +165,7 @@ public final class DBUtils {
         values.put(COLUMN_TAGS, tagString);
 
         String selection = _ID + " == ?";
-        String selectionArgs[] = {String.valueOf(dbEventId)};
+        String[] selectionArgs = {String.valueOf(dbEventId)};
 
         return context.getContentResolver().update(CONTENT_URI, values, selection, selectionArgs);
     }

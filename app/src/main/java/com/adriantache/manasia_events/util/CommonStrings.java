@@ -11,8 +11,8 @@ public class CommonStrings {
     //WorkerManager related
     public static final String ENQUEUE_EVENTS_JSON_WORK_TAG = "enqueueEventsJsonWork";
     public static final String EVENTS_JSON_WORK_TAG = "eventsJsonWork";
+    public static final String EVENTS_JSON_WORK_TAG_FORCED = "eventsJsonWork-FORCED";
     public static final String NOTIFICATION_WORK_TAG = "notificationWork";
-    public static final String JSON_RESULT = "JSON_STRING";
 
     //notification related
     public static final String MANASIA_NOTIFICATION_CHANNEL = "Manasia Event Reminder";

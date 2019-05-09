@@ -243,7 +243,8 @@ public final class Utils {
     }
 
     //turn a 3 letter month and a day "int" into a date of the format yyyy-MM-dd
-    private static String buildDate(String month, String day) {
+    //position represents percentage position in list (first item is 0, last item is 100)
+    private static String buildDate(String month, String day, int position) {
         StringBuilder date = new StringBuilder();
         int monthNumber;
 
@@ -298,9 +299,9 @@ public final class Utils {
         calendar.setTime(today);
         int currentMonth = calendar.get(Calendar.MONTH);
         int currentYear = calendar.get(Calendar.YEAR);
-        if (currentMonth < 4 && monthNumber > 9)
+        if (currentMonth < 6 && monthNumber > 9 && position > 20)
             date.append(currentYear - 1);
-        else if (currentMonth > 9 && monthNumber < 4)
+        else if (currentMonth > 9 && monthNumber < 4 && position < 20)
             date.append(currentYear + 1);
         else
             date.append(currentYear);
@@ -316,6 +317,9 @@ public final class Utils {
         //add day
         if (day.length() == 1) date.append("0");
         date.append(day);
+
+        //TODO delete this
+        Log.i("DATE", "Building date from " + day + "-" + month + "(" + position + "); Result is: " + date.toString());
 
         return date.toString();
     }
@@ -357,7 +361,7 @@ public final class Utils {
             for (int i = 0; i < eventTitle.length(); i++) {
                 JSONObject child = eventTitle.optJSONObject(i);
                 String title = child.optString("name");
-                String date = buildDate(child.optString("month"), child.optString("day"));
+                String date = buildDate(child.optString("month"), child.optString("day"), i * 100 / eventTitle.length());
                 String description = child.optString("description_long");
                 if (TextUtils.isEmpty(description))
                     description = child.optString("description");

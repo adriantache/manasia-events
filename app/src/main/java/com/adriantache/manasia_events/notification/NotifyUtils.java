@@ -41,11 +41,13 @@ public class NotifyUtils {
         ArrayList<Event> events = (ArrayList<Event>) readDatabase(context);
         if (events == null || events.isEmpty()) return;
 
+        //cancel all already set notifications in case the database IDs have shifted
         resetAllWork(context);
 
+        //then add notifications for all events happening today or in the future
         for (Event event : events) {
             if (compareDateToToday(event.getDate()) > -1 && (addAll || event.getNotify() == 1)) {
-                addNotification(context, event.getDatabaseID(), event.getDate());
+                addNotification(event.getDatabaseID(), event.getDate());
             }
         }
     }
@@ -63,7 +65,7 @@ public class NotifyUtils {
         }
     }
 
-    private static void addNotification(Context context, int dbEventID, String eventDate) {
+    private static void addNotification(int dbEventID, String eventDate) {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
         Data inputData = new Data.Builder().putInt(DB_EVENT_ID_TAG, dbEventID).build();
 

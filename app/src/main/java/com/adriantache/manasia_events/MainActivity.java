@@ -65,9 +65,11 @@ import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNo
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.ENQUEUE_EVENTS_JSON_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG;
+import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG_FORCED;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENT_UPDATE_HOUR;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
+import static com.adriantache.manasia_events.util.CommonStrings.NOTIFICATION_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_ACTIVITY;
@@ -190,7 +192,12 @@ public class MainActivity extends AppCompatActivity
 //                  sb.append(w.getRunAttemptCount());
 
                     //update main screen if we have a work success
-                    if (w.getState() == WorkInfo.State.SUCCEEDED) updateFromDatabase();
+                    if (w.getState() == WorkInfo.State.SUCCEEDED) {
+                        updateFromDatabase();
+                        //stop refresh indicator
+                        if (swipeRefreshLayout.isRefreshing())
+                            swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             }
 
@@ -198,6 +205,8 @@ public class MainActivity extends AppCompatActivity
         };
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG).observe(this, workStatusObserver);
+        WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG_FORCED).observe(this, workStatusObserver);
+        WorkManager.getInstance().getWorkInfosByTagLiveData(NOTIFICATION_WORK_TAG).observe(this, workStatusObserver);
     }
 
     //todo reschedule notifications on remote events fetch
@@ -285,15 +294,15 @@ public class MainActivity extends AppCompatActivity
                 .Builder(UpdateEventsWorker.class)
                 .setConstraints(constraints)
                 .setInputData(remoteUrl)
-                .addTag(EVENTS_JSON_WORK_TAG)
+                .addTag(EVENTS_JSON_WORK_TAG_FORCED)
                 .build();
         //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
-        WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG, ExistingWorkPolicy.KEEP, getEventJson).enqueue();
+        WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG_FORCED, ExistingWorkPolicy.REPLACE, getEventJson).enqueue();
 
         //todo IMPORTANT monitor work end and refresh list
 
-        //stop refresh indicator
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+//        //stop refresh indicator
+//        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
     }
 
     private void populateListView() {
@@ -408,26 +417,25 @@ public class MainActivity extends AppCompatActivity
             //don't draw empty tags
             if (pair.getValue() == 0) continue;
 
-            String tag = pair.getKey();
+            String tag = pair.getKey() + " (" + pair.getValue() + ")";
 
             TextView textView = new TextView(this);
             textView.setText(tag);
             textView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
 
-            if (!filtersSet.isEmpty() && filtersSet.contains(tag)) {
-                textView.setBackgroundColor(Color.GRAY);
-                textView.setTextColor(getTextColour(Color.GRAY));
+            if (!filtersSet.isEmpty() && filtersSet.contains(pair.getKey())) {
+                textView.setBackgroundColor(Color.DKGRAY);
+                textView.setTextColor(Color.WHITE);
             } else {
-                int tagBGColour = getTagColour(Color.RED, tag);
-                textView.setBackgroundColor(tagBGColour);
-                textView.setTextColor(getTextColour(tagBGColour));
+                textView.setBackgroundColor(Color.GRAY);
+                textView.setTextColor(Color.WHITE);
             }
 
             //note to self: this uses lame pixels, not cool DiPs
             textView.setPadding(viewPadding, viewPadding, viewPadding, viewPadding);
 
             //add and apply a filter on click
-            textView.setOnClickListener(v -> addFilter(tag));
+            textView.setOnClickListener(v -> addFilter(pair.getKey()));
 
             views[pointer++] = textView;
         }
@@ -449,39 +457,6 @@ public class MainActivity extends AppCompatActivity
         views[pointer] = resetTextView;
 
         return views;
-    }
-
-    //todo remove colour and add number of events instead
-    //return tag colour based on frequency of tag in total
-    private int getTagColour(int colour, String tag) {
-        final int R = (colour >> 16) & 0xff;
-        final int G = (colour >> 8) & 0xff;
-        final int B = (colour) & 0xff;
-        float[] hsv = new float[3];
-
-        Color.RGBToHSV(R, G, B, hsv);
-        float maxSaturation = hsv[1];
-
-        if (tagMap.isEmpty()) computeTagMap();
-
-        int maxPopularity = getMaxNumberOfTags();
-        float tagPopularity = tagMap.get(tag);
-
-        //add half saturation back to prevent washed out colours
-        hsv[1] = maxSaturation * (tagPopularity / maxPopularity) + maxSaturation / 2;
-
-        return Color.HSVToColor(hsv);
-    }
-
-    //get black or white depending on contrast with background colour
-    private int getTextColour(int colour) {
-        final int R = (colour >> 16) & 0xff;
-        final int G = (colour >> 8) & 0xff;
-        final int B = (colour) & 0xff;
-
-        //convert to YIQ colour space as per https://stackoverflow.com/questions/4672271/reverse-opposing-colors
-        double y = (299 * R + 587 * G + 114 * B) / 1000;
-        return y >= 128 ? Color.BLACK : Color.WHITE;
     }
 
     //add or remove an individual tag from the filter
@@ -743,3 +718,5 @@ public class MainActivity extends AppCompatActivity
 //todo [idea] prevent notifications from triggering if user doesn't interact with them
 //todo [IDEA] scroll to TODAY on startup and mark it somehow in the list
 //todo [IDEA] alternative to above: colour events happening TODAY differently and change date to TODAY
+//todo remove logs
+//todo [IDEA] move food and drinks menu
