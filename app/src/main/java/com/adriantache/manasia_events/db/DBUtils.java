@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -55,7 +56,7 @@ public final class DBUtils {
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, sortOrder);
 
         if (cursor == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         ArrayList<Event> DBEvents = new ArrayList<>();

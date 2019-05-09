@@ -50,16 +50,6 @@ public class NotifyWorker extends Worker {
         return Result.success();
     }
 
-    //    @NonNull
-//    @Override
-//    public Worker.Result doWork() {
-//        triggerNotification();
-//
-//        return Worker.Result.SUCCESS;
-//        // (Returning RETRY tells WorkManager to try this task again
-//        // later; FAILURE says not to try again.)
-//    }
-
     private void triggerNotification() {
         final int DBEventID = getInputData().getInt(DB_EVENT_ID_TAG, ERROR_VALUE);
 

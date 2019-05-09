@@ -19,8 +19,6 @@ import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK
  * PeriodicWorkRequest which updates events from the remote source
  **/
 public class TriggerUpdateEventsWorker extends Worker {
-    private static final String TAG = "TriggerUpdateEventsWRK";
-
     public TriggerUpdateEventsWorker(Context context, WorkerParameters workerParameters) {
         super(context, workerParameters);
     }
@@ -49,45 +47,6 @@ public class TriggerUpdateEventsWorker extends Worker {
         //and of course enqueue...
         WorkManager.getInstance().enqueue(getEventJson);
 
-        //trigger additional tasks every time the work is completed
-//        listenableFuture.addListener(this::onWorkCompleted, Runnable::run);
-
         return Result.success();
     }
-
-//    private void onWorkCompleted() {
-//        //get results JSON
-//        StringBuilder jsonResult = null;
-//
-//        try (BufferedReader bufferedReader =
-//                     new BufferedReader(
-//                             new InputStreamReader(
-//                                     getApplicationContext().openFileInput(JSON_RESULT)))) {
-//
-//            jsonResult = new StringBuilder();
-//            int i;
-//            while ((i = bufferedReader.read()) != -1) {
-//                jsonResult.append((char) i);
-//            }
-//
-//            //delete file after reading it to prevent caching in case of errors
-//            getApplicationContext().deleteFile(JSON_RESULT);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        //decode the JSON into events ArrayList
-//        ArrayList<Event> eventsTemp = null;
-//        if (jsonResult != null && jsonResult.length() != 0) {
-//            eventsTemp = Utils.parseJSON(jsonResult.toString());
-//        }
-//
-//        //if remote fetch is successful...
-//        if (eventsTemp != null) {
-//            Log.i(TAG, "fetchEvents: Successfully fetched and decoded remote JSON.");
-//
-//            // send events to the database...
-//            inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
-//        }
-//    }
 }

@@ -2,7 +2,6 @@ package com.adriantache.manasia_events.worker;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.work.Worker;
@@ -44,16 +43,8 @@ public class UpdateEventsWorker extends Worker {
             e.printStackTrace();
         }
 
-        if (!TextUtils.isEmpty(jsonString) && jsonString.length() > 50) {
+        if (jsonString != null && jsonString.length() > 50) {
             storeJSON(jsonString);
-//            try (PrintWriter printWriter = new PrintWriter(new File(
-//                    getApplicationContext().getFilesDir(), JSON_RESULT), "UTF-8")) {
-//                printWriter.write(jsonString);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-//            return Result.success(new Data.Builder().putString(JSON_RESULT, jsonString).build());
             return Result.success();
         } else return Result.failure();
     }

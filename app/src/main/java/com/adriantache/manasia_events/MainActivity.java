@@ -2,10 +2,7 @@ package com.adriantache.manasia_events;
 
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -51,10 +48,8 @@ import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
 import com.ramotion.foldingcell.FoldingCell;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -66,14 +61,12 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.adriantache.manasia_events.db.DBUtils.inputRemoteEventsIntoDatabase;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.ENQUEUE_EVENTS_JSON_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENT_UPDATE_HOUR;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
-import static com.adriantache.manasia_events.util.CommonStrings.JSON_RESULT;
 import static com.adriantache.manasia_events.util.CommonStrings.LAST_UPDATE_TIME_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.REMOTE_URL;
@@ -175,32 +168,36 @@ public class MainActivity extends AppCompatActivity
         //show snackbar if user hasn't chosen to be notified for all events
         if (!notifyOnAllEvents) showSnackbar();
 
-
-        //todo DELETE this !!!
-        NameViewModel model = ViewModelProviders.of(this).get(NameViewModel.class);
-        // Create the observer which updates the UI.
-        final Observer<List<WorkInfo>> nameObserver = list -> {
+        // Create the observer which fetches WorkManager status.
+        final Observer<List<WorkInfo>> workStatusObserver = list -> {
             StringBuilder sb = new StringBuilder();
             if (list != null) {
                 int i = 0;
 
                 for (WorkInfo w : list) {
-                    sb.append(i);
-                    sb.append(". \t");
+                    sb.append(" \n");
+                    sb.append(i++);
+                    sb.append(". ");
 
                     sb.append(w.getId());
                     sb.append(" ");
                     sb.append(w.getTags());
                     sb.append(" ");
                     sb.append(w.getState());
-                    sb.append(" \n");
+                    sb.append(" ");
+
+//                  not available in 1.0.1
+//                  sb.append(w.getRunAttemptCount());
+
+                    //update main screen if we have a work success
+                    if (w.getState() == WorkInfo.State.SUCCEEDED) updateFromDatabase();
                 }
             }
 
-            Log.i("WRK update", sb.toString());
+            Log.i("WRK status", sb.toString());
         };
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        model.getStatus().observe(this, nameObserver);
+        WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG).observe(this, workStatusObserver);
     }
 
     //todo reschedule notifications on remote events fetch
@@ -291,46 +288,12 @@ public class MainActivity extends AppCompatActivity
                 .addTag(EVENTS_JSON_WORK_TAG)
                 .build();
         //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
-        WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG,
-                ExistingWorkPolicy.KEEP, getEventJson).enqueue();
+        WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG, ExistingWorkPolicy.KEEP, getEventJson).enqueue();
+
+        //todo IMPORTANT monitor work end and refresh list
 
         //stop refresh indicator
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
-    }
-
-    private void onWorkCompleted() {
-        //once we have confirmation the loader has succeeded, we use a character-
-        //based stream to read the file and get the JSON string
-        StringBuilder jsonResult = null;
-        try (BufferedReader bufferedReader =
-                     new BufferedReader(
-                             new InputStreamReader(
-                                     getApplicationContext().openFileInput(JSON_RESULT)))) {
-            jsonResult = new StringBuilder();
-            int i;
-            while ((i = bufferedReader.read()) != -1) {
-                jsonResult.append((char) i);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //we decode the JSON into events ArrayList
-        ArrayList<Event> eventsTemp = null;
-        if (jsonResult != null && jsonResult.length() != 0) {
-            eventsTemp = Utils.parseJSON(jsonResult.toString());
-        }
-
-        //and if remote fetch is successful...
-        if (eventsTemp != null) {
-            Log.i(TAG, "fetch events: Successfully fetched and decoded remote JSON.");
-            // we send events to the database...
-            inputRemoteEventsIntoDatabase(eventsTemp, getApplicationContext());
-        }
-
-        //todo resolve loop coming from database input delay (should move processing to different thread)
-        //...and finally run tasks post database update
-        updateFromDatabase();
     }
 
     private void populateListView() {
@@ -763,11 +726,6 @@ public class MainActivity extends AppCompatActivity
     }
 }
 
-class NameViewModel extends ViewModel {
-    public LiveData<List<WorkInfo>> getStatus() {
-        return WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG);
-    }
-}
 
 //todo [HIGH] implement notification handling; auto-eliminate notifications in the past
 //todo add notification on new events added to remote database
