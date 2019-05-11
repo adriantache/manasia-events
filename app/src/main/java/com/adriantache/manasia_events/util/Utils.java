@@ -318,9 +318,6 @@ public final class Utils {
         if (day.length() == 1) date.append("0");
         date.append(day);
 
-        //TODO delete this
-        Log.i("DATE", "Building date from " + day + "-" + month + "(" + position + "); Result is: " + date.toString());
-
         return date.toString();
     }
 
@@ -394,7 +391,7 @@ public final class Utils {
         }
 
         //add any recurring events here
-        if (!events.isEmpty()) addRecurringEvents(events);
+//        if (!events.isEmpty()) addRecurringEvents(events);
 
         return events;
     }

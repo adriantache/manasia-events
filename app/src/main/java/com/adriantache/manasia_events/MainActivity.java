@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
     private FoldingCell fc;
     private ArrayList<String> filtersSet = new ArrayList<>();
 
-    //todo [IMPORTANT] prevent events from the past or far future from displaying
+    //todo [IMPORTANT] fix error getting DBID error
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -147,9 +147,10 @@ public class MainActivity extends AppCompatActivity
 
         //set default preferences on first launch, in case this matters for some reason
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
         //get shared prefs
         getPreferences();
+        //show snackbar if user hasn't chosen to be notified for all events
+        if (!notifyOnAllEvents) showSnackbar();
 
         //update open hours TextView
         Utils.getOpenHours(openHours, this, firstLaunch);
@@ -162,13 +163,10 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
 
         //populate the list initially since theoretically the latest events are already in the DB
-        updateFromDatabase();
+        updateFromDatabase(true);
 
         //update events and display them, if available
         schedulePeriodicRemoteEventsFetch();
-
-        //show snackbar if user hasn't chosen to be notified for all events
-        if (!notifyOnAllEvents) showSnackbar();
 
         // Create the observer which fetches WorkManager status.
         final Observer<List<WorkInfo>> workStatusObserver = list -> {
@@ -185,15 +183,20 @@ public class MainActivity extends AppCompatActivity
                     sb.append(" ");
                     sb.append(w.getTags());
                     sb.append(" ");
-                    sb.append(w.getState());
+
+                    WorkInfo.State state = w.getState();
+                    sb.append(state);
                     sb.append(" ");
 
 //                  not available in 1.0.1
 //                  sb.append(w.getRunAttemptCount());
 
-                    //update main screen if we have a work success
-                    if (w.getState() == WorkInfo.State.SUCCEEDED) {
-                        updateFromDatabase();
+                    //update main screen if we have a work success for the forced fetch
+                    if (w.getTags().contains(EVENTS_JSON_WORK_TAG_FORCED) &&
+                            (state == WorkInfo.State.SUCCEEDED || state == WorkInfo.State.FAILED)) {
+                        //refresh displayed events
+                        if (state == WorkInfo.State.SUCCEEDED) updateFromDatabase(false);
+
                         //stop refresh indicator
                         if (swipeRefreshLayout.isRefreshing())
                             swipeRefreshLayout.setRefreshing(false);
@@ -204,6 +207,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("WRK status", sb.toString());
         };
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        //todo prune unneeded observers
         WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG).observe(this, workStatusObserver);
         WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG_FORCED).observe(this, workStatusObserver);
         WorkManager.getInstance().getWorkInfosByTagLiveData(NOTIFICATION_WORK_TAG).observe(this, workStatusObserver);
@@ -237,24 +241,27 @@ public class MainActivity extends AppCompatActivity
     //tasks which run on remote events refresh or in case that refresh is not possible
     //todo refactor this whole class, but this for sure, it's weird
     //todo test if local file has additional events compared to database, might signal problem with listenableFuture
-    public void updateFromDatabase() {
+    public void updateFromDatabase(boolean checkStale) {
         //...then reading that database (this also populates the ArrayList with the very important
         // DBEventID value to pass along throughout the app)
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
-        //first check to see if events are missing (database is empty) or stale (last updated
-        // before normal update time)
-        Calendar calendar = Calendar.getInstance();
-        // calculating the amount of hours since EVENT_UPDATE_HOUR + 1 to compensate for difference in minutes
-        int timeSinceEUH = calendar.get(Calendar.HOUR_OF_DAY) - EVENT_UPDATE_HOUR + 1;
-        int hoursSinceLUT = (int) ((calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600);
+        //only check if events are stale if we ask for it
+        if (checkStale) {
+            //first check to see if events are missing (database is empty) or stale (last updated
+            // before normal update time)
+            Calendar calendar = Calendar.getInstance();
+            // calculating the amount of hours since EVENT_UPDATE_HOUR + 1 to compensate for difference in minutes
+            int timeSinceEUH = calendar.get(Calendar.HOUR_OF_DAY) - EVENT_UPDATE_HOUR + 1;
+            int hoursSinceLUT = (int) ((calendar.getTimeInMillis() - lastUpdateTime) / 1000 / 3600);
 
-        //get shared prefs again to see if lastUpdateTime changed
-        getPreferences();
+            //get shared prefs again to see if lastUpdateTime changed
+            getPreferences();
 
-        //check if events are empty or time since LUT > time since EUH
-        if (events == null || hoursSinceLUT > timeSinceEUH) {
-            triggerImmediateRemoteUpdate();
+            //check if events are empty or time since LUT > time since EUH
+            if (events == null || hoursSinceLUT > timeSinceEUH) {
+                triggerImmediateRemoteUpdate();
+            }
         }
 
         if (events != null) {
@@ -270,7 +277,7 @@ public class MainActivity extends AppCompatActivity
 
             populateListView();
 
-            //compute tags HashMap from events ArrayList
+            //also compute tags HashMap from events ArrayList
             computeTagMap();
             //populate FoldingCell with tags
             populateFoldingCell();
@@ -297,12 +304,9 @@ public class MainActivity extends AppCompatActivity
                 .addTag(EVENTS_JSON_WORK_TAG_FORCED)
                 .build();
         //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
-        WorkManager.getInstance().beginUniqueWork(EVENTS_JSON_WORK_TAG_FORCED, ExistingWorkPolicy.REPLACE, getEventJson).enqueue();
-
-        //todo IMPORTANT monitor work end and refresh list
-
-//        //stop refresh indicator
-//        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        WorkManager.getInstance()
+                .beginUniqueWork(EVENTS_JSON_WORK_TAG_FORCED, ExistingWorkPolicy.REPLACE, getEventJson)
+                .enqueue();
     }
 
     private void populateListView() {

@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class EventDetail extends AppCompatActivity {
     private ConstraintLayout constraintLayout;
     private Event event = null;
     private int dbEventId = ERROR_VALUE;
+    private boolean reverseAnimation = false;
     //todo determine if we need this at this level
     private SharedPreferences sharedPref;
 
@@ -78,6 +80,26 @@ public class EventDetail extends AppCompatActivity {
         notify = findViewById(R.id.notify);
         notifyLabel = findViewById(R.id.notify_label);
         constraintLayout = findViewById(R.id.constraint_layout);
+
+        //Hide title bar on image click
+        LinearLayout titleBar = findViewById(R.id.title_bar);
+        thumbnail.setOnClickListener(v -> {
+            if (!reverseAnimation) {
+                AlphaAnimation animation = new AlphaAnimation(1.0f, 0f);
+                animation.setDuration(500);
+                animation.setFillAfter(true);
+
+                titleBar.startAnimation(animation);
+                reverseAnimation();
+            } else {
+                AlphaAnimation animation = new AlphaAnimation(0f, 1.0f);
+                animation.setDuration(500);
+                animation.setFillAfter(true);
+
+                titleBar.startAnimation(animation);
+                reverseAnimation();
+            }
+        });
 
         //get the event for which to display details
         Intent intent = getIntent();
@@ -127,6 +149,10 @@ public class EventDetail extends AppCompatActivity {
         //todo replace with startActivityForResult
         sharedPref = getDefaultSharedPreferences(getApplicationContext());
         sharedPref.edit().putBoolean(FIRST_LAUNCH_SETTING, false).apply();
+    }
+
+    private void reverseAnimation() {
+        reverseAnimation = !reverseAnimation;
     }
 
     private void populateDetails() {
@@ -225,7 +251,7 @@ public class EventDetail extends AppCompatActivity {
             snackbar.setAction("Activate", v -> {
                 sharedPref = getDefaultSharedPreferences(getApplicationContext());
                 //todo remove this is there are no problems
-                if(!sharedPref.edit().putBoolean(NOTIFY_SETTING, true).commit())
+                if (!sharedPref.edit().putBoolean(NOTIFY_SETTING, true).commit())
                     Toast.makeText(this, "FATAL ERROR SAVING NOTIFY ALL SETTING!", Toast.LENGTH_LONG).show();
 
                 //since we're activating the setting to always be notified, go ahead and schedule notifications
