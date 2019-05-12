@@ -1,5 +1,6 @@
 package com.adriantache.manasia_events.db;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -59,7 +60,7 @@ public final class DBUtils {
             return Collections.emptyList();
         }
 
-        ArrayList<Event> DBEvents = new ArrayList<>();
+        ArrayList<Event> dbEvents = new ArrayList<>();
 
         try {
             if (cursor.getCount() == 0) {
@@ -68,7 +69,7 @@ public final class DBUtils {
             }
 
             while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndex(_ID));
+                long id = cursor.getLong(cursor.getColumnIndex(_ID));
                 String title = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_TITLE));
                 String description = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DESCRIPTION));
                 String date = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DATE));
@@ -82,13 +83,13 @@ public final class DBUtils {
                 Gson gson = new Gson();
                 ArrayList<String> tags = gson.fromJson(rawTags, type);
 
-                DBEvents.add(new Event(id, date, title, description, photoUrl, tags, notify));
+                dbEvents.add(new Event(id, date, title, description, photoUrl, tags, notify));
             }
         } finally {
             cursor.close();
         }
 
-        return DBEvents;
+        return dbEvents;
     }
 
     /**
@@ -98,12 +99,12 @@ public final class DBUtils {
      * @param dbEventId Unique database ID of the event, as fetched from the database
      * @return The event requested by ID
      */
-    public static Event getEventFromDatabase(Context context, int dbEventId) {
+    public static Event getEventFromDatabase(Context context, long dbEventId) {
         String[] projection =
                 {_ID, COLUMN_EVENT_TITLE, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_DATE,
                         COLUMN_EVENT_PHOTO_URL, COLUMN_EVENT_NOTIFY, COLUMN_TAGS};
         String selection = _ID + " == ?";
-        String selectionArgs[] = {String.valueOf(dbEventId)};
+        String[] selectionArgs = {String.valueOf(dbEventId)};
 
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, null);
 
@@ -118,7 +119,7 @@ public final class DBUtils {
             }
 
             while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndex(_ID));
+                long id = cursor.getLong(cursor.getColumnIndex(_ID));
                 String title = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_TITLE));
                 String description = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DESCRIPTION));
                 String date = cursor.getString(cursor.getColumnIndex(COLUMN_EVENT_DATE));
@@ -144,13 +145,13 @@ public final class DBUtils {
     /**
      * Method to send an Event object to the database and update its details
      *
-     * @param context   Context for EventDBHelper
-     * @param dbEventId Unique database ID of the event, as fetched from the database
-     * @param event     Event object to be updated into the database
-     * @return (long) Result of the insertion operation, should be == dbEventId
+     * @param context Context for EventDBHelper
+     * @param event   Event object to be updated into the database
+     * @return (int)   Result of the insertion operation, should be number of rows updated
      */
-    public static int updateEventToDatabase(Context context, int dbEventId, Event event) {
+    public static int updateEventToDatabase(Context context, Event event) {
         ContentValues values = new ContentValues();
+        values.put(_ID, event.getDatabaseID());
         values.put(COLUMN_EVENT_TITLE, event.getTitle());
         values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
         values.put(COLUMN_EVENT_DATE, event.getDate());
@@ -165,7 +166,7 @@ public final class DBUtils {
         values.put(COLUMN_TAGS, tagString);
 
         String selection = _ID + " == ?";
-        String[] selectionArgs = {String.valueOf(dbEventId)};
+        String[] selectionArgs = {String.valueOf(event.getDatabaseID())};
 
         return context.getContentResolver().update(CONTENT_URI, values, selection, selectionArgs);
     }
@@ -175,15 +176,18 @@ public final class DBUtils {
 
         if (remoteEvents != null) {
             //first of all transfer all notify statuses from the local database to the temporary remote database
-            ArrayList<Event> dbEvents = (ArrayList<Event>) DBUtils.readDatabase(context);
+            ArrayList<Event> dbEvents = (ArrayList<Event>) readDatabase(context);
             remoteEvents = Utils.updateNotifyInRemote(remoteEvents, dbEvents);
 
+            //todo replace this with a nice UPDATE function and DELETE only >x old entries
             //then delete ALL events from the local table
             context.getContentResolver().delete(CONTENT_URI, null, null);
 
             //then add the remote events to the local database
             for (Event event : remoteEvents) {
                 ContentValues values = new ContentValues();
+                final long databaseID = event.getDatabaseID();
+                values.put(_ID, databaseID);
                 values.put(COLUMN_EVENT_TITLE, event.getTitle());
                 values.put(COLUMN_EVENT_DESCRIPTION, event.getDescription());
                 values.put(COLUMN_EVENT_DATE, event.getDate());
@@ -197,7 +201,8 @@ public final class DBUtils {
                 String tagString = gson.toJson(tags);
                 values.put(COLUMN_TAGS, tagString);
 
-                context.getContentResolver().insert(CONTENT_URI, values);
+                if (ContentUris.parseId(context.getContentResolver().insert(CONTENT_URI, values)) != databaseID)
+                    Log.d("WRKTest", "Event ID DB insert mismatch! " + databaseID);
             }
 
             Log.i("WRKTest", "fetchEvents: Successfully input events into database.");

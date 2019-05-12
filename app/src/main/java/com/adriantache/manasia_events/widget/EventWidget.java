@@ -44,10 +44,9 @@ public class EventWidget extends AppWidgetProvider {
             if (event != null) {
                 String title = event.getTitle();
 
-                //shorten title if it's >50 chars
+                //shorten title if it's longer than 50 chars
                 if (title.length() > 50) {
-                    title = title.substring(0, 50);
-                    title += "...";
+                    title = title.substring(0, 50) + "...";
                 }
 
                 if (isEventToday(event.getDate())) {
@@ -121,10 +120,9 @@ public class EventWidget extends AppWidgetProvider {
                 if (event != null) {
                     String title = event.getTitle();
 
-                    //shorten title if it's >50 chars
+                    //shorten title if it's longer than 50 chars
                     if (title.length() > 50) {
-                        title = title.substring(0, 50);
-                        title += "...";
+                        title = title.substring(0, 50) + "...";
                     }
 
                     if (isEventToday(event.getDate())) {
@@ -150,7 +148,7 @@ public class EventWidget extends AppWidgetProvider {
                 if (bitmap != null)
                     views.setImageViewBitmap(R.id.thumbnail, bitmap);
                 else {
-                    //get screen size multiplier
+                    //get image size in pixels
                     int multiplier = (int) context.getResources().getDisplayMetrics().density;
                     int width = (int) (context.getResources().getDimension(R.dimen.widget_width)) * multiplier;
                     int height = (int) (width * 0.3477); //using the image aspect ratio

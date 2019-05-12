@@ -51,7 +51,7 @@ public class NotifyWorker extends Worker {
     }
 
     private void triggerNotification() {
-        final int DBEventID = getInputData().getInt(DB_EVENT_ID_TAG, ERROR_VALUE);
+        final long DBEventID = getInputData().getLong(DB_EVENT_ID_TAG, ERROR_VALUE);
 
         Event event = null;
 
@@ -127,11 +127,10 @@ public class NotifyWorker extends Worker {
 //                                .bigText(event.getDescription()))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        //trigger the notification, using DBEventID as its ID in order to show multiple
+        //trigger the notification, using DBEventID hashCode as its ID in order to show multiple
         //notifications, if applicable, but no duplicates
-        //todo fix DBEventID autoincrement problem (results in duplicate notifications, requiring clearing notifications)
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        notificationManager.notify(DBEventID, notificationBuilder.build());
+        notificationManager.notify(Long.valueOf(DBEventID).hashCode(), notificationBuilder.build());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

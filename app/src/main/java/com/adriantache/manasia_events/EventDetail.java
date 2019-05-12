@@ -33,6 +33,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.ERROR_VALUE;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACTIVITY;
+import static com.adriantache.manasia_events.util.Utils.getDip;
 
 public class EventDetail extends AppCompatActivity {
     private static final String TAG = "EventDetail";
@@ -47,12 +48,10 @@ public class EventDetail extends AppCompatActivity {
     private TextView notifyLabel;
     private ConstraintLayout constraintLayout;
     private Event event = null;
-    private int dbEventId = ERROR_VALUE;
+    private long dbEventId = ERROR_VALUE;
     private boolean reverseAnimation = false;
-    //todo determine if we need this at this level
-    private SharedPreferences sharedPref;
+    private boolean noImage = false;
 
-    //todo zoom photo on click
     //todo [BUG] find NOTIFY_SETTINGS problem
     //todo set notifyOnAllEvents and settings reading to default to TRUE
 
@@ -72,53 +71,34 @@ public class EventDetail extends AppCompatActivity {
         title = findViewById(R.id.title);
         notifyStatus = findViewById(R.id.notify_status);
         description = findViewById(R.id.description);
-        ImageView back = findViewById(R.id.back);
-        TextView call = findViewById(R.id.call);
-        TextView map = findViewById(R.id.map);
-        TextView location = findViewById(R.id.location);
         notifyIcon = findViewById(R.id.notify_icon);
         notify = findViewById(R.id.notify);
         notifyLabel = findViewById(R.id.notify_label);
         constraintLayout = findViewById(R.id.constraint_layout);
 
-        //Hide title bar on image click
-        LinearLayout titleBar = findViewById(R.id.title_bar);
-        thumbnail.setOnClickListener(v -> {
-            if (!reverseAnimation) {
-                AlphaAnimation animation = new AlphaAnimation(1.0f, 0f);
-                animation.setDuration(500);
-                animation.setFillAfter(true);
-
-                titleBar.startAnimation(animation);
-                reverseAnimation();
-            } else {
-                AlphaAnimation animation = new AlphaAnimation(0f, 1.0f);
-                animation.setDuration(500);
-                animation.setFillAfter(true);
-
-                titleBar.startAnimation(animation);
-                reverseAnimation();
-            }
-        });
-
-        //get the event for which to display details
+        //get the event for which to display details, or fail
         Intent intent = getIntent();
-        dbEventId = Objects.requireNonNull(intent.getExtras()).getInt(DB_EVENT_ID_TAG);
+        dbEventId = Objects.requireNonNull(intent.getExtras()).getLong(DB_EVENT_ID_TAG);
         if (dbEventId != ERROR_VALUE)
             event = DBUtils.getEventFromDatabase(this, dbEventId);
-        else
+        else {
             Toast.makeText(this, "Error getting event ID.", Toast.LENGTH_SHORT).show();
-
-        //populate the activity with event details
-        if (event != null) {
-            populateDetails();
-        } else {
-            Toast.makeText(this, "Error getting event from database.", Toast.LENGTH_SHORT).show();
             finish();
         }
 
+        //populate the activity with event details, or fail
+        if (event != null) {
+            populateDetails();
+        } else {
+            Toast.makeText(this, "Error getting event " + dbEventId + " from database.",
+                    Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        ImageView back = findViewById(R.id.back);
         back.setOnClickListener(v -> backToMainActivity());
 
+        TextView call = findViewById(R.id.call);
         call.setOnClickListener(v -> {
             Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
             phoneIntent.setData(Uri.parse("tel:004 0736 760 063"));
@@ -127,6 +107,7 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
+        TextView map = findViewById(R.id.map);
         map.setOnClickListener(v -> {
             String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
             Intent locationIntent = new Intent(Intent.ACTION_VIEW);
@@ -136,6 +117,7 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
+        TextView location = findViewById(R.id.location);
         location.setOnClickListener(v -> {
             String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
             Intent locationIntent = new Intent(Intent.ACTION_VIEW);
@@ -147,8 +129,25 @@ public class EventDetail extends AppCompatActivity {
 
         //inform MainActivity that this isn't first launch
         //todo replace with startActivityForResult
-        sharedPref = getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         sharedPref.edit().putBoolean(FIRST_LAUNCH_SETTING, false).apply();
+
+        //Hide title bar on image click if we have an image
+        if (!noImage) {
+            LinearLayout titleBar = findViewById(R.id.title_bar);
+            thumbnail.setOnClickListener(v -> {
+                int duration = 300;
+                float start = reverseAnimation ? 0f : 1f;
+                float end = reverseAnimation ? 1f : 0f;
+
+                AlphaAnimation animation = new AlphaAnimation(start, end);
+                animation.setDuration(duration);
+                animation.setFillAfter(true);
+
+                titleBar.startAnimation(animation);
+                reverseAnimation();
+            });
+        }
     }
 
     private void reverseAnimation() {
@@ -162,9 +161,11 @@ public class EventDetail extends AppCompatActivity {
             thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
             thumbnail.setBackgroundResource(R.color.colorAccent);
         } else {
+            noImage = true;
             thumbnail.setImageResource(R.drawable.manasia_logo);
             thumbnail.setScaleType(ImageView.ScaleType.CENTER);
             thumbnail.setBackgroundResource(R.color.blue_grey100);
+            thumbnail.setPadding(0, 0, 0, getDip(this, 100));
         }
         day.setText(Utils.extractDayOrMonth(event.getDate(), true));
         month.setText(Utils.extractDayOrMonth(event.getDate(), false));
@@ -198,11 +199,11 @@ public class EventDetail extends AppCompatActivity {
         }
 
         //read notify setting to determine if notifyOnAllEvents is true
-        sharedPref = getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         boolean notifyOnAllEvents = sharedPref.getBoolean(NOTIFY_SETTING, true);
 
         //set notify status appearance
-        if (event.getNotify() == 1 || notifyOnAllEvents)
+        if (notifyOnAllEvents || event.getNotify() == 1)
             notifyStatus.setImageResource(R.drawable.alarm_accent);
         else
             notifyStatus.setImageResource(R.drawable.alarm);
@@ -249,7 +250,7 @@ public class EventDetail extends AppCompatActivity {
                     Snackbar.LENGTH_LONG);
 
             snackbar.setAction("Activate", v -> {
-                sharedPref = getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
                 //todo remove this is there are no problems
                 if (!sharedPref.edit().putBoolean(NOTIFY_SETTING, true).commit())
                     Toast.makeText(this, "FATAL ERROR SAVING NOTIFY ALL SETTING!", Toast.LENGTH_LONG).show();
@@ -293,12 +294,8 @@ public class EventDetail extends AppCompatActivity {
 
     //method to update event in the local database
     private void updateDatabase() {
-        int result = ERROR_VALUE;
-        if (dbEventId != ERROR_VALUE) {
-            result = DBUtils.updateEventToDatabase(this, dbEventId, event);
-        }
-
-        if (result == ERROR_VALUE) Log.d(TAG, "updateDatabase: Error writing event to database.");
+        if (DBUtils.updateEventToDatabase(this, event) == ERROR_VALUE)
+            Log.d(TAG, "updateDatabase: Error writing event to database.");
     }
 
     //method that handles clicking the back button to create an artificial back stack to MainActivity

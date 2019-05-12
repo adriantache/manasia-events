@@ -65,9 +65,9 @@ public class NotifyUtils {
         }
     }
 
-    private static void addNotification(int dbEventID, String eventDate) {
+    private static void addNotification(long dbEventID, String eventDate) {
         //store DBEventID to pass it to the PendingIntent and open the appropriate event page on notification click
-        Data inputData = new Data.Builder().putInt(DB_EVENT_ID_TAG, dbEventID).build();
+        Data inputData = new Data.Builder().putLong(DB_EVENT_ID_TAG, dbEventID).build();
 
         //get delay until notification triggers
         long delay = calculateDelay(eventDate);
