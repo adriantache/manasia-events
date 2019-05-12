@@ -17,12 +17,12 @@ import static com.adriantache.manasia_events.db.EventContract.EventEntry._ID;
  * Creates and updates SQL database
  **/
 public class EventDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "events.db";
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    _ID + " INTEGER PRIMARY KEY NOT NULL, " +
                     COLUMN_EVENT_TITLE + " TEXT NOT NULL, " +
                     COLUMN_EVENT_DESCRIPTION + " TEXT NOT NULL, " +
                     COLUMN_EVENT_DATE + " TEXT NOT NULL, " +

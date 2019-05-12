@@ -3,8 +3,6 @@ package com.adriantache.manasia_events.db;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.adriantache.manasia_events.R;
-
 /**
  * Contract to store SQLite DB structure
  **/
@@ -19,7 +17,7 @@ public final class EventContract {
     public static class EventEntry implements BaseColumns {
         static final String TABLE_NAME = "events";
 
-        static final String _ID = BaseColumns._ID;
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_EVENT_TITLE = "title";
         public static final String COLUMN_EVENT_DESCRIPTION = "description";
         public static final String COLUMN_EVENT_DATE = "date";

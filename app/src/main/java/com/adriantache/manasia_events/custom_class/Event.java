@@ -10,8 +10,8 @@ public class Event {
     private String title;
     private String description;
     private String photoUrl;
+    private long databaseID;
     private int notify = 0;
-    private int databaseID = -1;
 
     /**
      * Constructor for events fetched from remote data source
@@ -21,8 +21,9 @@ public class Event {
      * @param description Event description
      * @param photoUrl    Event photo URL, can be null
      */
-    public Event(String date, String title, String description, @Nullable String photoUrl,
+    public Event(long databaseID, String date, String title, String description, @Nullable String photoUrl,
                  ArrayList<String> eventTags) {
+        this.databaseID = databaseID;
         this.date = date;
         this.title = title;
         this.description = description;
@@ -40,7 +41,7 @@ public class Event {
      * @param photoUrl    Event photo URL, can be null
      * @param notify      Flag to trigger notification for this event; can be 0 or 1
      */
-    public Event(int databaseID, String date, String title, String description, String photoUrl,
+    public Event(long databaseID, String date, String title, String description, String photoUrl,
                  ArrayList<String> eventTags, int notify) {
         this.databaseID = databaseID;
         this.date = date;
@@ -77,7 +78,7 @@ public class Event {
         this.notify = notify;
     }
 
-    public int getDatabaseID() {
+    public long getDatabaseID() {
         return databaseID;
     }
 

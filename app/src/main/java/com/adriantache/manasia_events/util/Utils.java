@@ -36,7 +36,9 @@ public final class Utils {
         throw new AssertionError("No Utils Instances are allowed!");
     }
 
-    //date related methods
+    //DATE RELATED METHODS
+
+    //extract either day or month (MMM) from a date string of format "yyyy-MM-dd"
     public static String extractDayOrMonth(String s, boolean day) {
         final String error = "ERROR";
         if (TextUtils.isEmpty(s)) return error;
@@ -210,7 +212,10 @@ public final class Utils {
         }
     }
 
-    //utility methods
+    //UTILITY METHODS
+
+    //update the notify status for events
+    //todo refactor this to take into account notifyAll setting
     public static ArrayList<Event> updateNotifyInRemote(ArrayList<Event> remoteEvents, @Nullable ArrayList<Event> localEvents) {
         if (localEvents == null) return remoteEvents;
 
@@ -358,6 +363,8 @@ public final class Utils {
             for (int i = 0; i < eventTitle.length(); i++) {
                 JSONObject child = eventTitle.optJSONObject(i);
                 String title = child.optString("name");
+                String url = child.optString("url");
+                long id = extractId(url);
                 String date = buildDate(child.optString("month"), child.optString("day"), i * 100 / eventTitle.length());
                 String description = child.optString("description_long");
                 if (TextUtils.isEmpty(description))
@@ -383,7 +390,7 @@ public final class Utils {
                     description = description.replace("\n", "\n\n");
 
                 if (date != null && title != null && description != null)
-                    events.add(new Event(date, title, description, imageUrl, eventTags));
+                    events.add(new Event(id, date, title, description, imageUrl, eventTags));
             }
         } catch (JSONException e) {
             Log.e("parseJSON", "Cannot parse JSON", e);
@@ -408,7 +415,8 @@ public final class Utils {
             eventTags.add(vljTag);
 
             //generate the event
-            Event vlj = new Event(nextVLJ, "Seară VLJ",
+            //todo add ID generation for recurring events, probably just increment an extra number at the end
+            Event vlj = new Event(ERROR_VALUE, nextVLJ, "Seară VLJ",
                     "Program pentru inițiați cu Vinul La Juma’ de preț.\n" +
                             "Licoarea bahică dezleagă limbile și unește sufletele. \n" +
                             "\n" +
@@ -490,5 +498,26 @@ public final class Utils {
         }
 
         return position;
+    }
+
+    public static int getDip(Context context, int pixels) {
+        return (int) (context.getResources().getDisplayMetrics().density * pixels);
+    }
+
+    //extract event ID from event URL string
+    private static long extractId(String url) {
+        int start = url.indexOf("events/") + 7;
+        int end = url.indexOf("/", start + 1);
+
+        String found = url.substring(start, end);
+
+        long result = ERROR_VALUE;
+        try {
+            result = Long.valueOf(found);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

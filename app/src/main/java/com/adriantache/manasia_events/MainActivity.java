@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -170,37 +169,37 @@ public class MainActivity extends AppCompatActivity
 
         // Create the observer which fetches WorkManager status.
         final Observer<List<WorkInfo>> workStatusObserver = list -> {
+            if (list == null) return;
+
             StringBuilder sb = new StringBuilder();
-            if (list != null) {
-                int i = 0;
+            int i = 0;
 
-                for (WorkInfo w : list) {
-                    sb.append(" \n");
-                    sb.append(i++);
-                    sb.append(". ");
+            for (WorkInfo w : list) {
+                sb.append(" \n");
+                sb.append(i++);
+                sb.append(". ");
 
-                    sb.append(w.getId());
-                    sb.append(" ");
-                    sb.append(w.getTags());
-                    sb.append(" ");
+                sb.append(w.getId());
+                sb.append(" ");
+                sb.append(w.getTags());
+                sb.append(" ");
 
-                    WorkInfo.State state = w.getState();
-                    sb.append(state);
-                    sb.append(" ");
+                WorkInfo.State state = w.getState();
+                sb.append(state);
+                sb.append(" ");
 
 //                  not available in 1.0.1
 //                  sb.append(w.getRunAttemptCount());
 
-                    //update main screen if we have a work success for the forced fetch
-                    if (w.getTags().contains(EVENTS_JSON_WORK_TAG_FORCED) &&
-                            (state == WorkInfo.State.SUCCEEDED || state == WorkInfo.State.FAILED)) {
-                        //refresh displayed events
-                        if (state == WorkInfo.State.SUCCEEDED) updateFromDatabase(false);
+                //update main screen if we have a work success for the forced fetch
+                if (w.getTags().contains(EVENTS_JSON_WORK_TAG_FORCED) &&
+                        (state == WorkInfo.State.SUCCEEDED || state == WorkInfo.State.FAILED)) {
+                    //refresh displayed events
+                    if (state == WorkInfo.State.SUCCEEDED) updateFromDatabase(false);
 
-                        //stop refresh indicator
-                        if (swipeRefreshLayout.isRefreshing())
-                            swipeRefreshLayout.setRefreshing(false);
-                    }
+                    //stop refresh indicator
+                    if (swipeRefreshLayout.isRefreshing())
+                        swipeRefreshLayout.setRefreshing(false);
                 }
             }
 
@@ -211,12 +210,12 @@ public class MainActivity extends AppCompatActivity
         WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG).observe(this, workStatusObserver);
         WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG_FORCED).observe(this, workStatusObserver);
         WorkManager.getInstance().getWorkInfosByTagLiveData(NOTIFICATION_WORK_TAG).observe(this, workStatusObserver);
+        WorkManager.getInstance().pruneWork();
     }
 
-    //todo reschedule notifications on remote events fetch
-    //todo replace the ConnectivityManager stuff with WorkRequest constraints
+    //todo reschedule notifications on remote events fetch (probably already happens)
     private void schedulePeriodicRemoteEventsFetch() {
-        //todo normally just schedule a periodic work request to fetch events daily
+        //todo normally just schedule a periodic work request to fetch events daily when setInitialDelay works
         //populate the global ArrayList of events by adding a work request to fetch JSON...
         Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
 
@@ -260,6 +259,7 @@ public class MainActivity extends AppCompatActivity
 
             //check if events are empty or time since LUT > time since EUH
             if (events == null || hoursSinceLUT > timeSinceEUH) {
+                Log.i("WRKStart", "Events are stale, triggering forced update.")
                 triggerImmediateRemoteUpdate();
             }
         }
@@ -391,7 +391,6 @@ public class MainActivity extends AppCompatActivity
         populateTagLinearLayout(tagsLL, views, this);
     }
 
-    //todo remove colour
     //turn tags into TextViews
     private View[] makeTagTextViews() {
         //create as many views as there are tags, plus 2 extra: title and reset button
@@ -610,7 +609,7 @@ public class MainActivity extends AppCompatActivity
                 if (sb.length() != 0) remoteURL = sb.toString();
             }
         } catch (IOException e) {
-            Log.e(TAG, "Cannot open API key file.", e);
+            Log.e(TAG, "Cannot open API key file to generate remote event URL.", e);
         }
 
         return remoteURL;
@@ -627,7 +626,8 @@ public class MainActivity extends AppCompatActivity
         firstLaunch = sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
     }
 
-    //todo figure out if we still care about this, all it does is change notify status, would only trigger if notifyForAllEvents is false
+    //todo figure out if we still care about this, all it does is change notify status,
+    // would only trigger if notifyForAllEvents is false
     private void refreshList() {
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
@@ -680,23 +680,6 @@ public class MainActivity extends AppCompatActivity
             default:
                 return false;
         }
-    }
-
-    //return max number of tags for one single tag
-    public int getMaxNumberOfTags() {
-        if (tagMap.isEmpty()) return 0;
-
-        int maxTags = 0;
-
-        Iterator<HashMap.Entry<String, Integer>> iterator = tagMap.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            HashMap.Entry<String, Integer> pair = iterator.next();
-
-            if (pair.getValue() > maxTags) maxTags = pair.getValue();
-        }
-
-        return maxTags;
     }
 
     @Override

@@ -42,7 +42,8 @@ public class EventProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
+                        @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase db = eventDBHelper.getReadableDatabase();
         Cursor cursor;
 
@@ -66,41 +67,38 @@ public class EventProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        switch (uriMatcher.match(uri)) {
-            case EVENTS:
-                SQLiteDatabase db = eventDBHelper.getWritableDatabase();
+        if (uriMatcher.match(uri) == EVENTS) {
+            SQLiteDatabase db = eventDBHelper.getWritableDatabase();
 
-                long id = ERROR_VALUE;
-                if (testValues(values))
-                    id = db.insert(TABLE_NAME, null, values);
+            long id = ERROR_VALUE;
+            if (testValues(values))
+                id = db.insert(TABLE_NAME, null, values);
 
-                if (id != ERROR_VALUE) return ContentUris.withAppendedId(uri, id);
-                else
-                    return null;
-            default:
-                throw new IllegalArgumentException("Cannot insert unknown URI" + uri);
+            if (id != ERROR_VALUE) return ContentUris.withAppendedId(uri, id);
+            else return null;
         }
+
+        throw new IllegalArgumentException("Cannot insert unknown URI" + uri);
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
+                      @Nullable String[] selectionArgs) {
+        SQLiteDatabase db = eventDBHelper.getWritableDatabase();
+
         switch (uriMatcher.match(uri)) {
             case EVENTS:
-                SQLiteDatabase db = eventDBHelper.getWritableDatabase();
-
                 if (testValues(values))
                     return db.update(TABLE_NAME, values, selection, selectionArgs);
                 else
                     return ERROR_VALUE;
 
             case SINGLE_EVENT:
-                SQLiteDatabase db2 = eventDBHelper.getWritableDatabase();
-
                 selection = _ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
                 if (testValues(values))
-                    return db2.update(TABLE_NAME, values, selection, selectionArgs);
+                    return db.update(TABLE_NAME, values, selection, selectionArgs);
                 else
                     return ERROR_VALUE;
 
@@ -111,17 +109,16 @@ public class EventProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase db = eventDBHelper.getWritableDatabase();
+
         switch (uriMatcher.match(uri)) {
             case EVENTS:
-                SQLiteDatabase db = eventDBHelper.getWritableDatabase();
-
                 return db.delete(TABLE_NAME, selection, selectionArgs);
             case SINGLE_EVENT:
-                SQLiteDatabase db2 = eventDBHelper.getWritableDatabase();
                 selection = _ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
-                return db2.delete(TABLE_NAME, selection, selectionArgs);
+                return db.delete(TABLE_NAME, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Cannot delete unknown URI" + uri);
         }
