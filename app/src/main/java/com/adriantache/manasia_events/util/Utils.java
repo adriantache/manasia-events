@@ -326,29 +326,6 @@ public final class Utils {
         return date.toString();
     }
 
-    private static String getImageUrl(String imageTag) {
-        imageTag = imageTag
-                .replace("scontent-*.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
-                .replace("&amp;", "&")
-                .replace("\\\"", "\"");
-
-        Pattern pattern = Pattern.compile("data-plsi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
-        Matcher matcher = pattern.matcher(imageTag);
-
-        if (matcher.find()) {
-            imageTag = matcher.group(1);
-        } else {
-            Pattern pattern2 = Pattern.compile("data-ploi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
-            Matcher matcher2 = pattern2.matcher(imageTag);
-
-            if (matcher2.find()) {
-                imageTag = matcher2.group(1);
-            }
-        }
-
-        return imageTag;
-    }
-
     public static ArrayList<Event> parseJSON(final String JSON) {
         if (TextUtils.isEmpty(JSON) || JSON.length() < 50) return new ArrayList<>();
 
@@ -370,6 +347,9 @@ public final class Utils {
                 if (TextUtils.isEmpty(description))
                     description = child.optString("description");
                 String imageUrl = child.optString("image_url");
+                if (!TextUtils.isEmpty(imageUrl)) imageUrl = getImageUrl(imageUrl);
+                    //if we don't get an image, try the hidden_img field which appears on videos
+                else imageUrl = child.optString("hidden_img");
                 if (!TextUtils.isEmpty(imageUrl)) imageUrl = getImageUrl(imageUrl);
 
                 //add all tags, if they exist, otherwise return an empty ArrayList
@@ -401,6 +381,29 @@ public final class Utils {
 //        if (!events.isEmpty()) addRecurringEvents(events);
 
         return events;
+    }
+
+    private static String getImageUrl(String imageTag) {
+        imageTag = imageTag
+                .replace("scontent-*.fbcdn.net", "scontent.fotp3-1.fna.fbcdn.net")
+                .replace("&amp;", "&")
+                .replace("\\\"", "\"");
+
+        Pattern pattern = Pattern.compile("data-plsi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
+        Matcher matcher = pattern.matcher(imageTag);
+
+        if (matcher.find()) {
+            imageTag = matcher.group(1);
+        } else {
+            Pattern pattern2 = Pattern.compile("data-ploi=(?:[\"\'])(.+?)(?:[\"\'])(?:.+?)");
+            Matcher matcher2 = pattern2.matcher(imageTag);
+
+            if (matcher2.find()) {
+                imageTag = matcher2.group(1);
+            }
+        }
+
+        return imageTag;
     }
 
     private static void addRecurringEvents(ArrayList<Event> events) {
