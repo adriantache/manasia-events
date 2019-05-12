@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity
             //check if events are empty or time since LUT > time since EUH
             if (events == null || hoursSinceLUT > timeSinceEUH) {
                 Log.i("WRKStart", "Events are stale, triggering forced update.");
+
                 triggerImmediateRemoteUpdate();
             }
         }
