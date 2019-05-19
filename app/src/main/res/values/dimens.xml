@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="widget_height">170dp</dimen>
+    //widget size is (cells * 70) - 30
+    <dimen name="widget_height">110dp</dimen>
     <dimen name="widget_width">220dp</dimen>
-    <dimen name="widget_image_height">120dp</dimen>
+    <dimen name="widget_image_height">130dp</dimen>
 </resources>
