@@ -139,7 +139,6 @@ public class FoodMenuActivity extends AppCompatActivity {
             toggleMenuItemVisibility();
             title.setText("soup");
             categoryImageView.setImageResource(R.drawable.soup);
-            //TODO finish filling in menu items
             foodDetail.setText(Html.fromHtml("<h2>SOUPS</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +

@@ -149,9 +149,9 @@ public class EventWidget extends AppWidgetProvider {
                     views.setImageViewBitmap(R.id.thumbnail, bitmap);
                 else {
                     //get image size in pixels
-                    int multiplier = (int) context.getResources().getDisplayMetrics().density;
-                    int width = (int) (context.getResources().getDimension(R.dimen.widget_width)) * multiplier;
-                    int height = (int) (width * 0.3477); //using the image aspect ratio
+                    int width = (int) context.getResources().getDimension(R.dimen.widget_width);
+                    int height = (int) (width * 0.3477f); //using the image aspect ratio
+
                     //get the manasia logo as default image
                     Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
                             R.drawable.manasia_logo_white);
@@ -174,12 +174,13 @@ public class EventWidget extends AppWidgetProvider {
 
                 try {
                     //get screen density as a multiplier to the widget dimens
-                    int multiplier = (int) context.getResources().getDisplayMetrics().density;
+                    int height = (int) context.getResources().getDimension(R.dimen.widget_image_height);
+                    int width = (int) context.getResources().getDimension(R.dimen.widget_width);
+
                     //get the image and resize it for the widget size to prevent wasting memory
                     bitmap = Picasso.get()
                             .load(url)
-                            .resize((int) context.getResources().getDimension(R.dimen.widget_width) * multiplier,
-                                    (int) context.getResources().getDimension(R.dimen.widget_image_height) * multiplier)
+                            .resize(width, height)
                             .centerCrop()
                             .get();
                 } catch (IOException e) {

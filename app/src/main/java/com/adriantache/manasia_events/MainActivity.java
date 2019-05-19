@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity
     private FoldingCell fc;
     private ArrayList<String> filtersSet = new ArrayList<>();
 
-    //todo [IMPORTANT] fix error getting DBID error
-
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
     //todo add food menu to app

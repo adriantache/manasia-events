@@ -78,14 +78,16 @@ public final class Utils {
         }
     }
 
+    /**
+     * method compares date to today, returning <0 if in the past, 0 if same, or >0 if in the future
+     */
     public static int compareDateToToday(String date) {
         Date formattedDate = convertDate(date, false);
         Date today = getToday(true);
 
         //todo replace compareTo with a custom method that takes into account when notifications are triggered
-        if (formattedDate != null)
-            return formattedDate.compareTo(today);
-
+        //this means due to the time of day, notifications can be shown for events happening today when they shouldn't
+        if (formattedDate != null) return formattedDate.compareTo(today);
             //failure will default to show actions and let the user decide
         else return ERROR_VALUE;
     }

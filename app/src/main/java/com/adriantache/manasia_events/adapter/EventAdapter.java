@@ -2,6 +2,8 @@ package com.adriantache.manasia_events.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.util.CommonStrings.NOTIFY_SETTING;
+import static com.adriantache.manasia_events.util.Utils.compareDateToToday;
 
 public class EventAdapter extends ArrayAdapter<Event> {
     private final List<Event> events = new ArrayList<>();
@@ -62,7 +65,19 @@ public class EventAdapter extends ArrayAdapter<Event> {
             if (!TextUtils.isEmpty(event.getPhotoUrl())) {
                 Picasso.get().load(event.getPhotoUrl()).fit().centerCrop().into(holder.thumbnail);
                 holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                holder.thumbnail.setBackgroundResource(R.color.colorAccent);
+
+                //gray out event thumbnail and ImageView background if it's in the past
+                if (compareDateToToday(event.getDate()) < 0) {
+                    ColorMatrix matrix = new ColorMatrix();
+                    matrix.setSaturation(0);
+
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    holder.thumbnail.setColorFilter(filter);
+                    holder.thumbnail.setBackgroundResource(R.color.colorDeselected);
+                } else {
+                    holder.thumbnail.setColorFilter(null);
+                    holder.thumbnail.setBackgroundResource(R.color.colorAccent);
+                }
             } else {
                 holder.thumbnail.setImageResource(R.drawable.manasia_logo);
                 holder.thumbnail.setScaleType(ImageView.ScaleType.CENTER);
@@ -75,7 +90,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
             holder.title.setText(event.getTitle());
 
             //hide notification group if event is in the past
-            if (Utils.compareDateToToday(event.getDate()) < 0)
+            if (compareDateToToday(event.getDate()) < 0)
                 holder.notifyStatus.setVisibility(View.INVISIBLE);
             else holder.notifyStatus.setVisibility(View.VISIBLE);
 
