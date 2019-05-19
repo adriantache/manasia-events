@@ -6,4 +6,5 @@
     <color name="white">#FFFFFF</color>
     <color name="blue_grey100">#CFD8DC</color>
     <color name="colorDeselected">#9E9E9E</color>
+    <color name="offWhite">#EEEEEE</color>
 </resources>
