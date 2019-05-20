@@ -145,6 +145,7 @@ public class EventDetail extends AppCompatActivity {
                 animation.setFillAfter(true);
 
                 titleBar.startAnimation(animation);
+                notifyStatus.startAnimation(animation);
                 reverseAnimation();
             });
         }
