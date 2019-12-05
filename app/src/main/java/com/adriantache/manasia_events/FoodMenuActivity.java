@@ -4,21 +4,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.adriantache.manasia_events.util.CommonStrings;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
+import com.adriantache.manasia_events.util.CommonStrings;
+import com.google.android.material.snackbar.Snackbar;
+
 import static android.text.Html.FROM_HTML_SEPARATOR_LINE_BREAK_HEADING;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.util.CommonStrings.FIRST_LAUNCH_SETTING;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_ACTIVITY;
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_DRINKS_MENU_ACTIVITY;

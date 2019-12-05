@@ -2,7 +2,6 @@ package com.adriantache.manasia_events;
 
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
-import android.arch.lifecycle.Observer;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +12,6 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -31,11 +25,17 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
@@ -44,8 +44,8 @@ import com.adriantache.manasia_events.custom_class.Event;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
-import com.adriantache.manasia_events.worker.TriggerUpdateEventsWorker;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
+import com.google.android.material.snackbar.Snackbar;
 import com.ramotion.foldingcell.FoldingCell;
 
 import java.io.IOException;
@@ -59,10 +59,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.adriantache.manasia_events.notification.NotifyUtils.scheduleNotifications;
 import static com.adriantache.manasia_events.util.CommonStrings.DB_EVENT_ID_TAG;
-import static com.adriantache.manasia_events.util.CommonStrings.ENQUEUE_EVENTS_JSON_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENTS_JSON_WORK_TAG_FORCED;
 import static com.adriantache.manasia_events.util.CommonStrings.EVENT_UPDATE_HOUR;
@@ -185,9 +184,7 @@ public class MainActivity extends AppCompatActivity
                 WorkInfo.State state = w.getState();
                 sb.append(state);
                 sb.append(" ");
-
-//                  not available in 1.0.1
-//                  sb.append(w.getRunAttemptCount());
+                sb.append(w.getRunAttemptCount());
 
                 //update main screen if we have a work success for the forced fetch
                 if (w.getTags().contains(EVENTS_JSON_WORK_TAG_FORCED) &&
@@ -205,10 +202,10 @@ public class MainActivity extends AppCompatActivity
         };
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //todo prune unneeded observers
-        WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG).observe(this, workStatusObserver);
-        WorkManager.getInstance().getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG_FORCED).observe(this, workStatusObserver);
-        WorkManager.getInstance().getWorkInfosByTagLiveData(NOTIFICATION_WORK_TAG).observe(this, workStatusObserver);
-        WorkManager.getInstance().pruneWork();
+        WorkManager.getInstance(this).getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG).observe(this, workStatusObserver);
+        WorkManager.getInstance(this).getWorkInfosByTagLiveData(EVENTS_JSON_WORK_TAG_FORCED).observe(this, workStatusObserver);
+        WorkManager.getInstance(this).getWorkInfosByTagLiveData(NOTIFICATION_WORK_TAG).observe(this, workStatusObserver);
+        WorkManager.getInstance(this).pruneWork();
     }
 
     //todo reschedule notifications on remote events fetch (probably already happens)
@@ -225,14 +222,14 @@ public class MainActivity extends AppCompatActivity
         //schedule the periodic work request for 5am, which will trigger the actual work request
         //todo prevent triggering this if PeriodicWorkRequest already exists
         //todo replace this directly with PeriodicWorkRequest with setInitialDelay once alpha02 launches
-        OneTimeWorkRequest getEventJson = new OneTimeWorkRequest
-                .Builder(TriggerUpdateEventsWorker.class)
+        PeriodicWorkRequest getEventJson = new PeriodicWorkRequest
+                .Builder(UpdateEventsWorker.class, 1, TimeUnit.DAYS)
                 .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
                 .setInputData(remoteUrl)
                 .setConstraints(constraints)
-                .addTag(ENQUEUE_EVENTS_JSON_WORK_TAG)
+                .addTag(EVENTS_JSON_WORK_TAG)
                 .build();
-        WorkManager.getInstance().enqueue(getEventJson);
+        WorkManager.getInstance(this).enqueue(getEventJson);
     }
 
     //tasks which run on remote events refresh or in case that refresh is not possible
@@ -303,7 +300,7 @@ public class MainActivity extends AppCompatActivity
                 .addTag(EVENTS_JSON_WORK_TAG_FORCED)
                 .build();
         //using beginUniqueWork to prevent re-enqueuing the same task while it is already running
-        WorkManager.getInstance()
+        WorkManager.getInstance(this)
                 .beginUniqueWork(EVENTS_JSON_WORK_TAG_FORCED, ExistingWorkPolicy.REPLACE, getEventJson)
                 .enqueue();
     }
@@ -594,8 +591,9 @@ public class MainActivity extends AppCompatActivity
 
         //get API key from file
         try {
-            if (getResources().getAssets().list("") != null &&
-                    Arrays.asList(getResources().getAssets().list("")).contains("dataURL.txt")) {
+            String[] assets = getResources().getAssets().list("");
+
+            if (assets != null && Arrays.asList(assets).contains("dataURL.txt")) {
                 AssetManager am = getApplicationContext().getAssets();
                 InputStream inputStream = am.open("dataURL.txt");
 

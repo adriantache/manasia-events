@@ -1,11 +1,12 @@
 package com.adriantache.manasia_events.util;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.adriantache.manasia_events.R;
 import com.adriantache.manasia_events.custom_class.Event;

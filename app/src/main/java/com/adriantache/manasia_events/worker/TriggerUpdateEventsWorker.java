@@ -1,8 +1,8 @@
 package com.adriantache.manasia_events.worker;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
+import androidx.annotation.NonNull;
 import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
@@ -28,7 +28,7 @@ public class TriggerUpdateEventsWorker extends Worker {
     public Result doWork() {
         //first remove any existing work that is scheduled to prevent duplicates due to
         // inconsistent trigger time
-        WorkManager.getInstance().cancelAllWorkByTag(EVENTS_JSON_WORK_TAG);
+        WorkManager.getInstance(getApplicationContext()).cancelAllWorkByTag(EVENTS_JSON_WORK_TAG);
 
         //set constraints to prevent running when it's not supposed to
         Constraints constraints = new Constraints.Builder()
@@ -45,7 +45,7 @@ public class TriggerUpdateEventsWorker extends Worker {
                 .build();
 
         //and of course enqueue...
-        WorkManager.getInstance().enqueue(getEventJson);
+        WorkManager.getInstance(getApplicationContext()).enqueue(getEventJson);
 
         return Result.success();
     }

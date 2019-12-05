@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraint_layout"
@@ -45,28 +45,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:targetApi="lollipop" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/third"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.33" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/twoThirds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".66" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/verticalThird"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent=".38" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/verticalTwoThirds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
         app:layout_constraintGuide_percent=".68" />
 
     <!--menu item categories-->
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/nonAlcoholic"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -107,9 +107,9 @@
                 android:text="Non-Alcoholic"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/beer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -142,9 +142,9 @@
                 android:text="Beer"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cocktails"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -177,9 +177,9 @@
                 android:text="Cocktails"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/longDrinks"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -212,9 +212,9 @@
                 android:text="Long Drinks"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/shots"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -247,9 +247,9 @@
                 android:text="Shots"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/spirits"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -282,9 +282,9 @@
                 android:text="Spirits"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/wine"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -317,9 +317,9 @@
                 android:text="Wine"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/spritz"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -352,9 +352,9 @@
                 android:text="Spritz"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cider"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -387,7 +387,7 @@
                 android:text="Cider"
                 android:textAlignment="center" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -418,4 +418,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:srcCompat="@drawable/cocktails" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

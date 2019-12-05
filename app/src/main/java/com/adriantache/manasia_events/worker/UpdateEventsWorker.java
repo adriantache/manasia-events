@@ -1,9 +1,9 @@
 package com.adriantache.manasia_events.worker;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -64,14 +64,14 @@ public class UpdateEventsWorker extends Worker {
 
         Response response = client.newCall(request).execute();
 
-        String JSON = null;
+        String json = null;
         try {
-            JSON = response.body().string();
+            json = response.body().string();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
-        return JSON;
+        return json;
     }
 
     private void storeJSON(String jsonResult) {
