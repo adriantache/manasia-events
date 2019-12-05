@@ -7,14 +7,13 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
 
+import com.adriantache.manasia_events.databinding.ActivityFoodMenuBinding;
 import com.adriantache.manasia_events.util.CommonStrings;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -26,20 +25,7 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_DRINKS_ME
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_FOOD_MENU_ACTIVITY;
 
 public class FoodMenuActivity extends AppCompatActivity {
-    ImageView back;
-    CardView specialMenus;
-    CardView soup;
-    CardView mainCourse;
-    CardView burgers;
-    CardView pasta;
-    CardView salads;
-    CardView appetizers;
-    CardView dessert;
-    CardView other;
-    TextView foodDetail;
-    ConstraintLayout constraintLayout;
-    TextView title;
-    ImageView categoryImageView;
+    private ActivityFoodMenuBinding binding;
 
     boolean menuItemsHidden = false;
     Snackbar snackbar;
@@ -47,34 +33,19 @@ public class FoodMenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_food_menu);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_food_menu);
 
-        back = findViewById(R.id.back);
-        specialMenus = findViewById(R.id.specialMenus);
-        soup = findViewById(R.id.soup);
-        mainCourse = findViewById(R.id.mainCourse);
-        burgers = findViewById(R.id.burgers);
-        pasta = findViewById(R.id.pasta);
-        salads = findViewById(R.id.salads);
-        appetizers = findViewById(R.id.appetizers);
-        dessert = findViewById(R.id.dessert);
-        other = findViewById(R.id.other);
-        foodDetail = findViewById(R.id.foodDetail);
-        constraintLayout = findViewById(R.id.constraint_layout);
-        title = findViewById(R.id.title);
-        categoryImageView = findViewById(R.id.categoryImageView);
+        binding.specialMenus.setOnClickListener(new MenuClickListener());
+        binding.soup.setOnClickListener(new MenuClickListener());
+        binding.mainCourse.setOnClickListener(new MenuClickListener());
+        binding.burgers.setOnClickListener(new MenuClickListener());
+        binding.pasta.setOnClickListener(new MenuClickListener());
+        binding.salads.setOnClickListener(new MenuClickListener());
+        binding.appetizers.setOnClickListener(new MenuClickListener());
+        binding.dessert.setOnClickListener(new MenuClickListener());
+        binding.other.setOnClickListener(new MenuClickListener());
 
-        specialMenus.setOnClickListener(new MenuClickListener());
-        soup.setOnClickListener(new MenuClickListener());
-        mainCourse.setOnClickListener(new MenuClickListener());
-        burgers.setOnClickListener(new MenuClickListener());
-        pasta.setOnClickListener(new MenuClickListener());
-        salads.setOnClickListener(new MenuClickListener());
-        appetizers.setOnClickListener(new MenuClickListener());
-        dessert.setOnClickListener(new MenuClickListener());
-        other.setOnClickListener(new MenuClickListener());
-
-        back.setOnClickListener(v -> back());
+        binding.back.setOnClickListener(v -> back());
 
         //inform MainActivity that this isn't first launch
         SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
@@ -94,9 +65,9 @@ public class FoodMenuActivity extends AppCompatActivity {
         final int SOURCE_ACTIVITY = getIntent().getIntExtra(CommonStrings.SOURCE_ACTIVITY, 0);
 
         if (menuItemsHidden) {
-            foodDetail.setText(null);
+            binding.foodDetail.setText(null);
             toggleMenuItemVisibility();
-            title.setText("manasia food");
+            binding.title.setText("manasia food");
             snackbar.dismiss();
         } else if (SOURCE_ACTIVITY == SOURCE_DRINKS_MENU_ACTIVITY) {
             Intent intent = new Intent(getApplicationContext(), DrinksMenuActivity.class);
@@ -109,11 +80,11 @@ public class FoodMenuActivity extends AppCompatActivity {
 
     private void openDetailView(View v) {
         //workaround because IDs are apparently no longer final
-        if (v.getId() == specialMenus.getId()) {
+        if (v.getId() == binding.specialMenus.getId()) {
             toggleMenuItemVisibility();
-            title.setText("special menus");
-            categoryImageView.setImageResource(R.drawable.special_menus);
-            foodDetail.setText(Html.fromHtml("<h2>BREAKFAST</h2> " +
+            binding.title.setText("special menus");
+            binding.categoryImageView.setImageResource(R.drawable.special_menus);
+            binding.foodDetail.setText(Html.fromHtml("<h2>BREAKFAST</h2> " +
                             "<small>(Daily 12am - 2pm)</small>" +
                             "<p><b>Two eggs fried / boiled / omelette</b></p>" +
                             "<h4>TOPPING</h4>" +
@@ -136,32 +107,32 @@ public class FoodMenuActivity extends AppCompatActivity {
                             "<b><p>V5 MENU - TODAY's SPECIALS</p></b>" +
                             "<h4>SPECIAL MENU: ANY MENU + SOUP</h4><p/>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == soup.getId()) {
+        } else if (v.getId() == binding.soup.getId()) {
             toggleMenuItemVisibility();
-            title.setText("soup");
-            categoryImageView.setImageResource(R.drawable.soup);
-            foodDetail.setText(Html.fromHtml("<h2>SOUPS</h2> " +
+            binding.title.setText("soup");
+            binding.categoryImageView.setImageResource(R.drawable.soup);
+            binding.foodDetail.setText(Html.fromHtml("<h2>SOUPS</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
                             "<p><b>Beef soup</b></p>" +
                             "<p><b>Chicken soup with homemade dumplings</b></p>" +
                             "<p><b>Vegetable soup</b></p>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == mainCourse.getId()) {
+        } else if (v.getId() == binding.mainCourse.getId()) {
             toggleMenuItemVisibility();
-            title.setText("main courses");
-            categoryImageView.setImageResource(R.drawable.main_course);
-            foodDetail.setText(Html.fromHtml("<h2>MAIN COURSES</h2> " +
+            binding.title.setText("main courses");
+            binding.categoryImageView.setImageResource(R.drawable.main_course);
+            binding.foodDetail.setText(Html.fromHtml("<h2>MAIN COURSES</h2> " +
                             "<p><b>Pork ribs, french fries, dill and yogurt sauce</b></p>" +
                             "<p><b>Shrimps with garlic, butter ond white wine sauce, foccacia</b></p>" +
                             "<p><b>Lamb pastrami wth polenta and garlic sauce</b></p>" +
                             "<p><b>Grilled chicken breast with quattro formaggi sauce and french fries</b></p>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == burgers.getId()) {
+        } else if (v.getId() == binding.burgers.getId()) {
             toggleMenuItemVisibility();
-            title.setText("burgers");
-            categoryImageView.setImageResource(R.drawable.burgers);
-            foodDetail.setText(Html.fromHtml("<h2>BURGERS</h2> " +
+            binding.title.setText("burgers");
+            binding.categoryImageView.setImageResource(R.drawable.burgers);
+            binding.foodDetail.setText(Html.fromHtml("<h2>BURGERS</h2> " +
                             "<p><b>Manasia Burger</b></p>" +
                             "<i><small>(Beef meat/lamb meat, mixed salad leaves, smoked cheese, grilled zucchini, tomatoes, cheese sauce, Manasia Food sauce)</small></i>" +
                             "<p><b>Vegetarian Burger</b></p>" +
@@ -170,55 +141,55 @@ public class FoodMenuActivity extends AppCompatActivity {
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
         }
         //todo finish food menu input
-        else if (v.getId() == pasta.getId()) {
+        else if (v.getId() == binding.pasta.getId()) {
             toggleMenuItemVisibility();
-            title.setText("pasta");
-            categoryImageView.setImageResource(R.drawable.pasta);
-            foodDetail.setText(Html.fromHtml("<h2>PASTA</h2> " +
+            binding.title.setText("pasta");
+            binding.categoryImageView.setImageResource(R.drawable.pasta);
+            binding.foodDetail.setText(Html.fromHtml("<h2>PASTA</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
                             "<p><b>Beef soup</b></p>" +
                             "<p><b>Chicken soup with homemade dumplings</b></p>" +
                             "<p><b>Vegetable soup</b></p>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == salads.getId()) {
+        } else if (v.getId() == binding.salads.getId()) {
             toggleMenuItemVisibility();
-            title.setText("salads");
-            categoryImageView.setImageResource(R.drawable.salad);
-            foodDetail.setText(Html.fromHtml("<h2>SALADS</h2> " +
+            binding.title.setText("salads");
+            binding.categoryImageView.setImageResource(R.drawable.salad);
+            binding.foodDetail.setText(Html.fromHtml("<h2>SALADS</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
                             "<p><b>Beef soup</b></p>" +
                             "<p><b>Chicken soup with homemade dumplings</b></p>" +
                             "<p><b>Vegetable soup</b></p>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == appetizers.getId()) {
+        } else if (v.getId() == binding.appetizers.getId()) {
             toggleMenuItemVisibility();
-            title.setText("appetizers");
-            categoryImageView.setImageResource(R.drawable.appetizers);
-            foodDetail.setText(Html.fromHtml("<h2>APPETIZERS</h2> " +
+            binding.title.setText("appetizers");
+            binding.categoryImageView.setImageResource(R.drawable.appetizers);
+            binding.foodDetail.setText(Html.fromHtml("<h2>APPETIZERS</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
                             "<p><b>Beef soup</b></p>" +
                             "<p><b>Chicken soup with homemade dumplings</b></p>" +
                             "<p><b>Vegetable soup</b></p>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == dessert.getId()) {
+        } else if (v.getId() == binding.dessert.getId()) {
             toggleMenuItemVisibility();
-            title.setText("dessert");
-            categoryImageView.setImageResource(R.drawable.dessert);
-            foodDetail.setText(Html.fromHtml("<h2>DESSERTS</h2> " +
+            binding.title.setText("dessert");
+            binding.categoryImageView.setImageResource(R.drawable.dessert);
+            binding.foodDetail.setText(Html.fromHtml("<h2>DESSERTS</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
                             "<p><b>Beef soup</b></p>" +
                             "<p><b>Chicken soup with homemade dumplings</b></p>" +
                             "<p><b>Vegetable soup</b></p>",
                     FROM_HTML_SEPARATOR_LINE_BREAK_HEADING, null, null));
-        } else if (v.getId() == other.getId()) {
+        } else if (v.getId() == binding.other.getId()) {
             toggleMenuItemVisibility();
-            title.setText("other");
-            categoryImageView.setImageResource(R.drawable.other);
-            foodDetail.setText(Html.fromHtml("<h2>OTHER</h2> " +
+            binding.title.setText("other");
+            binding.categoryImageView.setImageResource(R.drawable.other);
+            binding.foodDetail.setText(Html.fromHtml("<h2>OTHER</h2> " +
                             "<p><b>Turkey meat soup with home made noodles</b></p>" +
                             "<p><b>Tomato cream soup with parmesan chips</b></p>" +
                             "<p><b>Beef soup</b></p>" +
@@ -232,26 +203,26 @@ public class FoodMenuActivity extends AppCompatActivity {
 
     private void toggleMenuItemVisibility() {
         if (!menuItemsHidden) {
-            specialMenus.setVisibility(View.GONE);
-            soup.setVisibility(View.GONE);
-            mainCourse.setVisibility(View.GONE);
-            burgers.setVisibility(View.GONE);
-            pasta.setVisibility(View.GONE);
-            salads.setVisibility(View.GONE);
-            appetizers.setVisibility(View.GONE);
-            dessert.setVisibility(View.GONE);
-            other.setVisibility(View.GONE);
+            binding.specialMenus.setVisibility(View.GONE);
+            binding.soup.setVisibility(View.GONE);
+            binding.mainCourse.setVisibility(View.GONE);
+            binding.burgers.setVisibility(View.GONE);
+            binding.pasta.setVisibility(View.GONE);
+            binding.salads.setVisibility(View.GONE);
+            binding.appetizers.setVisibility(View.GONE);
+            binding.dessert.setVisibility(View.GONE);
+            binding.other.setVisibility(View.GONE);
             menuItemsHidden = true;
         } else {
-            specialMenus.setVisibility(View.VISIBLE);
-            soup.setVisibility(View.VISIBLE);
-            mainCourse.setVisibility(View.VISIBLE);
-            burgers.setVisibility(View.VISIBLE);
-            pasta.setVisibility(View.VISIBLE);
-            salads.setVisibility(View.VISIBLE);
-            appetizers.setVisibility(View.VISIBLE);
-            dessert.setVisibility(View.VISIBLE);
-            other.setVisibility(View.VISIBLE);
+            binding.specialMenus.setVisibility(View.VISIBLE);
+            binding.soup.setVisibility(View.VISIBLE);
+            binding.mainCourse.setVisibility(View.VISIBLE);
+            binding.burgers.setVisibility(View.VISIBLE);
+            binding.pasta.setVisibility(View.VISIBLE);
+            binding.salads.setVisibility(View.VISIBLE);
+            binding.appetizers.setVisibility(View.VISIBLE);
+            binding.dessert.setVisibility(View.VISIBLE);
+            binding.other.setVisibility(View.VISIBLE);
             menuItemsHidden = false;
         }
     }
@@ -259,7 +230,7 @@ public class FoodMenuActivity extends AppCompatActivity {
     //snackbar on list detail to link to manasia food
     //todo modify behaviour of back button to take you back to other menu in case you came from there
     private void showSnackbar() {
-        snackbar = Snackbar.make(constraintLayout,
+        snackbar = Snackbar.make(binding.constraintLayout,
                 "Thirsty? Visit the drinks menu:",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Manasia Hub", v -> {

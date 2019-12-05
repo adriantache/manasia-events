@@ -1,151 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraint_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="92dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/manasia_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/manasia_logo" />
-
-    <com.ramotion.foldingcell.FoldingCell xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/folding_cell"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/logo">
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-        <!--unfolded layout-->
-        <FrameLayout
-            android:id="@+id/cell_content_view"
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="92dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/manasia_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/manasia_logo" />
+
+        <com.ramotion.foldingcell.FoldingCell
+            android:id="@+id/folding_cell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_dark"
-            android:visibility="gone">
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/logo">
 
-            <LinearLayout
-                android:id="@+id/tags_linear_layout"
+            <!--unfolded layout-->
+            <FrameLayout
+                android:id="@+id/cell_content_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="100dp"
-                android:orientation="vertical"
-                android:padding="8dp" />
-        </FrameLayout>
+                android:background="@android:color/holo_green_dark"
+                android:visibility="gone">
 
-        <!--folded layout-->
-        <FrameLayout
-            android:id="@+id/cell_title_view"
-            android:layout_width="match_parent"
-            android:layout_height="40dp">
+                <LinearLayout
+                    android:id="@+id/tags_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="100dp"
+                    android:orientation="vertical"
+                    android:padding="8dp" />
+            </FrameLayout>
 
-            <TextView
-                android:id="@+id/filters_text_view"
+            <!--folded layout-->
+            <FrameLayout
+                android:id="@+id/cell_title_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/holo_blue_dark"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center|center_vertical"
-                android:padding="8dp"
-                android:text="@string/filters"
-                android:textAllCaps="true"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-    </com.ramotion.foldingcell.FoldingCell>
+                android:layout_height="40dp">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/wifi_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/folding_cell">
+                <TextView
+                    android:id="@+id/filters_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_dark"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center|center_vertical"
+                    android:padding="8dp"
+                    android:text="@string/filters"
+                    android:textAllCaps="true"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+        </com.ramotion.foldingcell.FoldingCell>
 
-        <!--todo replace ListView with RecyclerView-->
-        <ListView
-            android:id="@+id/list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@android:color/transparent"
-            android:drawablePadding="8dp" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/wifi_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/folding_cell">
 
-    <TextView
-        android:id="@+id/wifi_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"
-        android:background="#fff"
-        android:drawableStart="@drawable/wifi_password"
-        android:drawablePadding="8dp"
-        android:gravity="center_vertical"
-        android:padding="8dp"
-        android:text="@string/wifi_key"
-        android:textColor="#000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout" />
+            <!--todo replace ListView with RecyclerView-->
+            <ListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@android:color/transparent"
+                android:drawablePadding="8dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <ImageView
-        android:id="@+id/menu"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:contentDescription="@string/menu"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/menu"
-        app:layout_constraintBottom_toBottomOf="@+id/logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/logo" />
+        <TextView
+            android:id="@+id/wifi_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+            android:background="#fff"
+            android:drawableStart="@drawable/wifi_password"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="@string/wifi_key"
+            android:textColor="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout" />
 
-    <TextView
-        android:id="@+id/error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@drawable/error_robot"
-        android:gravity="center"
-        android:text="@string/no_events_found"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
-        app:layout_constraintLeft_toLeftOf="@id/swipe_refresh_layout"
-        app:layout_constraintRight_toRightOf="@id/swipe_refresh_layout"
-        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout" />
+        <ImageView
+            android:id="@+id/menu"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:contentDescription="@string/menu"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/menu"
+            app:layout_constraintBottom_toBottomOf="@+id/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/logo"
+            tools:ignore="UnusedAttribute" />
 
-    <TextView
-        android:id="@+id/open_hours"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#fff"
-        android:drawableStart="@drawable/schedule"
-        android:drawablePadding="8dp"
-        android:gravity="center_vertical"
-        android:padding="8dp"
-        android:textAlignment="center"
-        android:textColor="#000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swipe_refresh_layout"
-        tools:text="Opens at 12 am." />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/error_robot"
+            android:gravity="center"
+            android:text="@string/no_events_found"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+            app:layout_constraintLeft_toLeftOf="@id/swipe_refresh_layout"
+            app:layout_constraintRight_toRightOf="@id/swipe_refresh_layout"
+            app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout" />
+
+        <TextView
+            android:id="@+id/open_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#fff"
+            android:drawableStart="@drawable/schedule"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:textAlignment="center"
+            android:textColor="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swipe_refresh_layout"
+            tools:text="Opens at 12 am." />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

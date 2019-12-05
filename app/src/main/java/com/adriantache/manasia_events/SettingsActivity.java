@@ -6,12 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.adriantache.manasia_events.databinding.ActivitySettingsBinding;
 
 import java.util.Calendar;
 
@@ -25,31 +25,29 @@ import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_EVENT_ACT
 import static com.adriantache.manasia_events.util.CommonStrings.SOURCE_MAIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
-    TextView devTools;
+    private ActivitySettingsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
 
         final int activity = getIntent().getIntExtra(SOURCE_ACTIVITY, 0);
         final int DBEventID = getIntent().getExtras().getInt(DB_EVENT_ID_TAG);
-        ImageView back = findViewById(R.id.back);
         if (activity == SOURCE_MAIN_ACTIVITY) {
-            back.setOnClickListener(v -> {
+            binding.back.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             });
         } else if (activity == SOURCE_EVENT_ACTIVITY) {
-            back.setOnClickListener(v -> {
+            binding.back.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), EventDetail.class);
                 intent.putExtra(DB_EVENT_ID_TAG, DBEventID);
                 startActivity(intent);
             });
         }
 
-        Button notificationSettings = findViewById(R.id.notification_settings);
-        notificationSettings.setOnClickListener(v -> {
+        binding.notificationSettings.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -68,12 +66,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         //this generates some debugging text useful for when logcat isn't available
         //todo eventually remove this, maybe (could be useful to help users with debug, but settings is user facing)
-        devTools = findViewById(R.id.dev_tools);
         populateDevText();
-        devTools.setOnClickListener(v -> populateDevText());
+        binding.devTools.setOnClickListener(v -> populateDevText());
         //set hide on click for dev tools view
-        TextView devToolsHider = findViewById(R.id.dev_tools_hide);
-        devToolsHider.setOnClickListener(v -> devToolsHider.setVisibility(View.INVISIBLE));
+        binding.devToolsHide.setOnClickListener(v -> binding.devToolsHide.setVisibility(View.INVISIBLE));
     }
 
     private void populateDevText() {
@@ -88,9 +84,9 @@ public class SettingsActivity extends AppCompatActivity {
         String displayText = "Time since LUT: " + timeSinceLUT + " hours; NotifyAll: "
                 + sharedPrefs.getBoolean(NOTIFY_SETTING, false) + "; FirstLaunch: " +
                 sharedPrefs.getBoolean(FIRST_LAUNCH_SETTING, true);
-        devTools.setTextColor(0xffD4E157);
-        devTools.setBackgroundColor(0xff795548);
-        devTools.setText(displayText);
+        binding.devTools.setTextColor(0xffD4E157);
+        binding.devTools.setBackgroundColor(0xff795548);
+        binding.devTools.setText(displayText);
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

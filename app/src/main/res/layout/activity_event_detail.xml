@@ -1,275 +1,278 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraint_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".EventDetail">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/thumbnail"
-        android:layout_width="0dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/colorAccent"
-        android:contentDescription="@string/event_thumbnail"
-        android:scaleType="centerCrop"
-        android:transitionName="thumbnail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_background"
-        tools:targetApi="lollipop" />
-
-    <LinearLayout
-        android:id="@+id/title_bar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#eeeeeeee"
-        android:elevation="8dp"
-        android:orientation="horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/thumbnail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="UnusedAttribute">
+        android:layout_height="match_parent"
+        tools:context=".EventDetail">
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/colorAccent"
+            android:contentDescription="@string/event_thumbnail"
+            android:scaleType="centerCrop"
+            android:transitionName="thumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back_background"
+            tools:targetApi="lollipop" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:background="#eeeeeeee"
             android:elevation="8dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="UnusedAttribute">
 
-            <TextView
-                android:id="@+id/day"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center|top"
-                android:textSize="30sp"
-                android:transitionName="day"
-                tools:targetApi="lollipop"
-                tools:text="21" />
+                android:layout_marginStart="16dp"
+                android:elevation="8dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/month"
+                <TextView
+                    android:id="@+id/day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center|top"
+                    android:textSize="30sp"
+                    android:transitionName="day"
+                    tools:targetApi="lollipop"
+                    tools:text="21" />
+
+                <TextView
+                    android:id="@+id/month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="8dp"
+                    android:textSize="18sp"
+                    android:transitionName="month"
+                    tools:targetApi="lollipop"
+                    tools:text="APR" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingBottom="8dp"
-                android:textSize="18sp"
-                android:transitionName="month"
-                tools:targetApi="lollipop"
-                tools:text="APR" />
+                android:layout_marginStart="16dp"
+                android:elevation="8dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:elevation="4dp"
+                    android:textColor="#000"
+                    android:textSize="18sp"
+                    android:transitionName="title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/month"
+                    app:layout_constraintTop_toTopOf="@+id/day"
+                    tools:targetApi="lollipop"
+                    tools:text="@tools:sample/lorem" />
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/location"
+                    android:drawablePadding="4dp"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/manasia_address"
+                    app:layout_constraintStart_toStartOf="@id/title"
+                    app:layout_constraintTop_toBottomOf="@+id/title" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/notify_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:elevation="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
-                android:elevation="4dp"
-                android:textColor="#000"
-                android:textSize="18sp"
-                android:transitionName="title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/month"
-                app:layout_constraintTop_toTopOf="@+id/day"
-                tools:targetApi="lollipop"
-                tools:text="@tools:sample/lorem" />
-
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:clickable="true"
-                android:drawablePadding="4dp"
-                android:drawableStart="@drawable/location"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:text="@string/manasia_address"
-                app:layout_constraintStart_toStartOf="@id/title"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/notify_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:background="#aa607D8B"
-        android:contentDescription="@string/notify_status"
-        android:padding="8dp"
-        android:transitionName="notify_status"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_background"
-        app:srcCompat="@drawable/alarm"
-        tools:targetApi="lollipop" />
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@id/call"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/description_barrier">
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="web"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#aa607D8B"
+            android:contentDescription="@string/notify_status"
             android:padding="8dp"
-            android:textColor="#000"
-            tools:text="This will be the description." />
-    </ScrollView>
+            android:transitionName="notify_status"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back_background"
+            app:srcCompat="@drawable/alarm"
+            tools:targetApi="lollipop" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/description_barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="title_bar"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@id/call"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/description_barrier">
 
-    <View
-        android:id="@+id/back_background"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorAccent"
-        android:elevation="8dp"
-        tools:targetApi="lollipop" />
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:padding="8dp"
+                android:textColor="#000"
+                tools:text="This will be the description." />
+        </ScrollView>
 
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:contentDescription="@string/back_button"
-        android:elevation="9dp"
-        android:focusable="true"
-        android:padding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back"
-        tools:targetApi="lollipop" />
-
-    <TextView
-        android:id="@+id/event_detail_title"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:elevation="10dp"
-        android:gravity="center_vertical"
-        android:text="@string/manasia_event_detail"
-        android:textAlignment="center"
-        android:textColor="#fff"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/back_background"
-        app:layout_constraintStart_toEndOf="@+id/back"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:targetApi="lollipop" />
-
-    <TextView
-        android:id="@+id/call"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:drawablePadding="4dp"
-        android:drawableTop="@drawable/call"
-        android:focusable="true"
-        android:padding="16dp"
-        android:text="@string/call"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/notify"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/notify"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/call"
-        app:layout_constraintEnd_toStartOf="@id/map"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/call"
-        app:layout_constraintTop_toTopOf="@+id/call">
-
-        <com.github.zagum.switchicon.SwitchIconView
-            android:id="@+id/notify_icon"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/description_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingBottom="4dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            app:si_enabled="false"
-            app:si_tint_color="@color/colorAccent"
-            app:srcCompat="@drawable/alarm" />
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="title_bar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/back_background"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorAccent"
+            android:elevation="8dp"
+            tools:targetApi="lollipop" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/back_button"
+            android:elevation="9dp"
+            android:focusable="true"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/back"
+            tools:targetApi="lollipop" />
 
         <TextView
-            android:id="@+id/notify_label"
+            android:id="@+id/event_detail_title"
             android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/manasia_event_detail"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/back_background"
+            app:layout_constraintStart_toEndOf="@+id/back"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="lollipop" />
+
+        <TextView
+            android:id="@+id/call"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/notify"
-            android:textAllCaps="true"
-            app:layout_constraintEnd_toEndOf="@id/notify"
-            app:layout_constraintStart_toStartOf="@id/notify"
-            app:layout_constraintTop_toBottomOf="@id/notify" />
-    </LinearLayout>
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableTop="@drawable/call"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:padding="16dp"
+            android:text="@string/call"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/notify"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/map"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:drawablePadding="4dp"
-        android:drawableTop="@drawable/navigate"
-        android:focusable="true"
-        android:padding="16dp"
-        android:text="@string/map"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/notify"
-        app:layout_constraintTop_toTopOf="@id/notify" />
+        <LinearLayout
+            android:id="@+id/notify"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/call"
+            app:layout_constraintEnd_toStartOf="@id/map"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/call"
+            app:layout_constraintTop_toTopOf="@+id/call">
 
-    <!--todo add extra elements for each event (SoundCloud, etc.)-->
+            <com.github.zagum.switchicon.SwitchIconView
+                android:id="@+id/notify_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="4dp"
+                app:si_enabled="false"
+                app:si_tint_color="@color/colorAccent"
+                app:srcCompat="@drawable/alarm" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/notify_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/notify"
+                android:textAllCaps="true"
+                app:layout_constraintEnd_toEndOf="@id/notify"
+                app:layout_constraintStart_toStartOf="@id/notify"
+                app:layout_constraintTop_toBottomOf="@id/notify" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/map"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableTop="@drawable/navigate"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:padding="16dp"
+            android:text="@string/map"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/notify"
+            app:layout_constraintTop_toTopOf="@id/notify" />
+
+        <!--todo add extra elements for each event (SoundCloud, etc.)-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

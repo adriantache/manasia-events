@@ -18,7 +18,6 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -41,12 +40,12 @@ import androidx.work.WorkManager;
 
 import com.adriantache.manasia_events.adapter.EventAdapter;
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.databinding.ActivityMainBinding;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
 import com.adriantache.manasia_events.widget.EventWidget;
 import com.adriantache.manasia_events.worker.UpdateEventsWorker;
 import com.google.android.material.snackbar.Snackbar;
-import com.ramotion.foldingcell.FoldingCell;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,17 +78,13 @@ public class MainActivity extends AppCompatActivity
         implements PopupMenu.OnMenuItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "MainActivity";
     long lastUpdateTime;
-    private ListView listView;
-    private ConstraintLayout constraintLayout;
-    private ImageView menu;
-    private TextView error;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Event> events;
     private boolean notifyOnAllEvents;
     private boolean firstLaunch;
     private Map<String, Integer> tagMap;
-    private FoldingCell fc;
     private ArrayList<String> filtersSet = new ArrayList<>();
+    private boolean workEnqueued = false;
+    private ActivityMainBinding binding;
 
     //todo dismiss notifications when opening activity from event details (what to do for multiple activities?)
 
@@ -99,11 +94,13 @@ public class MainActivity extends AppCompatActivity
     //todo add progress indicator circle while fetching/decoding events
     //todo add hub details on logo click
 
+    //todo move some work to a background thread (maybe migrate to kotlin first)
+
     //closes app on back pressed to prevent infinite loop due to how the stack is built coming from a notification
     @Override
     public void onBackPressed() {
         //fold filters on back press if they're open
-        if (fc.isUnfolded()) fc.fold(false);
+        if (binding.foldingCell.isUnfolded()) binding.foldingCell.fold(false);
         else {
             Intent homeIntent = new Intent(Intent.ACTION_MAIN);
             homeIntent.addCategory(Intent.CATEGORY_HOME);
@@ -122,22 +119,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        listView = findViewById(R.id.list_view);
-        constraintLayout = findViewById(R.id.constraint_layout);
-        menu = findViewById(R.id.menu);
-        error = findViewById(R.id.error);
-        TextView openHours = findViewById(R.id.open_hours);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         //set up SwipeRefreshLayout
-        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
 
         // implement FoldingCell
-        fc = findViewById(R.id.folding_cell);
-        // attach click listener to folding cell
-        fc.setOnClickListener(v -> fc.toggle(false));
+        binding.foldingCell.setOnClickListener(v -> binding.foldingCell.toggle(false));
         //todo play with this
         //fc.initialize(90, 1000, Color.DKGRAY, 1);
 
@@ -149,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         if (!notifyOnAllEvents) showSnackbar();
 
         //update open hours TextView
-        Utils.getOpenHours(openHours, this, firstLaunch);
+        Utils.getOpenHours(binding.openHours, this, firstLaunch);
         //reset the first launch flag so it doesn't remain set to false
         //todo rethink this mechanism, user might not always return from EventDetail or DrinksMenuActivity...
         //todo ...might make more sense to just use startActivityForResult with those activities
@@ -185,6 +173,7 @@ public class MainActivity extends AppCompatActivity
                 sb.append(state);
                 sb.append(" ");
                 sb.append(w.getRunAttemptCount());
+                sb.append(" tries.");
 
                 //update main screen if we have a work success for the forced fetch
                 if (w.getTags().contains(EVENTS_JSON_WORK_TAG_FORCED) &&
@@ -193,8 +182,11 @@ public class MainActivity extends AppCompatActivity
                     if (state == WorkInfo.State.SUCCEEDED) updateFromDatabase(false);
 
                     //stop refresh indicator
-                    if (swipeRefreshLayout.isRefreshing())
-                        swipeRefreshLayout.setRefreshing(false);
+                    if (binding.swipeRefreshLayout.isRefreshing())
+                        binding.swipeRefreshLayout.setRefreshing(false);
+                } else if (w.getTags().contains(EVENTS_JSON_WORK_TAG_FORCED) &&
+                        (state == WorkInfo.State.ENQUEUED)) {
+                    workEnqueued = true;
                 }
             }
 
@@ -210,7 +202,12 @@ public class MainActivity extends AppCompatActivity
 
     //todo reschedule notifications on remote events fetch (probably already happens)
     private void schedulePeriodicRemoteEventsFetch() {
-        //todo normally just schedule a periodic work request to fetch events daily when setInitialDelay works
+        //check if work by tag exists and skip scheduling in that case
+        if (workEnqueued) return;
+
+        //clear all work with this tag just in case
+        WorkManager.getInstance(this).cancelAllWorkByTag(EVENTS_JSON_WORK_TAG);
+
         //populate the global ArrayList of events by adding a work request to fetch JSON...
         Data remoteUrl = new Data.Builder().putString(REMOTE_URL, getRemoteURL()).build();
 
@@ -220,8 +217,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         //schedule the periodic work request for 5am, which will trigger the actual work request
-        //todo prevent triggering this if PeriodicWorkRequest already exists
-        //todo replace this directly with PeriodicWorkRequest with setInitialDelay once alpha02 launches
         PeriodicWorkRequest getEventJson = new PeriodicWorkRequest
                 .Builder(UpdateEventsWorker.class, 1, TimeUnit.DAYS)
                 .setInitialDelay(calculateDelay(getRefreshDate()), TimeUnit.MILLISECONDS)
@@ -307,13 +302,13 @@ public class MainActivity extends AppCompatActivity
 
     private void populateListView() {
         //populate list
-        listView.setAdapter(new EventAdapter(this, filter(events)));
+        binding.listView.setAdapter(new EventAdapter(this, filter(events)));
 
         //todo figure out why this sometimes isn't working
-        listView.setEmptyView(error);
+        binding.listView.setEmptyView(binding.error);
 
         //set click listener and transition animation
-        listView.setOnItemClickListener((parent, view, position, id) -> {
+        binding.listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = (Event) parent.getItemAtPosition(position);
 
             Intent intent = new Intent(getApplicationContext(), EventDetail.class);
@@ -343,7 +338,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        menu.setOnClickListener(v -> {
+        binding.menu.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(this, v);
             popup.getMenuInflater().inflate(R.menu.main_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(this);
@@ -351,7 +346,8 @@ public class MainActivity extends AppCompatActivity
         });
 
         //stop refresh indicator
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        if (binding.swipeRefreshLayout.isRefreshing())
+            binding.swipeRefreshLayout.setRefreshing(false);
     }
 
     private void computeTagMap() {
@@ -507,7 +503,7 @@ public class MainActivity extends AppCompatActivity
         else filtersText.setText(getString(R.string.filters_set));
 
         //close the UI
-        fc.fold(false);
+        binding.foldingCell.fold(false);
 
         //update UI
         populateListView();
@@ -629,11 +625,11 @@ public class MainActivity extends AppCompatActivity
         events = (ArrayList<Event>) DBUtils.readDatabase(this);
 
         if (events != null)
-            listView.setAdapter(new EventAdapter(this, events));
+            binding.listView.setAdapter(new EventAdapter(this, events));
     }
 
     public void showSnackbar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout,
+        Snackbar snackbar = Snackbar.make(binding.constraintLayout,
                 "Would you like to be notified for all events?",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Activate", v -> {

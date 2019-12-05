@@ -10,17 +10,16 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
 
 import com.adriantache.manasia_events.custom_class.Event;
+import com.adriantache.manasia_events.databinding.ActivityEventDetailBinding;
 import com.adriantache.manasia_events.db.DBUtils;
 import com.adriantache.manasia_events.util.Utils;
-import com.github.zagum.switchicon.SwitchIconView;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
@@ -38,20 +37,11 @@ import static com.adriantache.manasia_events.util.Utils.getDip;
 
 public class EventDetail extends AppCompatActivity {
     private static final String TAG = "EventDetail";
-    private ImageView thumbnail;
-    private TextView day;
-    private TextView month;
-    private TextView title;
-    private ImageView notifyStatus;
-    private TextView description;
-    private SwitchIconView notifyIcon;
-    private LinearLayout notify;
-    private TextView notifyLabel;
-    private ConstraintLayout constraintLayout;
     private Event event = null;
     private long dbEventId = ERROR_VALUE;
     private boolean reverseAnimation = false;
     private boolean noImage = false;
+    private ActivityEventDetailBinding binding;
 
     //todo [BUG] find NOTIFY_SETTINGS problem
     //todo set notifyOnAllEvents and settings reading to default to TRUE
@@ -64,18 +54,7 @@ public class EventDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_detail);
-
-        thumbnail = findViewById(R.id.thumbnail);
-        day = findViewById(R.id.day);
-        month = findViewById(R.id.month);
-        title = findViewById(R.id.title);
-        notifyStatus = findViewById(R.id.notify_status);
-        description = findViewById(R.id.description);
-        notifyIcon = findViewById(R.id.notify_icon);
-        notify = findViewById(R.id.notify);
-        notifyLabel = findViewById(R.id.notify_label);
-        constraintLayout = findViewById(R.id.constraint_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_event_detail);
 
         //get the event for which to display details, or fail
         Intent intent = getIntent();
@@ -96,11 +75,9 @@ public class EventDetail extends AppCompatActivity {
             finish();
         }
 
-        ImageView back = findViewById(R.id.back);
-        back.setOnClickListener(v -> backToMainActivity());
+        binding.back.setOnClickListener(v -> backToMainActivity());
 
-        TextView call = findViewById(R.id.call);
-        call.setOnClickListener(v -> {
+        binding.call.setOnClickListener(v -> {
             Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
             phoneIntent.setData(Uri.parse("tel:004 0736 760 063"));
             if (phoneIntent.resolveActivity(getPackageManager()) != null) {
@@ -108,8 +85,7 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
-        TextView map = findViewById(R.id.map);
-        map.setOnClickListener(v -> {
+        binding.map.setOnClickListener(v -> {
             String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
             Intent locationIntent = new Intent(Intent.ACTION_VIEW);
             locationIntent.setData(Uri.parse(geoLocation));
@@ -118,8 +94,7 @@ public class EventDetail extends AppCompatActivity {
             }
         });
 
-        TextView location = findViewById(R.id.location);
-        location.setOnClickListener(v -> {
+        binding.location.setOnClickListener(v -> {
             String geoLocation = "geo:0,0?q=Manasia Hub, Stelea Spătarul, nr.13, 030211 Bucharest, Romania";
             Intent locationIntent = new Intent(Intent.ACTION_VIEW);
             locationIntent.setData(Uri.parse(geoLocation));
@@ -135,8 +110,7 @@ public class EventDetail extends AppCompatActivity {
 
         //Hide title bar on image click if we have an image
         if (!noImage) {
-            LinearLayout titleBar = findViewById(R.id.title_bar);
-            thumbnail.setOnClickListener(v -> {
+            binding.thumbnail.setOnClickListener(v -> {
                 int duration = 300;
                 float start = reverseAnimation ? 0f : 1f;
                 float end = reverseAnimation ? 1f : 0f;
@@ -145,8 +119,8 @@ public class EventDetail extends AppCompatActivity {
                 animation.setDuration(duration);
                 animation.setFillAfter(true);
 
-                titleBar.startAnimation(animation);
-                notifyStatus.startAnimation(animation);
+                binding.titleBar.startAnimation(animation);
+                binding.notifyStatus.startAnimation(animation);
                 reverseAnimation();
             });
         }
@@ -159,19 +133,19 @@ public class EventDetail extends AppCompatActivity {
     private void populateDetails() {
         //populate fields with details
         if (!TextUtils.isEmpty(event.getPhotoUrl())) {
-            Picasso.get().load(event.getPhotoUrl()).centerCrop().fit().into(thumbnail);
-            thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            thumbnail.setBackgroundResource(R.color.colorAccent);
+            Picasso.get().load(event.getPhotoUrl()).centerCrop().fit().into(binding.thumbnail);
+            binding.thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            binding.thumbnail.setBackgroundResource(R.color.colorAccent);
         } else {
             noImage = true;
-            thumbnail.setImageResource(R.drawable.manasia_logo);
-            thumbnail.setScaleType(ImageView.ScaleType.CENTER);
-            thumbnail.setBackgroundResource(R.color.blue_grey100);
-            thumbnail.setPadding(0, 0, 0, getDip(this, 100));
+            binding.thumbnail.setImageResource(R.drawable.manasia_logo);
+            binding.thumbnail.setScaleType(ImageView.ScaleType.CENTER);
+            binding.thumbnail.setBackgroundResource(R.color.blue_grey100);
+            binding.thumbnail.setPadding(0, 0, 0, getDip(this, 100));
         }
-        day.setText(Utils.extractDayOrMonth(event.getDate(), true));
-        month.setText(Utils.extractDayOrMonth(event.getDate(), false));
-        title.setText(event.getTitle());
+        binding.day.setText(Utils.extractDayOrMonth(event.getDate(), true));
+        binding.month.setText(Utils.extractDayOrMonth(event.getDate(), false));
+        binding.title.setText(event.getTitle());
 
         //Add tags under description
         StringBuilder stringBuilder = new StringBuilder();
@@ -181,7 +155,7 @@ public class EventDetail extends AppCompatActivity {
         for (String tag : tags) {
             stringBuilder.append("[").append(tag).append("] ");
         }
-        description.setText(stringBuilder);
+        binding.description.setText(stringBuilder);
 
         //set on click listener and details for the notify button
         setNotifyDetails();
@@ -191,11 +165,11 @@ public class EventDetail extends AppCompatActivity {
         //if event is in the past, set some defaults and no onClickListener
         if (Utils.compareDateToToday(event.getDate()) < 0) {
             //hide the notification indicator up top
-            notifyStatus.setVisibility(View.INVISIBLE);
+            binding.notifyStatus.setVisibility(View.INVISIBLE);
 
             //and gray out the SwitchIconView
-            notifyIcon.setIconEnabled(false);
-            notifyIcon.setEnabled(false);
+            binding.notifyIcon.setIconEnabled(false);
+            binding.notifyIcon.setEnabled(false);
 
             return;
         }
@@ -206,21 +180,21 @@ public class EventDetail extends AppCompatActivity {
 
         //set notify status appearance
         if (notifyOnAllEvents || event.getNotify() == 1)
-            notifyStatus.setImageResource(R.drawable.alarm_accent);
+            binding.notifyStatus.setImageResource(R.drawable.alarm_accent);
         else
-            notifyStatus.setImageResource(R.drawable.alarm);
+            binding.notifyStatus.setImageResource(R.drawable.alarm);
 
         //set notify button appearance and onClickListener
         if (notifyOnAllEvents) {
-            notifyIcon.setIconEnabled(true);
-            notifyLabel.setText(getString(R.string.notifying));
+            binding.notifyIcon.setIconEnabled(true);
+            binding.notifyLabel.setText(getString(R.string.notifying));
 
-            notify.setOnClickListener(v -> showSnackbar(false));
+            binding.notify.setOnClickListener(v -> showSnackbar(false));
         } else {
-            notify.setOnClickListener(v -> {
+            binding.notify.setOnClickListener(v -> {
                 if (event.getNotify() == 1) {
-                    notifyIcon.setIconEnabled(false);
-                    notifyLabel.setText(getString(R.string.notify));
+                    binding.notifyIcon.setIconEnabled(false);
+                    binding.notifyLabel.setText(getString(R.string.notify));
 
                     event.setNotify(0);
                     updateDatabase();
@@ -228,8 +202,8 @@ public class EventDetail extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Disabled notification.",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    notifyIcon.setIconEnabled(true);
-                    notifyLabel.setText(getString(R.string.notifying));
+                    binding.notifyIcon.setIconEnabled(true);
+                    binding.notifyLabel.setText(getString(R.string.notifying));
 
                     event.setNotify(1);
                     updateDatabase();
@@ -246,7 +220,7 @@ public class EventDetail extends AppCompatActivity {
     //show a snackbar inviting the user to activate notification for all events
     public void showSnackbar(boolean promptAlwaysNotify) {
         if (promptAlwaysNotify) {
-            Snackbar snackbar = Snackbar.make(constraintLayout,
+            Snackbar snackbar = Snackbar.make(binding.constraintLayout,
                     "You will be notified on the day of the event.\n" +
                             "Would you like to be notified for all events?",
                     Snackbar.LENGTH_LONG);
@@ -273,7 +247,7 @@ public class EventDetail extends AppCompatActivity {
 
             snackbar.show();
         } else {
-            Snackbar snackbar = Snackbar.make(constraintLayout,
+            Snackbar snackbar = Snackbar.make(binding.constraintLayout,
                     "You are already being notified for all events.\n" +
                             "Do you want to change this option?",
                     Snackbar.LENGTH_LONG);
